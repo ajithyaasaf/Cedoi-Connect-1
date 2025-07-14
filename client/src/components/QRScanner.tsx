@@ -57,20 +57,28 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardContent className="p-6">
-          <div className="text-center mb-4">
-            <h2 className="text-xl font-medium text-foreground mb-2">Scan QR Code</h2>
-            <p className="text-sm text-gray-600">Position the QR code within the frame</p>
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center mb-3">
+              <div className="bg-accent rounded-full p-3">
+                <span className="material-icons text-white text-2xl">qr_code_scanner</span>
+              </div>
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">Scan QR Code</h2>
+            <p className="text-sm text-gray-600">Position the QR code within the camera frame</p>
           </div>
 
           {error ? (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <span className="material-icons text-red-500">error</span>
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
             </div>
           ) : (
-            <div className="mb-4">
+            <div className="mb-6">
               <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-square">
                 <video
                   ref={videoRef}
@@ -106,8 +114,9 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
             <Button
               onClick={handleManualEntry}
               variant="outline"
-              className="w-full"
+              className="w-full py-3 px-4 border-2 border-accent text-accent hover:bg-accent hover:text-white transition-all duration-200"
             >
+              <span className="material-icons mr-2">keyboard</span>
               Enter Code Manually
             </Button>
             
@@ -115,15 +124,17 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
               <Button
                 onClick={onClose}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 py-3 px-4 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200"
               >
+                <span className="material-icons mr-2">close</span>
                 Cancel
               </Button>
               {error && (
                 <Button
                   onClick={startCamera}
-                  className="flex-1 bg-accent hover:bg-accent/90"
+                  className="flex-1 py-3 px-4 bg-accent hover:bg-accent/90 text-white transition-all duration-200"
                 >
+                  <span className="material-icons mr-2">refresh</span>
                   Try Again
                 </Button>
               )}
