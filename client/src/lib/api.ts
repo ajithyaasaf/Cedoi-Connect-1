@@ -26,6 +26,158 @@ const mockUsers: User[] = [
     role: "member",
     qrCode: "priya_qr_789",
     createdAt: new Date()
+  },
+  {
+    id: "4",
+    email: "rajesh.kumar@cedoi.com",
+    name: "Rajesh Kumar",
+    role: "member",
+    qrCode: "rajesh_qr_101",
+    createdAt: new Date()
+  },
+  {
+    id: "5",
+    email: "anita.singh@cedoi.com",
+    name: "Anita Singh",
+    role: "member",
+    qrCode: "anita_qr_102",
+    createdAt: new Date()
+  },
+  {
+    id: "6",
+    email: "suresh.patel@cedoi.com",
+    name: "Suresh Patel",
+    role: "member",
+    qrCode: "suresh_qr_103",
+    createdAt: new Date()
+  },
+  {
+    id: "7",
+    email: "kavitha.reddy@cedoi.com",
+    name: "Kavitha Reddy",
+    role: "member",
+    qrCode: "kavitha_qr_104",
+    createdAt: new Date()
+  },
+  {
+    id: "8",
+    email: "ramesh.gupta@cedoi.com",
+    name: "Ramesh Gupta",
+    role: "member",
+    qrCode: "ramesh_qr_105",
+    createdAt: new Date()
+  },
+  {
+    id: "9",
+    email: "deepa.iyer@cedoi.com",
+    name: "Deepa Iyer",
+    role: "member",
+    qrCode: "deepa_qr_106",
+    createdAt: new Date()
+  },
+  {
+    id: "10",
+    email: "vijay.mehta@cedoi.com",
+    name: "Vijay Mehta",
+    role: "member",
+    qrCode: "vijay_qr_107",
+    createdAt: new Date()
+  },
+  {
+    id: "11",
+    email: "sunita.shah@cedoi.com",
+    name: "Sunita Shah",
+    role: "member",
+    qrCode: "sunita_qr_108",
+    createdAt: new Date()
+  },
+  {
+    id: "12",
+    email: "arun.nair@cedoi.com",
+    name: "Arun Nair",
+    role: "member",
+    qrCode: "arun_qr_109",
+    createdAt: new Date()
+  },
+  {
+    id: "13",
+    email: "meera.joshi@cedoi.com",
+    name: "Meera Joshi",
+    role: "member",
+    qrCode: "meera_qr_110",
+    createdAt: new Date()
+  },
+  {
+    id: "14",
+    email: "ravi.krishnan@cedoi.com",
+    name: "Ravi Krishnan",
+    role: "member",
+    qrCode: "ravi_qr_111",
+    createdAt: new Date()
+  },
+  {
+    id: "15",
+    email: "lakshmi.pillai@cedoi.com",
+    name: "Lakshmi Pillai",
+    role: "member",
+    qrCode: "lakshmi_qr_112",
+    createdAt: new Date()
+  },
+  {
+    id: "16",
+    email: "gopal.rao@cedoi.com",
+    name: "Gopal Rao",
+    role: "member",
+    qrCode: "gopal_qr_113",
+    createdAt: new Date()
+  },
+  {
+    id: "17",
+    email: "sita.venkat@cedoi.com",
+    name: "Sita Venkat",
+    role: "member",
+    qrCode: "sita_qr_114",
+    createdAt: new Date()
+  },
+  {
+    id: "18",
+    email: "mohan.das@cedoi.com",
+    name: "Mohan Das",
+    role: "member",
+    qrCode: "mohan_qr_115",
+    createdAt: new Date()
+  },
+  {
+    id: "19",
+    email: "nisha.bansal@cedoi.com",
+    name: "Nisha Bansal",
+    role: "member",
+    qrCode: "nisha_qr_116",
+    createdAt: new Date()
+  },
+  {
+    id: "20",
+    email: "arjun.mishra@cedoi.com",
+    name: "Arjun Mishra",
+    role: "member",
+    qrCode: "arjun_qr_117",
+    createdAt: new Date()
+  },
+  {
+    id: "21",
+    email: "divya.agarwal@cedoi.com",
+    name: "Divya Agarwal",
+    role: "member",
+    qrCode: "divya_qr_118",
+    createdAt: new Date()
+  },
+  {
+    id: "22",
+    email: "kiran.bhat@cedoi.com",
+    name: "Kiran Bhat",
+    role: "member",
+    qrCode: "kiran_qr_119",
+    createdAt: new Date()
   }
 ];
 
