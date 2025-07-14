@@ -1,7 +1,4 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { auth } from './firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { firestoreUsers } from './firestore';
 import type { User } from '@shared/schema';
 
 interface AuthContextType {
@@ -14,60 +11,45 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Try to get initial state from localStorage
-  const getInitialUser = () => {
-    try {
-      const savedUser = localStorage.getItem('cedoi-user');
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const [user, setUser] = useState<User | null>(getInitialUser);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('cedoi-user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        localStorage.removeItem('cedoi-user');
+      }
+    }
+  }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Simplified auth without Firebase for now
+      const mockUser: User = {
+        id: '1',
+        email: email,
+        name: email.split('@')[0],
+        role: email.includes('sonai') ? 'sonai' : 'chairman',
+        qrCode: null,
+        createdAt: new Date()
+      };
       
-      let firestoreUser = await firestoreUsers.getByEmail(email);
-      
-      if (!firestoreUser) {
-        const name = email.split('@')[0];
-        const role = email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member';
-        
-        firestoreUser = await firestoreUsers.create({
-          email,
-          name: name.charAt(0).toUpperCase() + name.slice(1),
-          role,
-          qrCode: null
-        });
-      }
-      
-      setUser(firestoreUser);
-      localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
+      setUser(mockUser);
+      localStorage.setItem('cedoi-user', JSON.stringify(mockUser));
     } catch (error: any) {
-      console.error('Login error:', error);
-      throw new Error(error.message || 'Login failed');
+      throw new Error('Login failed');
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async (): Promise<void> => {
-    setLoading(true);
-    try {
-      await signOut(auth);
-      setUser(null);
-      localStorage.removeItem('cedoi-user');
-    } catch (error: any) {
-      console.error('Logout error:', error);
-      throw new Error(error.message || 'Logout failed');
-    } finally {
-      setLoading(false);
-    }
+    setUser(null);
+    localStorage.removeItem('cedoi-user');
   };
 
   return (
