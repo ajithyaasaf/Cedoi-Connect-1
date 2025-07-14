@@ -18,51 +18,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const initializeAuth = async () => {
       setLoading(true);
       try {
-        if (firebaseUser) {
-          // Check if user exists in Firestore
-          let firestoreUser = await firestoreUsers.getByEmail(firebaseUser.email!);
-          
-          // If user doesn't exist in Firestore, create them
-          if (!firestoreUser) {
-            const userData = {
-              email: firebaseUser.email!,
-              name: firebaseUser.displayName || firebaseUser.email!.split('@')[0],
-              company: firebaseUser.email!.includes('sonai') ? 'CEDOI Administration' : 
-                      firebaseUser.email!.includes('chairman') ? 'CEDOI Board' : 'Member Company',
-              role: firebaseUser.email!.includes('sonai') ? 'sonai' : 
-                   firebaseUser.email!.includes('chairman') ? 'chairman' : 'member',
-              qrCode: null
-            };
-            firestoreUser = await firestoreUsers.create(userData);
-          }
-          
-          setUser(firestoreUser);
-          localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
-        } else {
-          setUser(null);
-          localStorage.removeItem('cedoi-user');
-        }
-      } catch (error) {
-        console.error('Auth state change error:', error);
-        // Fallback to localStorage for development
+        // First check if there's a saved user in localStorage
         const savedUser = localStorage.getItem('cedoi-user');
         if (savedUser) {
           try {
-            setUser(JSON.parse(savedUser));
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
           } catch {
             localStorage.removeItem('cedoi-user');
-            setUser(null);
           }
         }
+
+        // Try to set up Firebase Auth listener
+        try {
+          const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            try {
+              if (firebaseUser) {
+                // Try to get/create user in Firestore
+                let firestoreUser = await firestoreUsers.getByEmail(firebaseUser.email!);
+                
+                if (!firestoreUser) {
+                  const userData = {
+                    email: firebaseUser.email!,
+                    name: firebaseUser.displayName || firebaseUser.email!.split('@')[0],
+                    company: firebaseUser.email!.includes('sonai') ? 'CEDOI Administration' : 
+                            firebaseUser.email!.includes('chairman') ? 'CEDOI Board' : 'Member Company',
+                    role: firebaseUser.email!.includes('sonai') ? 'sonai' : 
+                         firebaseUser.email!.includes('chairman') ? 'chairman' : 'member',
+                    qrCode: null
+                  };
+                  firestoreUser = await firestoreUsers.create(userData);
+                }
+                
+                setUser(firestoreUser);
+                localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
+              } else if (!savedUser) {
+                setUser(null);
+                localStorage.removeItem('cedoi-user');
+              }
+            } catch (error) {
+              console.log('Firebase Auth available but Firestore failed, using local storage only');
+            }
+          });
+          
+          return () => unsubscribe();
+        } catch (error) {
+          console.log('Firebase Auth not available, using local storage only');
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
       } finally {
         setLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
@@ -72,29 +85,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Try Firebase Auth first
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('Firebase login successful for:', userCredential.user.email);
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log('Firebase login successful for:', email);
+        // User will be set by the auth state change listener
       } catch (firebaseError: any) {
         console.log('Firebase auth not available, using fallback auth:', firebaseError.message);
         
-        // Fallback for development - create user directly in Firestore
-        let firestoreUser = await firestoreUsers.getByEmail(email);
+        // Fallback for development - create user with mock data or try Firestore directly
+        let user;
         
-        if (!firestoreUser) {
-          const userData = {
+        try {
+          // Try to get user from Firestore directly
+          user = await firestoreUsers.getByEmail(email);
+          
+          if (!user) {
+            const userData = {
+              email: email,
+              name: email.split('@')[0],
+              company: email.includes('sonai') ? 'CEDOI Administration' : 
+                      email.includes('chairman') ? 'CEDOI Board' : 'Guest Company',
+              role: email.includes('sonai') ? 'sonai' : 
+                   email.includes('chairman') ? 'chairman' : 'member',
+              qrCode: null
+            };
+            user = await firestoreUsers.create(userData);
+          }
+        } catch (firestoreError) {
+          console.log('Firestore also not available, creating mock user');
+          // Final fallback - create mock user
+          user = {
+            id: `user_${Date.now()}`,
             email: email,
             name: email.split('@')[0],
             company: email.includes('sonai') ? 'CEDOI Administration' : 
                     email.includes('chairman') ? 'CEDOI Board' : 'Guest Company',
             role: email.includes('sonai') ? 'sonai' : 
                  email.includes('chairman') ? 'chairman' : 'member',
-            qrCode: null
+            qrCode: null,
+            createdAt: new Date()
           };
-          firestoreUser = await firestoreUsers.create(userData);
         }
         
-        setUser(firestoreUser);
-        localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
+        setUser(user);
+        localStorage.setItem('cedoi-user', JSON.stringify(user));
       }
     } catch (error: any) {
       console.error('Login error:', error);
