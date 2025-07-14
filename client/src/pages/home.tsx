@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';

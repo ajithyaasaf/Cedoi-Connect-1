@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { auth } from './firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { firestoreUsers } from './firestore';
 import type { User } from '@shared/schema';
 
@@ -14,27 +14,28 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Try to get initial state from localStorage
-  const getInitialUser = () => {
-    try {
-      const savedUser = localStorage.getItem('cedoi-user');
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
-      return null;
-    }
-  };
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const [user, setUser] = useState<User | null>(getInitialUser);
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    // Check if user is stored in localStorage
+    const savedUser = localStorage.getItem('cedoi-user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
-    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
+      // Get user from Firestore
       let firestoreUser = await firestoreUsers.getByEmail(email);
       
+      // If user doesn't exist in Firestore, create them
       if (!firestoreUser) {
+        // Default to 'member' role, can be changed by admin later
         const name = email.split('@')[0];
         const role = email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member';
         
@@ -51,22 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       console.error('Login error:', error);
       throw new Error(error.message || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
   const logout = async (): Promise<void> => {
-    setLoading(true);
     try {
       await signOut(auth);
       setUser(null);
       localStorage.removeItem('cedoi-user');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Logout error:', error);
-      throw new Error(error.message || 'Logout failed');
-    } finally {
-      setLoading(false);
     }
   };
 
