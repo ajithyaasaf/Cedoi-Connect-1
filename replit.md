@@ -4,6 +4,8 @@
 
 This is a mobile-first Progressive Web Application (PWA) designed for the CEDOI Madurai Forum to simplify meeting scheduling, attendance marking, and reporting. The application serves two main user roles: Sonai (meeting organizer) and Chairman (meeting oversight and reporting).
 
+**Current Status (July 2025)**: Fully integrated with Firebase/Firestore database, responsive navigation, and enhanced meeting creation interface.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -19,11 +21,10 @@ Preferred communication style: Simple, everyday language.
 - **PWA Features**: Service worker, web app manifest, offline capabilities
 
 ### Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **Database Provider**: Neon Database (@neondatabase/serverless)
-- **Authentication**: Mock Firebase Auth implementation (email + OTP)
-- **API Design**: RESTful endpoints with JSON responses
+- **Framework**: Express.js with TypeScript (minimal backend for static serving)
+- **Database**: Firebase Firestore (fully integrated)
+- **Authentication**: Firebase Authentication with email/password
+- **API Design**: Direct Firestore integration from frontend
 - **Development**: Vite for development server and HMR
 
 ### Build System
@@ -34,28 +35,33 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Authentication System
-- **Mock Firebase Auth**: Simulated email/OTP authentication
+- **Firebase Authentication**: Real Firebase Auth with email/password
 - **User Context**: React context for authentication state
-- **Storage**: localStorage for user session persistence
-- **User Roles**: 'sonai' (organizer) and 'chairman' (oversight)
+- **Firestore Integration**: User data stored and retrieved from Firestore
+- **Auto User Creation**: New users automatically created in Firestore on first login
+- **User Roles**: 'sonai' (organizer), 'chairman' (oversight), and 'member'
 
 ### Meeting Management
-- **Meeting Creation**: Sonai can schedule meetings with agenda and recurring options
-- **Venue**: Default venue set to "Mariat Hotel, Madurai"
-- **Attendance Tracking**: Real-time attendance marking during meetings
+- **Enhanced Meeting Creation**: Improved time picker with dropdown selectors (Hour/Minute/AM-PM)
+- **Flexible Venue Selection**: Multiple predefined venues plus custom venue option
+- **Venue Options**: Mariat Hotel, CEDOI Office, Community Hall, Online Meeting, or custom
+- **Attendance Tracking**: Real-time attendance marking with Firestore persistence
 - **Meeting States**: Active/inactive meetings with date-based filtering
 
 ### Data Layer
-- **Database Schema**: Users, meetings, and attendance records
-- **ORM**: Drizzle ORM with PostgreSQL dialect
-- **Validation**: Zod schemas for type-safe data validation
-- **Storage Interface**: Abstracted storage layer with in-memory fallback
+- **Firestore Collections**: users, meetings, attendance_records
+- **Real-time Data**: Direct Firestore queries from frontend
+- **Type Safety**: TypeScript interfaces matching schema
+- **API Layer**: Abstracted Firestore operations through api.ts
+- **Data Relationships**: Proper referencing between collections
 
 ### User Interface
-- **Mobile-First Design**: Responsive design optimized for mobile devices
+- **Mobile-First Design**: Fully responsive design with safe area support
+- **Enhanced Navigation**: Fixed navbar with improved mobile touch targets
 - **Material Design**: Google Material Design inspired with custom branding
 - **Brand Colors**: Navy blue (#04004B) primary, orange (#EB8A2F) accent
-- **Navigation**: Bottom navigation bar for mobile-friendly access
+- **Responsive Navigation**: Bottom navigation stays visible across all screens
+- **Floating Action Button**: Properly positioned above navigation bar
 - **Components**: Reusable UI components built on Radix UI primitives
 
 ## Data Flow
@@ -97,8 +103,9 @@ Preferred communication style: Simple, everyday language.
 - **ESBuild**: Fast JavaScript bundler for production
 
 ### Database
-- **Neon Database**: Serverless PostgreSQL provider
-- **Drizzle Kit**: Database migrations and schema management
+- **Firebase Firestore**: NoSQL document database
+- **Real-time Updates**: Live data synchronization
+- **Security Rules**: Firebase security rules for data protection
 
 ## Deployment Strategy
 
@@ -116,9 +123,27 @@ Preferred communication style: Simple, everyday language.
 - **PWA**: Service worker for offline functionality and caching
 
 ### Environment Configuration
-- **Database**: DATABASE_URL environment variable required
-- **Firebase**: Mock configuration with environment variables for future integration
+- **Firebase**: Full Firebase configuration with environment variables
+  - VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, VITE_FIREBASE_PROJECT_ID
+  - VITE_FIREBASE_STORAGE_BUCKET, VITE_FIREBASE_MESSAGING_SENDER_ID, VITE_FIREBASE_APP_ID
 - **Build**: NODE_ENV determines development/production behavior
+
+## Recent Changes (July 2025)
+
+### July 14, 2025
+- **Fixed responsive navigation issues**: Navbar now responsive and stays visible
+- **Enhanced meeting creation form**: 
+  - Replaced time input with user-friendly dropdowns (Hour/Minute/AM-PM)
+  - Added venue selection with predefined options and custom venue support
+- **Complete Firebase/Firestore integration**:
+  - Migrated from mock backend to real Firebase
+  - Direct frontend-to-Firestore communication
+  - Real Firebase Authentication
+  - Auto user creation on first login
+- **UI/UX improvements**:
+  - Fixed floating action button positioning above navigation
+  - Added safe area support for mobile devices
+  - Improved touch targets and mobile responsiveness
 
 ### Progressive Web App Features
 - **Manifest**: Web app manifest for installation
