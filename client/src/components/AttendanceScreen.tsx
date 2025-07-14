@@ -64,34 +64,34 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-white p-4 shadow-material">
+      {/* Page Header */}
+      <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
             <div>
-              <h1 className="text-xl font-medium">Mark Attendance</h1>
-              <p className="text-sm opacity-90">{new Date().toLocaleDateString()}</p>
+              <h1 className="text-xl font-medium text-gray-900">Mark Attendance</h1>
+              <p className="text-sm text-gray-600">{new Date().toLocaleDateString()}</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="icon"
-              className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
             >
               <span className="material-icons">qr_code_scanner</span>
             </Button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Attendance Progress */}
       <div className="bg-white p-4 shadow-sm">

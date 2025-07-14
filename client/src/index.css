@@ -130,4 +130,37 @@
   .material-shadow-lg {
     box-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.12);
   }
+
+  /* Safe area utilities for mobile devices */
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-pr {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Enhanced responsive navigation */
+  @media (max-width: 480px) {
+    .bottom-nav-text {
+      font-size: 10px;
+    }
+    
+    .bottom-nav-icon {
+      font-size: 16px;
+    }
+  }
+
+  /* Ensure proper spacing for fixed navigation */
+  .main-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
 }

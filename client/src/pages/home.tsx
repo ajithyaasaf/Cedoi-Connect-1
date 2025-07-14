@@ -81,17 +81,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {activeTab !== 'attendance' && activeTab !== 'reports' && activeTab !== 'create-meeting' && (
-        <AppHeader />
-      )}
+      <AppHeader />
       
-      <main className={activeTab === 'dashboard' ? '' : 'pt-0'}>
+      <main className="pb-20">
         {renderContent()}
       </main>
       
-      {activeTab !== 'attendance' && activeTab !== 'reports' && activeTab !== 'create-meeting' && (
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-      )}
+      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
