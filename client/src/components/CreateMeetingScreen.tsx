@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { apiRequest } from '@/lib/queryClient';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 
@@ -16,7 +17,11 @@ interface CreateMeetingScreenProps {
 
 export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps) {
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [selectedHour, setSelectedHour] = useState('');
+  const [selectedMinute, setSelectedMinute] = useState('');
+  const [selectedPeriod, setSelectedPeriod] = useState('');
+  const [venue, setVenue] = useState('Mariat Hotel, Madurai');
+  const [customVenue, setCustomVenue] = useState('');
   const [agenda, setAgenda] = useState('');
   const [repeatWeekly, setRepeatWeekly] = useState(false);
   const [notifyMembers, setNotifyMembers] = useState(true);
@@ -28,7 +33,7 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
 
   const createMeetingMutation = useMutation({
     mutationFn: async (meetingData: any) => {
-      return apiRequest('POST', '/api/meetings', meetingData);
+      return api.meetings.create(meetingData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/meetings'] });
@@ -51,7 +56,7 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!date || !time || !user) {
+    if (!date || !selectedHour || !selectedMinute || !selectedPeriod || !user) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -60,7 +65,16 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
       return;
     }
 
-    const meetingDateTime = new Date(`${date}T${time}`);
+    // Convert 12-hour format to 24-hour format
+    let hour24 = parseInt(selectedHour);
+    if (selectedPeriod === 'PM' && hour24 !== 12) {
+      hour24 += 12;
+    } else if (selectedPeriod === 'AM' && hour24 === 12) {
+      hour24 = 0;
+    }
+
+    const timeString = `${hour24.toString().padStart(2, '0')}:${selectedMinute}:00`;
+    const meetingDateTime = new Date(`${date}T${timeString}`);
     
     // Ensure the datetime is valid
     if (isNaN(meetingDateTime.getTime())) {
@@ -72,11 +86,22 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
       return;
     }
     
+    const finalVenue = venue === 'custom' ? customVenue : venue;
+    
+    if (!finalVenue.trim()) {
+      toast({
+        title: "Missing Venue",
+        description: "Please specify a venue for the meeting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const meetingData = {
       date: meetingDateTime,
-      venue: "Mariat Hotel, Madurai",
+      venue: finalVenue,
       agenda: agenda || "",
-      createdBy: Number(user.id),
+      createdBy: user.id,
       repeatWeekly,
       isActive: true,
     };
@@ -136,26 +161,57 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                   />
                 </div>
                 <div>
-                  <Label htmlFor="time" className="block text-sm font-medium text-foreground mb-2">
+                  <Label className="block text-sm font-medium text-foreground mb-2">
                     Time
                   </Label>
-                  <div className="relative">
-                    <Input
-                      type="time"
-                      id="time"
-                      value={time}
-                      onChange={(e) => setTime(e.target.value)}
-                      required
-                      className="w-full pr-10 text-base"
-                      step="300"
-                    />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 material-icons text-gray-400 pointer-events-none">
-                      schedule
-                    </span>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <Label className="text-xs text-gray-500">Hour</Label>
+                      <Select value={selectedHour} onValueChange={setSelectedHour}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Hour" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => (
+                            <SelectItem key={hour} value={hour.toString()}>
+                              {hour}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Minute</Label>
+                      <Select value={selectedMinute} onValueChange={setSelectedMinute}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Min" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {['00', '15', '30', '45'].map((minute) => (
+                            <SelectItem key={minute} value={minute}>
+                              {minute}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">Period</Label>
+                      <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="AM/PM" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="AM">AM</SelectItem>
+                          <SelectItem value="PM">PM</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  {time && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {new Date(`2000-01-01T${time}`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  {selectedHour && selectedMinute && selectedPeriod && (
+                    <p className="text-xs text-gray-500 mt-2 flex items-center">
+                      <span className="material-icons text-sm mr-1">schedule</span>
+                      Selected: {selectedHour}:{selectedMinute} {selectedPeriod}
                     </p>
                   )}
                 </div>
@@ -178,11 +234,43 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
           <Card className="shadow-material">
             <CardContent className="p-4">
               <h3 className="text-lg font-medium text-foreground mb-4">Venue</h3>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <span className="material-icons text-accent">location_on</span>
-                <div>
-                  <p className="font-medium text-foreground">Mariat Hotel, Madurai</p>
-                  <p className="text-sm text-gray-600">Default venue</p>
+              <div className="space-y-4">
+                <Select value={venue} onValueChange={setVenue}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select venue" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Mariat Hotel, Madurai">Mariat Hotel, Madurai</SelectItem>
+                    <SelectItem value="CEDOI Office, Madurai">CEDOI Office, Madurai</SelectItem>
+                    <SelectItem value="Community Hall, Madurai">Community Hall, Madurai</SelectItem>
+                    <SelectItem value="Online Meeting (Zoom)">Online Meeting (Zoom)</SelectItem>
+                    <SelectItem value="custom">Custom Venue</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {venue === 'custom' && (
+                  <div>
+                    <Label htmlFor="customVenue" className="text-sm font-medium text-foreground">
+                      Enter custom venue
+                    </Label>
+                    <Input
+                      id="customVenue"
+                      value={customVenue}
+                      onChange={(e) => setCustomVenue(e.target.value)}
+                      placeholder="Enter venue address or details"
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg">
+                  <span className="material-icons text-blue-600">location_on</span>
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">
+                      {venue === 'custom' ? (customVenue || 'Custom venue') : venue}
+                    </p>
+                    <p className="text-xs text-blue-600">Meeting location</p>
+                  </div>
                 </div>
               </div>
             </CardContent>

@@ -3,22 +3,25 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth';
+import { api } from '@/lib/api';
 import type { Meeting, User } from '@shared/schema';
 
 interface DashboardProps {
   onCreateMeeting: () => void;
-  onMarkAttendance: (meetingId: number) => void;
+  onMarkAttendance: (meetingId: string) => void;
 }
 
 export default function Dashboard({ onCreateMeeting, onMarkAttendance }: DashboardProps) {
   const { user } = useAuth();
   
   const { data: meetings = [] } = useQuery<Meeting[]>({
-    queryKey: ['/api/meetings'],
+    queryKey: ['meetings'],
+    queryFn: () => api.meetings.getAll(),
   });
 
   const { data: todaysMeeting } = useQuery<Meeting | null>({
-    queryKey: ['/api/meetings/today'],
+    queryKey: ['meetings', 'today'],
+    queryFn: () => api.meetings.getTodaysMeeting(),
   });
 
   const { data: stats } = useQuery<{
@@ -27,7 +30,8 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
     presentCount: number;
     absentCount: number;
   }>({
-    queryKey: ['/api/stats'],
+    queryKey: ['stats'],
+    queryFn: () => api.attendance.getStats(),
   });
 
   const upcomingMeetings = meetings.filter(meeting => 

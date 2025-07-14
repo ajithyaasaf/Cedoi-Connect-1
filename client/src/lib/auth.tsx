@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { auth } from './firebase';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { firestoreUsers } from './firestore';
 import type { User } from '@shared/schema';
 
 interface AuthContextType {
@@ -26,18 +28,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<void> => {
     try {
-      const user = await auth.signInWithEmailAndPassword(email, password);
-      setUser(user);
-      localStorage.setItem('cedoi-user', JSON.stringify(user));
-    } catch (error) {
-      throw error;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Get user from Firestore
+      let firestoreUser = await firestoreUsers.getByEmail(email);
+      
+      // If user doesn't exist in Firestore, create them
+      if (!firestoreUser) {
+        // Default to 'member' role, can be changed by admin later
+        const name = email.split('@')[0];
+        const role = email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member';
+        
+        firestoreUser = await firestoreUsers.create({
+          email,
+          name: name.charAt(0).toUpperCase() + name.slice(1),
+          role,
+          qrCode: null
+        });
+      }
+      
+      setUser(firestoreUser);
+      localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw new Error(error.message || 'Login failed');
     }
   };
 
   const logout = async (): Promise<void> => {
-    await auth.signOut();
-    setUser(null);
-    localStorage.removeItem('cedoi-user');
+    try {
+      await signOut(auth);
+      setUser(null);
+      localStorage.removeItem('cedoi-user');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (

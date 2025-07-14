@@ -2,34 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { apiRequest } from '@/lib/queryClient';
+import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import type { User, AttendanceRecord } from '@shared/schema';
 
 interface AttendanceScreenProps {
-  meetingId: number;
+  meetingId: string;
   onBack: () => void;
 }
 
 export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreenProps) {
-  const [attendanceStatus, setAttendanceStatus] = useState<Record<number, 'present' | 'absent'>>({});
+  const [attendanceStatus, setAttendanceStatus] = useState<Record<string, 'present' | 'absent'>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: users = [] } = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['users'],
+    queryFn: () => api.users.getAll(),
   });
 
   const { data: attendanceRecords = [] } = useQuery<AttendanceRecord[]>({
-    queryKey: ['/api/attendance', meetingId],
+    queryKey: ['attendance', meetingId],
+    queryFn: () => api.attendance.getForMeeting(meetingId),
   });
 
   const updateAttendanceMutation = useMutation({
-    mutationFn: async ({ userId, status }: { userId: number; status: 'present' | 'absent' }) => {
-      return apiRequest('PUT', `/api/attendance/${meetingId}/${userId}`, { status });
+    mutationFn: async ({ userId, status }: { userId: string; status: 'present' | 'absent' }) => {
+      return api.attendance.updateStatus(meetingId, userId, status);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/attendance', meetingId] });
+      queryClient.invalidateQueries({ queryKey: ['attendance', meetingId] });
       toast({
         title: "Attendance Updated",
         description: "Attendance status has been saved successfully.",
@@ -46,14 +48,14 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
 
   useEffect(() => {
     // Initialize attendance status from existing records
-    const statusMap: Record<number, 'present' | 'absent'> = {};
+    const statusMap: Record<string, 'present' | 'absent'> = {};
     attendanceRecords.forEach(record => {
       statusMap[record.userId] = record.status as 'present' | 'absent';
     });
     setAttendanceStatus(statusMap);
   }, [attendanceRecords]);
 
-  const handleStatusChange = async (userId: number, status: 'present' | 'absent') => {
+  const handleStatusChange = async (userId: string, status: 'present' | 'absent') => {
     setAttendanceStatus(prev => ({ ...prev, [userId]: status }));
     updateAttendanceMutation.mutate({ userId, status });
   };

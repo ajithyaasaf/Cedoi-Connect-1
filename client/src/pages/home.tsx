@@ -11,7 +11,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 export default function Home() {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [attendanceMeetingId, setAttendanceMeetingId] = useState<number | null>(null);
+  const [attendanceMeetingId, setAttendanceMeetingId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -34,7 +34,7 @@ export default function Home() {
     setActiveTab('create-meeting');
   };
 
-  const handleMarkAttendance = (meetingId: number) => {
+  const handleMarkAttendance = (meetingId: string) => {
     setAttendanceMeetingId(meetingId);
     setActiveTab('attendance');
   };
