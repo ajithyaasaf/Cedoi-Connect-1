@@ -1,5 +1,6 @@
-// Temporary mock API for development - will switch to Firestore when configured
+// API layer that uses Firestore with fallback to mock data for development
 import type { User, Meeting, AttendanceRecord } from '@shared/schema';
+import { firestoreUsers, firestoreMeetings, firestoreAttendance } from './firestore';
 
 // Mock data for development
 const mockUsers: User[] = [
@@ -226,98 +227,149 @@ const mockAttendance: AttendanceRecord[] = [
   }
 ];
 
+// Helper function to use Firestore with fallback to mock data
+async function withFirestoreFallback<T>(
+  firestoreOperation: () => Promise<T>,
+  mockFallback: () => T | Promise<T>
+): Promise<T> {
+  try {
+    return await firestoreOperation();
+  } catch (error) {
+    console.log('Firestore operation failed, using mock data:', error);
+    return await mockFallback();
+  }
+}
+
 export const api = {
   // User operations
   users: {
-    getAll: async () => mockUsers,
-    getById: async (id: string) => mockUsers.find(u => u.id === id) || null,
-    getByEmail: async (email: string) => mockUsers.find(u => u.email === email) || null,
-    create: async (userData: Omit<User, 'id' | 'createdAt'>) => {
-      const newUser: User = {
-        id: `user_${Date.now()}`,
-        ...userData,
-        createdAt: new Date()
-      };
-      mockUsers.push(newUser);
-      return newUser;
-    }
+    getAll: async () => withFirestoreFallback(
+      () => firestoreUsers.getAll(),
+      () => mockUsers
+    ),
+    getById: async (id: string) => withFirestoreFallback(
+      () => firestoreUsers.getById(id),
+      () => mockUsers.find(u => u.id === id) || null
+    ),
+    getByEmail: async (email: string) => withFirestoreFallback(
+      () => firestoreUsers.getByEmail(email),
+      () => mockUsers.find(u => u.email === email) || null
+    ),
+    create: async (userData: Omit<User, 'id' | 'createdAt'>) => withFirestoreFallback(
+      () => firestoreUsers.create(userData),
+      () => {
+        const newUser: User = {
+          id: `user_${Date.now()}`,
+          ...userData,
+          createdAt: new Date()
+        };
+        mockUsers.push(newUser);
+        return newUser;
+      }
+    )
   },
 
   // Meeting operations  
   meetings: {
-    getAll: async () => mockMeetings,
-    getById: async (id: string) => mockMeetings.find(m => m.id === id) || null,
-    getTodaysMeeting: async () => {
-      const today = new Date();
-      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-      
-      return mockMeetings.find(m => 
-        m.date >= todayStart && m.date < todayEnd && m.isActive
-      ) || null;
-    },
-    getByUser: async (userId: string) => mockMeetings.filter(m => m.createdBy === userId),
-    create: async (meetingData: Omit<Meeting, 'id' | 'createdAt'>) => {
-      const newMeeting: Meeting = {
-        id: `meeting_${Date.now()}`,
-        ...meetingData,
-        createdAt: new Date()
-      };
-      mockMeetings.push(newMeeting);
-      return newMeeting;
-    }
+    getAll: async () => withFirestoreFallback(
+      () => firestoreMeetings.getAll(),
+      () => mockMeetings
+    ),
+    getById: async (id: string) => withFirestoreFallback(
+      () => firestoreMeetings.getById(id),
+      () => mockMeetings.find(m => m.id === id) || null
+    ),
+    getTodaysMeeting: async () => withFirestoreFallback(
+      () => firestoreMeetings.getTodaysMeeting(),
+      () => {
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+        
+        return mockMeetings.find(m => 
+          m.date >= todayStart && m.date < todayEnd && m.isActive
+        ) || null;
+      }
+    ),
+    getByUser: async (userId: string) => withFirestoreFallback(
+      () => firestoreMeetings.getByUser(userId),
+      () => mockMeetings.filter(m => m.createdBy === userId)
+    ),
+    create: async (meetingData: Omit<Meeting, 'id' | 'createdAt'>) => withFirestoreFallback(
+      () => firestoreMeetings.create(meetingData),
+      () => {
+        const newMeeting: Meeting = {
+          id: `meeting_${Date.now()}`,
+          ...meetingData,
+          createdAt: new Date()
+        };
+        mockMeetings.push(newMeeting);
+        return newMeeting;
+      }
+    )
   },
 
   // Attendance operations
   attendance: {
-    getForMeeting: async (meetingId: string) => 
-      mockAttendance.filter(a => a.meetingId === meetingId),
-    create: async (attendanceData: Omit<AttendanceRecord, 'id' | 'timestamp'>) => {
-      const newRecord: AttendanceRecord = {
-        id: `attendance_${Date.now()}`,
-        ...attendanceData,
-        timestamp: new Date()
-      };
-      mockAttendance.push(newRecord);
-      return newRecord;
-    },
-    updateStatus: async (meetingId: string, userId: string, status: 'present' | 'absent') => {
-      const existingIndex = mockAttendance.findIndex(
-        a => a.meetingId === meetingId && a.userId === userId
-      );
-      
-      if (existingIndex >= 0) {
-        mockAttendance[existingIndex].status = status;
-        mockAttendance[existingIndex].timestamp = new Date();
-        return mockAttendance[existingIndex];
-      } else {
+    getForMeeting: async (meetingId: string) => withFirestoreFallback(
+      () => firestoreAttendance.getForMeeting(meetingId),
+      () => mockAttendance.filter(a => a.meetingId === meetingId)
+    ),
+    create: async (attendanceData: Omit<AttendanceRecord, 'id' | 'timestamp'>) => withFirestoreFallback(
+      () => firestoreAttendance.create(attendanceData),
+      () => {
         const newRecord: AttendanceRecord = {
           id: `attendance_${Date.now()}`,
-          meetingId,
-          userId,
-          status,
+          ...attendanceData,
           timestamp: new Date()
         };
         mockAttendance.push(newRecord);
         return newRecord;
       }
-    },
-    getStats: async (userId?: string) => {
-      const relevantRecords = userId 
-        ? mockAttendance.filter(a => a.userId === userId)
-        : mockAttendance;
-      
-      const totalMeetings = new Set(relevantRecords.map(r => r.meetingId)).size;
-      const presentCount = relevantRecords.filter(r => r.status === 'present').length;
-      const absentCount = relevantRecords.filter(r => r.status === 'absent').length;
-      const averageAttendance = totalMeetings > 0 ? (presentCount / totalMeetings) * 100 : 0;
-      
-      return {
-        totalMeetings,
-        averageAttendance: Math.round(averageAttendance * 100) / 100,
-        presentCount,
-        absentCount
-      };
-    },
+    ),
+    updateStatus: async (meetingId: string, userId: string, status: 'present' | 'absent') => withFirestoreFallback(
+      () => firestoreAttendance.updateStatus(meetingId, userId, status),
+      () => {
+        const existingIndex = mockAttendance.findIndex(
+          a => a.meetingId === meetingId && a.userId === userId
+        );
+        
+        if (existingIndex >= 0) {
+          mockAttendance[existingIndex].status = status;
+          mockAttendance[existingIndex].timestamp = new Date();
+          return mockAttendance[existingIndex];
+        } else {
+          const newRecord: AttendanceRecord = {
+            id: `attendance_${Date.now()}`,
+            meetingId,
+            userId,
+            status,
+            timestamp: new Date()
+          };
+          mockAttendance.push(newRecord);
+          return newRecord;
+        }
+      }
+    ),
+    getStats: async (userId?: string) => withFirestoreFallback(
+      () => firestoreAttendance.getStats(userId),
+      () => {
+        const relevantRecords = userId 
+          ? mockAttendance.filter(a => a.userId === userId)
+          : mockAttendance;
+        
+        const totalMeetings = new Set(relevantRecords.map(r => r.meetingId)).size;
+        const presentCount = relevantRecords.filter(r => r.status === 'present').length;
+        const absentCount = relevantRecords.filter(r => r.status === 'absent').length;
+        const averageAttendance = totalMeetings > 0 ? (presentCount / totalMeetings) * 100 : 0;
+        
+        return {
+          totalMeetings,
+          averageAttendance: Math.round(averageAttendance * 100) / 100,
+          presentCount,
+          absentCount
+        };
+      }
+    ),
   },
 };
