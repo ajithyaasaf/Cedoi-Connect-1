@@ -28,23 +28,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      // Try to find existing user in Firestore or create new one
-      const { api } = await import('@/lib/api');
-      let existingUser = await api.users.getByEmail(email);
+      console.log('Login attempt for:', email);
       
-      if (!existingUser) {
-        // Create new user in Firestore
-        existingUser = await api.users.create({
-          email: email,
-          name: email.split('@')[0],
-          role: email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member',
-          qrCode: null,
-        });
-      }
+      // For demo purposes, create a simple user without Firestore dependency
+      // TODO: Implement real Firestore authentication when Firebase is configured
+      const mockUser: User = {
+        id: `user_${Date.now()}`,
+        email: email,
+        name: email.split('@')[0],
+        role: email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member',
+        qrCode: null,
+        createdAt: new Date()
+      };
       
-      setUser(existingUser);
-      localStorage.setItem('cedoi-user', JSON.stringify(existingUser));
+      console.log('Login successful for user:', mockUser);
+      setUser(mockUser);
+      localStorage.setItem('cedoi-user', JSON.stringify(mockUser));
     } catch (error: any) {
+      console.error('Login error:', error);
       throw new Error('Login failed: ' + error.message);
     } finally {
       setLoading(false);
