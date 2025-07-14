@@ -93,7 +93,6 @@ Preferred communication style: Simple, everyday language.
 
 ### Data and State Management
 - **React Query**: Server state management and caching
-- **Drizzle ORM**: Type-safe database operations
 - **Zod**: Runtime type validation
 - **React Hook Form**: Form state management with validation
 
@@ -111,7 +110,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Development
 - **Local Development**: Vite dev server with HMR
-- **Database**: PostgreSQL connection via DATABASE_URL environment variable
+- **Database**: Firebase Firestore (or mock data for development)
 - **Asset Serving**: Static assets served by Vite in development
 
 ### Production
@@ -119,7 +118,7 @@ Preferred communication style: Simple, everyday language.
   - Frontend: Vite build → Static files in dist/public
   - Backend: esbuild → Single JavaScript file in dist/
 - **Server**: Express.js serving static files and API routes
-- **Database**: PostgreSQL with Drizzle migrations
+- **Database**: Firebase Firestore with real-time updates
 - **PWA**: Service worker for offline functionality and caching
 
 ### Environment Configuration
@@ -135,19 +134,22 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced meeting creation form**: 
   - Replaced time input with user-friendly dropdowns (Hour/Minute/AM-PM)
   - Added venue selection with predefined options and custom venue support
-- **Complete Firebase/Firestore integration**:
-  - Migrated from mock backend to real Firebase
-  - Direct frontend-to-Firestore communication
-  - Real Firebase Authentication
-  - Auto user creation on first login
+- **Complete PostgreSQL removal and Firestore-only architecture**:
+  - Removed all PostgreSQL, Drizzle dependencies and configurations
+  - Implemented pure Firestore/mock data architecture
+  - Direct frontend-to-Firestore communication (when configured)
+  - Mock authentication and data layer for development
 - **UI/UX improvements**:
   - Fixed floating action button positioning above navigation
   - Added safe area support for mobile devices
   - Improved touch targets and mobile responsiveness
 - **Fixed infinite loading issue**: 
   - Resolved React Refresh runtime errors by updating Route component usage
-  - Implemented mock authentication and data layer for development
-  - Added 22 test users for attendance marking functionality testing
+  - Added 22 test users with company information for attendance marking
+- **Enhanced attendance marking interface**:
+  - Added clearly visible red "ABSENT" and green "PRESENT" buttons
+  - Displays user name, company, and role for each member
+  - Fixed button visibility issues with explicit color styling
 
 ### Progressive Web App Features
 - **Manifest**: Web app manifest for installation
