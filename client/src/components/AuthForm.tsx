@@ -39,18 +39,16 @@ export default function AuthForm() {
     <div className="min-h-screen bg-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <div className="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 p-2 shadow-lg">
-            <img 
-              src={cedoiLogo} 
-              alt="CEDOI Logo" 
-              className="w-full h-full object-contain rounded-xl"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-            <span className="material-icons text-primary text-3xl hidden">groups</span>
-          </div>
+          <img 
+            src={cedoiLogo} 
+            alt="CEDOI Logo" 
+            className="w-20 h-20 object-contain mx-auto mb-4"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+          <span className="material-icons text-white text-5xl hidden">groups</span>
           <h2 className="text-2xl font-bold text-white mb-2">CEDOI Madurai</h2>
           <p className="text-white opacity-90 text-sm">Meeting Management System</p>
         </div>
