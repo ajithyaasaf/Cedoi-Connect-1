@@ -30,8 +30,8 @@ export interface AttendanceRecord {
   timestamp: Date | null;
 }
 
-// Zod schemas for validation
-export const insertUserSchema = z.object({
+// Zod schemas for form validation (if needed)
+export const userValidationSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),
   company: z.string().min(1),
@@ -39,7 +39,7 @@ export const insertUserSchema = z.object({
   qrCode: z.string().nullable().optional(),
 });
 
-export const insertMeetingSchema = z.object({
+export const meetingValidationSchema = z.object({
   date: z.date(),
   venue: z.string().min(1),
   agenda: z.string().nullable().optional(),
@@ -48,12 +48,8 @@ export const insertMeetingSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const insertAttendanceSchema = z.object({
+export const attendanceValidationSchema = z.object({
   meetingId: z.string(),
   userId: z.string(),
   status: z.enum(['present', 'absent']),
 });
-
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type InsertMeeting = z.infer<typeof insertMeetingSchema>;
-export type InsertAttendance = z.infer<typeof insertAttendanceSchema>;
