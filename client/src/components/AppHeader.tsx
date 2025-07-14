@@ -11,7 +11,7 @@ export default function AppHeader() {
         <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
           <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0 bg-white rounded-lg p-1">
             <img 
-              src="https://static.wixstatic.com/media/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg/v1/fill/w_160,h_90,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg" 
+              src="https://static.wixstatic.com/media/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png/v1/fill/w_192,h_192,lg_1,usm_0.66_1.00_0.01/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png" 
               alt="CEDOI Logo" 
               className="w-full h-full object-contain rounded"
               onError={(e) => {

@@ -40,7 +40,7 @@ export default function AuthForm() {
         <div className="text-center mb-6">
           <div className="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 p-2 shadow-lg">
             <img 
-              src="https://static.wixstatic.com/media/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg/v1/fill/w_160,h_90,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg" 
+              src="https://static.wixstatic.com/media/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png/v1/fill/w_192,h_192,lg_1,usm_0.66_1.00_0.01/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png" 
               alt="CEDOI Logo" 
               className="w-full h-full object-contain rounded-xl"
               onError={(e) => {
