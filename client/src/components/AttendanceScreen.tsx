@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import QRScanner from './QRScanner';
@@ -15,6 +17,9 @@ interface AttendanceScreenProps {
 export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreenProps) {
   const [attendanceStatus, setAttendanceStatus] = useState<Record<string, 'present' | 'absent'>>({});
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'present' | 'absent' | 'unmarked'>('all');
+  const [attendanceSaved, setAttendanceSaved] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -89,6 +94,20 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
   const progressPercentage = members.length > 0 ? (markedCount / members.length) * 100 : 0;
   const isAttendanceComplete = unmarkedCount === 0 && members.length > 0;
 
+  // Filter and search members
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         member.company.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const memberStatus = attendanceStatus[member.id];
+    const matchesFilter = filterStatus === 'all' || 
+                         (filterStatus === 'present' && memberStatus === 'present') ||
+                         (filterStatus === 'absent' && memberStatus === 'absent') ||
+                         (filterStatus === 'unmarked' && !memberStatus);
+    
+    return matchesSearch && matchesFilter;
+  });
+
   return (
     <div className="min-h-screen bg-background">
       {/* Page Header */}
@@ -153,6 +172,35 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
         )}
       </div>
 
+      {/* Search and Filter */}
+      <div className="bg-white p-4 border-b border-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search by name or company..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+            <span className="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+              search
+            </span>
+          </div>
+          <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Members ({members.length})</SelectItem>
+              <SelectItem value="present">Present ({presentCount})</SelectItem>
+              <SelectItem value="absent">Absent ({absentCount})</SelectItem>
+              <SelectItem value="unmarked">Unmarked ({unmarkedCount})</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       {/* Quick Actions */}
       <div className="bg-white p-4 border-b border-gray-100">
         <div className="grid grid-cols-1 gap-3">
@@ -203,11 +251,65 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
         </div>
       </div>
 
+      {/* Final Results - Show after attendance is saved */}
+      {attendanceSaved && (
+        <div className="bg-green-50 border-t-4 border-green-500 p-4 mx-4 mt-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-green-800">Attendance Completed</h3>
+              <p className="text-sm text-green-600">Meeting attendance has been successfully recorded</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-green-700">{members.length}</div>
+              <div className="text-xs text-green-600">Total Members</div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="flex items-center justify-between">
+                <span className="material-icons text-green-600">check_circle</span>
+                <div className="text-right">
+                  <div className="text-xl font-semibold text-green-700">{presentCount}</div>
+                  <div className="text-xs text-green-600">Present</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="flex items-center justify-between">
+                <span className="material-icons text-red-500">cancel</span>
+                <div className="text-right">
+                  <div className="text-xl font-semibold text-red-600">{absentCount}</div>
+                  <div className="text-xs text-red-500">Absent</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Members List */}
       <main className="p-4 pb-20">
-        <div className="space-y-3">
-          {members.map((member) => {
-            const status = attendanceStatus[member.id];
+        {filteredMembers.length === 0 ? (
+          <div className="text-center py-8">
+            <span className="material-icons text-gray-400 text-4xl mb-2">search_off</span>
+            <p className="text-gray-500">No members found matching your search or filter</p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchQuery('');
+                setFilterStatus('all');
+              }}
+              className="mt-2"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredMembers.map((member) => {
+              const status = attendanceStatus[member.id];
             const isPresent = status === 'present';
             const isAbsent = status === 'absent';
             
@@ -281,8 +383,9 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                 </CardContent>
               </Card>
             );
-          })}
-        </div>
+            })}
+          </div>
+        )}
       </main>
 
       {/* Save Button */}
@@ -337,6 +440,7 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
           <Button
             className="w-full bg-success hover:bg-success/90 text-white py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
             onClick={() => {
+              setAttendanceSaved(true);
               toast({
                 title: "Attendance Saved",
                 description: `All ${members.length} members marked. ${presentCount} present, ${absentCount} absent.`,
