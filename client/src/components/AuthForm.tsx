@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import cedoiLogo from '@assets/image_1752498683514.png';
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
@@ -40,7 +41,7 @@ export default function AuthForm() {
         <div className="text-center mb-6">
           <div className="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 p-2 shadow-lg">
             <img 
-              src="https://static.wixstatic.com/media/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png/v1/fill/w_192,h_192,lg_1,usm_0.66_1.00_0.01/1a4736_559b9d1d3e8a42af9221ab2eb5eeccc8~mv2.png" 
+              src={cedoiLogo} 
               alt="CEDOI Logo" 
               className="w-full h-full object-contain rounded-xl"
               onError={(e) => {
