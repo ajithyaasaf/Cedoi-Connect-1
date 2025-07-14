@@ -38,10 +38,11 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
       });
       onBack();
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Meeting creation error:', error);
       toast({
         title: "Error",
-        description: "Failed to create meeting. Please try again.",
+        description: error?.message || "Failed to create meeting. Please try again.",
         variant: "destructive",
       });
     },
@@ -50,50 +51,68 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!date || !time || !user) return;
+    if (!date || !time || !user) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const meetingDateTime = new Date(`${date}T${time}`);
     
+    // Ensure the datetime is valid
+    if (isNaN(meetingDateTime.getTime())) {
+      toast({
+        title: "Invalid Date/Time",
+        description: "Please select a valid date and time.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const meetingData = {
-      date: meetingDateTime.toISOString(),
+      date: meetingDateTime,
       venue: "Mariat Hotel, Madurai",
-      agenda,
-      createdBy: user.id,
+      agenda: agenda || "",
+      createdBy: Number(user.id),
       repeatWeekly,
       isActive: true,
     };
 
+    console.log('Meeting data being sent:', meetingData);
     createMeetingMutation.mutate(meetingData);
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-white p-4 shadow-material">
+      {/* Page Header */}
+      <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
             <div>
-              <h1 className="text-xl font-medium">Create Meeting</h1>
-              <p className="text-sm opacity-90">Schedule new meeting</p>
+              <h1 className="text-xl font-medium text-gray-900">Create Meeting</h1>
+              <p className="text-sm text-gray-600">Schedule new meeting</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white"
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
           >
             <span className="material-icons">help_outline</span>
           </Button>
         </div>
-      </header>
+      </div>
 
       <main className="p-4 pb-20">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -120,14 +139,25 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                   <Label htmlFor="time" className="block text-sm font-medium text-foreground mb-2">
                     Time
                   </Label>
-                  <Input
-                    type="time"
-                    id="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                    className="w-full"
-                  />
+                  <div className="relative">
+                    <Input
+                      type="time"
+                      id="time"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                      required
+                      className="w-full pr-10 text-base"
+                      step="300"
+                    />
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 material-icons text-gray-400 pointer-events-none">
+                      schedule
+                    </span>
+                  </div>
+                  {time && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Selected: {new Date(`2000-01-01T${time}`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </p>
+                  )}
                 </div>
               </div>
               

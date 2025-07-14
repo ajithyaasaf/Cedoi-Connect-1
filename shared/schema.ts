@@ -16,7 +16,7 @@ export const meetings = pgTable("meetings", {
   date: timestamp("date").notNull(),
   venue: text("venue").notNull().default("Mariat Hotel, Madurai"),
   agenda: text("agenda"),
-  createdBy: serial("created_by").references(() => users.id),
+  createdBy: serial("created_by").references(() => users.id).notNull(),
   repeatWeekly: boolean("repeat_weekly").default(false),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
