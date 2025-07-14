@@ -1,0 +1,141 @@
+Uncaught (in promise) TypeError: Failed to fetch
+    at sw.js:23:28
+localhost:8080/google.firestore.v1.Firestore/Write/channel?VER=8&database=projects%2Fcedoi-forum-demo%2Fdatabases%2F(default)&RID=57546&CVER=22&X-HTTP-Session-Id=gsessionid&zx=qy5obz3nf269&t=1:1  Failed to load resource: net::ERR_FAILED
+chunk-4IETPWHK.js?v=63e0d4f0:1211 [2025-07-14T10:08:07.585Z]  @firebase/firestore: Firestore (11.10.0): WebChannelConnection RPC 'Write' stream 0x5fd0aad0 transport errored. Name: undefined Message: undefined
+defaultLogHandler @ chunk-4IETPWHK.js?v=63e0d4f0:1211
+sw.js:23  Uncaught (in promise) TypeError: Failed to fetch
+    at sw.js:23:28
+localhost:8080/google.firestore.v1.Firestore/Write/channel?VER=8&database=projects%2Fcedoi-forum-demo%2Fdatabases%2F(default)&RID=62126&CVER=22&X-HTTP-Session-Id=gsessionid&zx=2mb4ukdaeeml&t=1:1  Failed to load resource: net::ERR_FAILED
+chunk-4IETPWHK.js?v=63e0d4f0:1211 [2025-07-14T10:08:12.629Z]  @firebase/firestore: Firestore (11.10.0): WebChannelConnection RPC 'Write' stream 0x5fd0aad1 transport errored. Name: undefined Message: undefined
+defaultLogHandler @ chunk-4IETPWHK.js?v=63e0d4f0:1211
+sw.js:23  Uncaught (in promise) TypeError: Failed to fetch
+    at sw.js:23:28
+(anonymous) @ sw.js:23
+Promise.then
+(anonymous) @ sw.js:21
+firebase_firestore.js?v=63e0d4f0:1781  POST http://localhost:8080/google.firestore.v1.Firestore/Write/channel?VER=8&database=projects%2Fcedoi-forum-demo%2Fdatabases%2F(default)&RID=93587&CVER=22&X-HTTP-Session-Id=gsessionid&zx=kjerw7u8a6vj&t=1 net::ERR_FAILED
+h.send @ firebase_firestore.js?v=63e0d4f0:1781
+h.ea @ firebase_firestore.js?v=63e0d4f0:1922
+Jb @ firebase_firestore.js?v=63e0d4f0:1203
+Hb @ firebase_firestore.js?v=63e0d4f0:1178
+h.Ga @ firebase_firestore.js?v=63e0d4f0:2228
+Da @ firebase_firestore.js?v=63e0d4f0:669
+Promise.then
+x2 @ firebase_firestore.js?v=63e0d4f0:663
+fc @ firebase_firestore.js?v=63e0d4f0:2172
+h.connect @ firebase_firestore.js?v=63e0d4f0:2132
+Y2.m @ firebase_firestore.js?v=63e0d4f0:2488
+Ho @ firebase_firestore.js?v=63e0d4f0:12679
+send @ firebase_firestore.js?v=63e0d4f0:12570
+k_ @ firebase_firestore.js?v=63e0d4f0:12887
+na @ firebase_firestore.js?v=63e0d4f0:13090
+__PRIVATE_onWriteStreamOpen @ firebase_firestore.js?v=63e0d4f0:13442
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12965
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12989
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16081
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16112
+Promise.then
+uc @ firebase_firestore.js?v=63e0d4f0:16112
+enqueue @ firebase_firestore.js?v=63e0d4f0:16081
+enqueueAndForget @ firebase_firestore.js?v=63e0d4f0:16063
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12989
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12965
+o_ @ firebase_firestore.js?v=63e0d4f0:12576
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12727
+setTimeout
+P_ @ firebase_firestore.js?v=63e0d4f0:12726
+z_ @ firebase_firestore.js?v=63e0d4f0:13069
+W_ @ firebase_firestore.js?v=63e0d4f0:12962
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12952
+Promise.then
+auth @ firebase_firestore.js?v=63e0d4f0:12948
+start @ firebase_firestore.js?v=63e0d4f0:12847
+start @ firebase_firestore.js?v=63e0d4f0:13063
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12974
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12794
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:13585
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16081
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16112
+Promise.then
+uc @ firebase_firestore.js?v=63e0d4f0:16112
+enqueue @ firebase_firestore.js?v=63e0d4f0:16081
+enqueueAndForget @ firebase_firestore.js?v=63e0d4f0:16063
+handleDelayElapsed @ firebase_firestore.js?v=63e0d4f0:13585
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:13565
+chunk-4IETPWHK.js?v=63e0d4f0:1211 [2025-07-14T10:08:19.206Z]  @firebase/firestore: Firestore (11.10.0): WebChannelConnection RPC 'Write' stream 0x5fd0aad2 transport errored. Name: undefined Message: undefined
+defaultLogHandler @ chunk-4IETPWHK.js?v=63e0d4f0:1211
+warn @ chunk-4IETPWHK.js?v=63e0d4f0:1275
+__PRIVATE_logWarn @ firebase_firestore.js?v=63e0d4f0:2632
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12698
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12685
+ab @ firebase_firestore.js?v=63e0d4f0:950
+F2 @ firebase_firestore.js?v=63e0d4f0:920
+Z2.sa @ firebase_firestore.js?v=63e0d4f0:2543
+R @ firebase_firestore.js?v=63e0d4f0:2398
+Ub @ firebase_firestore.js?v=63e0d4f0:2378
+Qb @ firebase_firestore.js?v=63e0d4f0:1339
+M2.Y @ firebase_firestore.js?v=63e0d4f0:1297
+M2.ca @ firebase_firestore.js?v=63e0d4f0:1215
+ab @ firebase_firestore.js?v=63e0d4f0:950
+F2 @ firebase_firestore.js?v=63e0d4f0:920
+Wc @ firebase_firestore.js?v=63e0d4f0:1954
+h.bb @ firebase_firestore.js?v=63e0d4f0:1949
+h.Ea @ firebase_firestore.js?v=63e0d4f0:1946
+Lc @ firebase_firestore.js?v=63e0d4f0:1846
+Mc @ firebase_firestore.js?v=63e0d4f0:1831
+h.ga @ firebase_firestore.js?v=63e0d4f0:1824
+Promise.then
+h.send @ firebase_firestore.js?v=63e0d4f0:1781
+h.ea @ firebase_firestore.js?v=63e0d4f0:1922
+Jb @ firebase_firestore.js?v=63e0d4f0:1203
+Hb @ firebase_firestore.js?v=63e0d4f0:1178
+h.Ga @ firebase_firestore.js?v=63e0d4f0:2228
+Da @ firebase_firestore.js?v=63e0d4f0:669
+Promise.then
+x2 @ firebase_firestore.js?v=63e0d4f0:663
+fc @ firebase_firestore.js?v=63e0d4f0:2172
+h.connect @ firebase_firestore.js?v=63e0d4f0:2132
+Y2.m @ firebase_firestore.js?v=63e0d4f0:2488
+Ho @ firebase_firestore.js?v=63e0d4f0:12679
+send @ firebase_firestore.js?v=63e0d4f0:12570
+k_ @ firebase_firestore.js?v=63e0d4f0:12887
+na @ firebase_firestore.js?v=63e0d4f0:13090
+__PRIVATE_onWriteStreamOpen @ firebase_firestore.js?v=63e0d4f0:13442
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12965
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12989
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16081
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16112
+Promise.then
+uc @ firebase_firestore.js?v=63e0d4f0:16112
+enqueue @ firebase_firestore.js?v=63e0d4f0:16081
+enqueueAndForget @ firebase_firestore.js?v=63e0d4f0:16063
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12989
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12965
+o_ @ firebase_firestore.js?v=63e0d4f0:12576
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12727
+setTimeout
+P_ @ firebase_firestore.js?v=63e0d4f0:12726
+z_ @ firebase_firestore.js?v=63e0d4f0:13069
+W_ @ firebase_firestore.js?v=63e0d4f0:12962
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12952
+Promise.then
+auth @ firebase_firestore.js?v=63e0d4f0:12948
+start @ firebase_firestore.js?v=63e0d4f0:12847
+start @ firebase_firestore.js?v=63e0d4f0:13063
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12974
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:12794
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:13585
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16081
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:16112
+Promise.then
+uc @ firebase_firestore.js?v=63e0d4f0:16112
+enqueue @ firebase_firestore.js?v=63e0d4f0:16081
+enqueueAndForget @ firebase_firestore.js?v=63e0d4f0:16063
+handleDelayElapsed @ firebase_firestore.js?v=63e0d4f0:13585
+(anonymous) @ firebase_firestore.js?v=63e0d4f0:13565
+sw.js:23  Uncaught (in promise) TypeError: Failed to fetch
+    at sw.js:23:28
+(anonymous) @ sw.js:23
+Promise.then
+(anonymous) @ sw.js:21
+firebase_firestore.js?v=63e0d4f0:1781  POST http://localhost:8080/google.firestore.v1.Firestore/Write/channel?VER=8&database=projects%2Fcedoi-forum-demo%2Fdatabases%2F(default)&RID=16256&CVER=22&X-HTTP-Session-Id=gsessionid&zx=2xpuvmo9kwi&t=1 net::ERR_FAILED

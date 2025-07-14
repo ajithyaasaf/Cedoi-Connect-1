@@ -32,9 +32,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // Try to set up Firebase Auth listener
-        try {
-          const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        // Try to set up Firebase Auth listener (only if auth is available)
+        if (auth) {
+          try {
+            const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             try {
               if (firebaseUser) {
                 // Try to get/create user in Firestore
@@ -64,8 +65,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           });
           
-          return () => unsubscribe();
-        } catch (error) {
+            return () => unsubscribe();
+          } catch (error) {
+            console.log('Firebase Auth listener failed:', error);
+          }
+        } else {
           console.log('Firebase Auth not available, using local storage only');
         }
       } catch (error) {
@@ -83,18 +87,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       console.log('Login attempt for:', email);
       
-      // Try Firebase Auth first
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        console.log('Firebase login successful for:', email);
-        // User will be set by the auth state change listener
-      } catch (firebaseError: any) {
-        console.log('Firebase auth not available, using fallback auth:', firebaseError.message);
-        
-        // Fallback for development - create user with mock data or try Firestore directly
-        let user;
-        
+      // Try Firebase Auth first (only if available)
+      if (auth) {
         try {
+          await signInWithEmailAndPassword(auth, email, password);
+          console.log('Firebase login successful for:', email);
+          // User will be set by the auth state change listener
+          return; // Exit early if Firebase login succeeds
+        } catch (firebaseError: any) {
+          console.log('Firebase auth failed:', firebaseError.message);
+        }
+      } else {
+        console.log('Firebase auth not available, using fallback');
+      }
+      // Fallback for development - create user with mock data or try Firestore directly
+      let user;
+      
+      try {
           // Try to get user from Firestore directly
           user = await firestoreUsers.getByEmail(email);
           
@@ -124,11 +133,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             qrCode: null,
             createdAt: new Date()
           };
-        }
-        
-        setUser(user);
-        localStorage.setItem('cedoi-user', JSON.stringify(user));
       }
+      
+      setUser(user);
+      localStorage.setItem('cedoi-user', JSON.stringify(user));
     } catch (error: any) {
       console.error('Login error:', error);
       throw new Error('Login failed: ' + error.message);
@@ -138,10 +146,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async (): Promise<void> => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.log('Firebase signout not available, using local logout');
+    if (auth) {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.log('Firebase signout failed:', error);
+      }
     }
     setUser(null);
     localStorage.removeItem('cedoi-user');

@@ -11,6 +11,11 @@ export interface FirebaseConfig {
   appId: string;
 }
 
+// Check if Firebase is properly configured
+const hasFirebaseConfig = import.meta.env.VITE_FIREBASE_API_KEY && 
+                          import.meta.env.VITE_FIREBASE_PROJECT_ID &&
+                          import.meta.env.VITE_FIREBASE_API_KEY !== "demo-api-key";
+
 export const firebaseConfig: FirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cedoi-forum.firebaseapp.com",
@@ -20,23 +25,41 @@ export const firebaseConfig: FirebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef123456"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Only initialize Firebase if properly configured
+let app: any = null;
+let db: any = null;
+let auth: any = null;
 
-// Initialize Firestore
-export const db = getFirestore(app);
-
-// Initialize Auth
-export const auth = getAuth(app);
-
-// If using emulator (for development)
-if (import.meta.env.DEV && !import.meta.env.VITE_FIREBASE_API_KEY) {
+if (hasFirebaseConfig || import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
   try {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    connectAuthEmulator(auth, 'http://localhost:9099');
+    // Initialize Firebase
+    app = initializeApp(firebaseConfig);
+    
+    // Initialize Firestore
+    db = getFirestore(app);
+    
+    // Initialize Auth
+    auth = getAuth(app);
+    
+    // Connect to emulator if enabled
+    if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
+      try {
+        connectFirestoreEmulator(db, 'localhost', 8080);
+        connectAuthEmulator(auth, 'http://localhost:9099');
+        console.log('Connected to Firebase emulators');
+      } catch (error) {
+        console.log('Emulator already connected or not available');
+      }
+    }
+    
+    console.log('Firebase initialized successfully');
   } catch (error) {
-    // Emulator already connected
+    console.log('Firebase initialization failed:', error);
   }
+} else {
+  console.log('Firebase not configured - using mock data mode');
 }
+
+export { db, auth };
 
 export default app;

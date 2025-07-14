@@ -92,6 +92,24 @@ node scripts/seed-firestore.js
 
 If you don't have Firebase credentials yet, the application will automatically fall back to mock data, so you can continue development without interruption.
 
+**Important**: The app is currently configured to work without Firebase by default. The connection errors you might see in the browser console are normal when Firebase isn't configured - the app will still work with mock data.
+
+## Disabling Firebase Completely (For Development)
+
+If you want to use only mock data and avoid Firebase connection attempts:
+
+1. Don't set any Firebase environment variables
+2. The app will automatically use mock data only
+
+## Using Firebase Emulator (Advanced)
+
+If you want to test with Firebase emulator:
+
+1. Install Firebase CLI: `npm install -g firebase-tools`
+2. Set `VITE_USE_FIREBASE_EMULATOR=true` in your `.env` file  
+3. Run `firebase emulators:start` to start the emulator
+4. Your app will connect to the local emulator instead of production Firebase
+
 ## Production Deployment
 
 For production:

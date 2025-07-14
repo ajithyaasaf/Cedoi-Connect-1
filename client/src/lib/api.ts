@@ -233,9 +233,19 @@ async function withFirestoreFallback<T>(
   mockFallback: () => T | Promise<T>
 ): Promise<T> {
   try {
-    return await firestoreOperation();
-  } catch (error) {
-    console.log('Firestore operation failed, using mock data:', error);
+    // Add a timeout to prevent hanging on connection issues
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Firestore operation timeout')), 5000);
+    });
+    
+    const result = await Promise.race([
+      firestoreOperation(),
+      timeoutPromise
+    ]);
+    
+    return result;
+  } catch (error: any) {
+    console.log('Firestore operation failed, using mock data:', error.message || error);
     return await mockFallback();
   }
 }
