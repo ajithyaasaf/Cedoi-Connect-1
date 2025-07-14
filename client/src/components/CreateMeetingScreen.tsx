@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
+import { notificationService } from '@/lib/notifications';
 
 interface CreateMeetingScreenProps {
   onBack: () => void;
@@ -35,8 +36,45 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
     mutationFn: async (meetingData: any) => {
       return api.meetings.create(meetingData);
     },
-    onSuccess: () => {
+    onSuccess: async (createdMeeting) => {
       queryClient.invalidateQueries({ queryKey: ['/api/meetings'] });
+      
+      // Send notifications if enabled
+      if (notifyMembers) {
+        try {
+          const users = await api.users.getAll();
+          const userIds = users.map(user => user.id);
+          
+          await notificationService.notifyMeetingCreated({
+            date: createdMeeting.date,
+            venue: createdMeeting.venue,
+            agenda: createdMeeting.agenda || ''
+          }, userIds);
+        } catch (error) {
+          console.error('Failed to send notifications:', error);
+        }
+      }
+
+      // Schedule reminder if enabled
+      if (sendReminder) {
+        try {
+          const users = await api.users.getAll();
+          const userIds = users.map(user => user.id);
+          
+          notificationService.scheduleReminder(
+            createdMeeting.date,
+            {
+              date: createdMeeting.date,
+              venue: createdMeeting.venue,
+              agenda: createdMeeting.agenda || ''
+            },
+            userIds
+          );
+        } catch (error) {
+          console.error('Failed to schedule reminder:', error);
+        }
+      }
+
       toast({
         title: "Meeting Created",
         description: "The meeting has been scheduled successfully.",

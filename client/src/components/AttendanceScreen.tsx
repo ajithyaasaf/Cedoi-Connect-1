@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import QRScanner from './QRScanner';
 import type { User, AttendanceRecord } from '@shared/schema';
 
 interface AttendanceScreenProps {
@@ -13,6 +14,7 @@ interface AttendanceScreenProps {
 
 export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreenProps) {
   const [attendanceStatus, setAttendanceStatus] = useState<Record<string, 'present' | 'absent'>>({});
+  const [showQRScanner, setShowQRScanner] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -60,6 +62,25 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
     updateAttendanceMutation.mutate({ userId, status });
   };
 
+  const handleQRScan = (qrData: string) => {
+    // Find user by QR code
+    const user = users.find(u => u.qrCode === qrData);
+    if (user) {
+      handleStatusChange(user.id, 'present');
+      toast({
+        title: "QR Code Scanned",
+        description: `${user.name} marked as present`,
+      });
+    } else {
+      toast({
+        title: "Invalid QR Code",
+        description: "QR code not recognized. Please try again.",
+        variant: "destructive",
+      });
+    }
+    setShowQRScanner(false);
+  };
+
   const members = users.filter(user => user.role === 'member' || user.role === 'sonai');
   const presentCount = Object.values(attendanceStatus).filter(status => status === 'present').length;
   const progressPercentage = members.length > 0 ? (presentCount / members.length) * 100 : 0;
@@ -87,6 +108,7 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
             <Button
               variant="ghost"
               size="icon"
+              onClick={() => setShowQRScanner(true)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
             >
               <span className="material-icons">qr_code_scanner</span>
@@ -114,7 +136,10 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
       {/* Quick Actions */}
       <div className="bg-white p-4 border-b border-gray-100">
         <div className="flex space-x-3">
-          <Button className="flex-1 bg-accent hover:bg-accent/90 text-white py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple">
+          <Button 
+            onClick={() => setShowQRScanner(true)}
+            className="flex-1 bg-accent hover:bg-accent/90 text-white py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+          >
             <span className="material-icons mr-2">qr_code_scanner</span>
             SCAN QR
           </Button>
@@ -230,6 +255,14 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
           SAVE ATTENDANCE
         </Button>
       </div>
+
+      {/* QR Scanner Modal */}
+      {showQRScanner && (
+        <QRScanner
+          onScan={handleQRScan}
+          onClose={() => setShowQRScanner(false)}
+        />
+      )}
     </div>
   );
 }

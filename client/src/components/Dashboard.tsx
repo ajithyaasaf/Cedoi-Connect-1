@@ -6,6 +6,30 @@ import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import type { Meeting, User } from '@shared/schema';
 
+// Component to show attendance stats for a specific meeting
+function AttendanceStats({ meetingId }: { meetingId: string }) {
+  const { data: attendanceRecords = [] } = useQuery({
+    queryKey: ['attendance', meetingId],
+    queryFn: () => api.attendance.getForMeeting(meetingId),
+  });
+
+  const { data: users = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => api.users.getAll(),
+  });
+
+  const totalMembers = users.filter(u => u.role === 'member' || u.role === 'sonai').length;
+  const presentCount = attendanceRecords.filter(r => r.status === 'present').length;
+  const attendancePercentage = totalMembers > 0 ? Math.round((presentCount / totalMembers) * 100) : 0;
+
+  return (
+    <>
+      <div className="text-sm font-medium text-success">{attendancePercentage}%</div>
+      <div className="text-xs text-gray-500">attendance</div>
+    </>
+  );
+}
+
 interface DashboardProps {
   onCreateMeeting: () => void;
   onMarkAttendance: (meetingId: string) => void;
@@ -144,8 +168,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium text-success">85%</div>
-                    <div className="text-xs text-gray-500">attendance</div>
+                    <AttendanceStats meetingId={meeting.id} />
                   </div>
                 </div>
               </div>
