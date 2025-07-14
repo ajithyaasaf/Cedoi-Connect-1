@@ -1,0 +1,27 @@
+{
+  "name": "CEDOI Madurai Forum",
+  "short_name": "CEDOI Forum",
+  "description": "Meeting scheduling and attendance management for CEDOI Madurai Forum",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04004B",
+  "theme_color": "#04004B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "lang": "en",
+  "dir": "ltr"
+}
