@@ -1,0 +1,136 @@
+Project Goal:
+Design and develop a mobile-first web application (PWA) for CEDOI Madurai Forum, targeted at simplifying meeting scheduling, attendance marking, and reporting for stakeholders like Sonai (organizer) and the Chairman (overview & insights).
+
+🎨 Brand & UI Guidelines
+Colors (from official logo):
+
+Primary Background: #04004B (Dark Navy Blue)
+
+Accent Color: #EB8A2F (Orange)
+
+Text / White Elements: #FFFFFF
+
+Card/Surface Gray: #F2F2F2
+
+Typography:
+
+Use “Google Sans” or “Inter”
+
+Headlines: 24px Medium
+
+Body: 16px Regular
+
+Button Labels: 14px Medium, uppercase
+
+Tone: Professional, clean, action-focused, Google Material Design–inspired.
+
+🔧 Tech Stack
+Frontend: React (PWA, mobile-first)
+
+Backend: Node.js + Express
+
+Database: Google Firestore (offline support, real-time)
+
+Auth: Firebase Email + OTP
+
+Notifications: Firebase Cloud Messaging (FCM)
+
+Reports: Firebase Cloud Functions (automated email/report generation)
+
+Hosting: Firebase Hosting (optional)
+
+👥 User Roles
+Role	Responsibilities
+Sonai	- Schedule weekly meetings at “Mariat Hotel”
+- Mark attendance live
+Chairman	- View all meetings
+- See who attended
+- Export or receive reports
+
+📲 Core Features & User Flows
+1. Authentication
+Email + OTP login (no password)
+
+Basic onboarding tutorial (1–3 screens)
+
+2. Meeting Management (Sonai)
+Create new meeting:
+
+Date & Time (with “Repeat Weekly” toggle)
+
+Default Venue: “Mariat Hotel, Madurai”
+
+Agenda Notes
+
+Push notification on creation to attendees
+
+3. Attendance Management
+“Today’s Meeting” Card on dashboard
+
+Two attendance modes:
+
+Tap name to toggle Present/Absent
+
+OR Scan QR code from each member
+
+Auto-sync with Firestore (even offline)
+
+4. Dashboard (Chairman)
+Calendar & list views of all meetings
+
+Attendance stats:
+
+Total attendees
+
+Present/Absent list
+
+Average attendance rate
+
+Export as CSV/PDF (triggered via Cloud Function)
+
+Email summaries automatically after each meeting
+
+🧠 UX/UI Highlights (“Google-Level UX”)
+Material Design Cards with deep blue & orange CTAs
+
+Micro-interactions: tap ripples, animated checkmarks for attendance
+
+Offline-first design with Firestore caching
+
+Accessibility: WCAG AA contrast, ARIA labels, large tap targets
+
+PWA Ready: Add to home screen, works offline, custom icon
+
+Help & Support: In-app tooltips, “How-To” page
+
+🔁 Data Structure (Firestore Schema)
+js
+Copy
+Edit
+// Firestore collections
+meetings: {
+  [meetingId]: {
+    date: Timestamp,
+    venue: "Mariat Hotel, Madurai",
+    agenda: "...",
+    createdBy: userId,
+    repeatWeekly: true,
+  }
+}
+
+attendees: {
+  [userId]: {
+    name: "Member Name",
+    email: "member@email.com",
+    qrCode: "base64 or UUID"
+  }
+}
+
+attendanceRecords: {
+  [meetingId]: {
+    [userId]: {
+      status: "present" | "absent",
+      timestamp: Date
+    }
+  }
+}
