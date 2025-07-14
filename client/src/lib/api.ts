@@ -3,7 +3,7 @@ import { firestoreUsers, firestoreMeetings, firestoreAttendance } from './firest
 import type { User, Meeting, AttendanceRecord } from '@shared/schema';
 
 export const api = {
-  // Users
+  // User operations
   users: {
     getAll: () => firestoreUsers.getAll(),
     getById: (id: string) => firestoreUsers.getById(id),
@@ -11,7 +11,7 @@ export const api = {
     create: (userData: Omit<User, 'id' | 'createdAt'>) => firestoreUsers.create(userData)
   },
 
-  // Meetings
+  // Meeting operations  
   meetings: {
     getAll: () => firestoreMeetings.getAll(),
     getById: (id: string) => firestoreMeetings.getById(id),
@@ -20,11 +20,12 @@ export const api = {
     create: (meetingData: Omit<Meeting, 'id' | 'createdAt'>) => firestoreMeetings.create(meetingData)
   },
 
-  // Attendance
+  // Attendance operations
   attendance: {
     getForMeeting: (meetingId: string) => firestoreAttendance.getForMeeting(meetingId),
+    create: (attendanceData: Omit<AttendanceRecord, 'id' | 'timestamp'>) => firestoreAttendance.create(attendanceData),
     updateStatus: (meetingId: string, userId: string, status: 'present' | 'absent') => 
       firestoreAttendance.updateStatus(meetingId, userId, status),
-    getStats: (userId?: string) => firestoreAttendance.getStats(userId)
-  }
+    getStats: (userId?: string) => firestoreAttendance.getStats(userId),
+  },
 };
