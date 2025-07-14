@@ -83,7 +83,11 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
 
   const members = users.filter(user => user.role === 'member' || user.role === 'sonai');
   const presentCount = Object.values(attendanceStatus).filter(status => status === 'present').length;
-  const progressPercentage = members.length > 0 ? (presentCount / members.length) * 100 : 0;
+  const absentCount = Object.values(attendanceStatus).filter(status => status === 'absent').length;
+  const markedCount = presentCount + absentCount;
+  const unmarkedCount = members.length - markedCount;
+  const progressPercentage = members.length > 0 ? (markedCount / members.length) * 100 : 0;
+  const isAttendanceComplete = unmarkedCount === 0 && members.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,15 +126,23 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-foreground">Attendance Progress</span>
           <span className="text-sm text-gray-600">
-            {presentCount}/{members.length} marked
+            {markedCount}/{members.length} marked
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className="bg-accent h-2 rounded-full transition-all duration-300"
+            className={`h-2 rounded-full transition-all duration-300 ${
+              isAttendanceComplete ? 'bg-success' : 'bg-accent'
+            }`}
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
+        {unmarkedCount > 0 && (
+          <div className="mt-2 text-xs text-amber-600 flex items-center">
+            <span className="material-icons text-sm mr-1">warning</span>
+            {unmarkedCount} member{unmarkedCount !== 1 ? 's' : ''} not yet marked
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -154,8 +166,8 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
               });
             }}
           >
-            <span className="material-icons mr-2">select_all</span>
-            MARK ALL
+            <span className="material-icons mr-2">how_to_reg</span>
+            MARK ALL PRESENT
           </Button>
         </div>
       </div>
@@ -173,7 +185,8 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                 key={member.id}
                 className={`attendance-card shadow-material ${
                   isPresent ? 'border-2 border-success bg-green-50' : 
-                  isAbsent ? 'border-2 border-destructive bg-red-50' : ''
+                  isAbsent ? 'border-2 border-destructive bg-red-50' : 
+                  'border-2 border-amber-300 bg-amber-50'
                 }`}
               >
                 <CardContent className="p-4 flex items-center justify-between">
@@ -216,7 +229,7 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                         <Button
                           size="sm"
                           onClick={() => handleStatusChange(member.id, 'absent')}
-                          className="bg-red-500 hover:bg-red-600 text-white border-0 px-4 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
+                          className="bg-red-500 hover:bg-red-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
                           style={{ backgroundColor: '#dc2626', color: 'white' }}
                         >
                           <span className="material-icons text-sm mr-1">close</span>
@@ -225,7 +238,7 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                         <Button
                           size="sm"
                           onClick={() => handleStatusChange(member.id, 'present')}
-                          className="bg-green-500 hover:bg-green-600 text-white border-0 px-4 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
+                          className="bg-green-500 hover:bg-green-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
                           style={{ backgroundColor: '#16a34a', color: 'white' }}
                         >
                           <span className="material-icons text-sm mr-1">check</span>
@@ -243,17 +256,43 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
 
       {/* Save Button */}
       <div className="fixed bottom-16 left-4 right-4 bg-white p-4 shadow-material-lg rounded-xl">
-        <Button
-          className="w-full bg-accent hover:bg-accent/90 text-white py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
-          onClick={() => {
-            toast({
-              title: "Attendance Saved",
-              description: "All attendance records have been saved successfully.",
-            });
-          }}
-        >
-          SAVE ATTENDANCE
-        </Button>
+        {!isAttendanceComplete ? (
+          <div className="space-y-3">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <div className="flex items-center">
+                <span className="material-icons text-amber-600 mr-2">warning</span>
+                <div>
+                  <p className="text-sm font-medium text-amber-800">
+                    Attendance Incomplete
+                  </p>
+                  <p className="text-xs text-amber-600">
+                    Please mark all {unmarkedCount} remaining member{unmarkedCount !== 1 ? 's' : ''} as present or absent
+                  </p>
+                </div>
+              </div>
+            </div>
+            <Button
+              disabled
+              className="w-full bg-gray-300 text-gray-500 py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide cursor-not-allowed"
+            >
+              <span className="material-icons mr-2">block</span>
+              CANNOT SAVE - INCOMPLETE
+            </Button>
+          </div>
+        ) : (
+          <Button
+            className="w-full bg-success hover:bg-success/90 text-white py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+            onClick={() => {
+              toast({
+                title: "Attendance Saved",
+                description: `All ${members.length} members marked. ${presentCount} present, ${absentCount} absent.`,
+              });
+            }}
+          >
+            <span className="material-icons mr-2">save</span>
+            SAVE COMPLETE ATTENDANCE
+          </Button>
+        )}
       </div>
 
       {/* QR Scanner Modal */}
