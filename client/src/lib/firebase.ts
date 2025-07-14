@@ -23,31 +23,17 @@ export const firebaseConfig: FirebaseConfig = {
 export class MockFirebaseAuth {
   currentUser: any = null;
   
-  async sendOTP(email: string): Promise<void> {
-    const response = await fetch('/api/auth/send-otp', {
+  async signInWithEmailAndPassword(email: string, password: string): Promise<any> {
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, password }),
     });
     
     if (!response.ok) {
-      throw new Error('Failed to send OTP');
-    }
-  }
-  
-  async verifyOTP(email: string, otp: string): Promise<any> {
-    const response = await fetch('/api/auth/verify-otp', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, otp }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to verify OTP');
+      throw new Error('Invalid email or password');
     }
     
     const data = await response.json();

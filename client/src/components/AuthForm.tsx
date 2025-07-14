@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,40 +8,17 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, sendOTP } = useAuth();
+  const { login } = useAuth();
   const { toast } = useToast();
 
-  const handleSendOTP = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      await sendOTP(email);
-      setOtpSent(true);
-      toast({
-        title: "OTP Sent",
-        description: "Please check your email for the OTP code.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send OTP. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      await login(email, otp);
+      await login(email, password);
       toast({
         title: "Login Successful",
         description: "Welcome to CEDOI Madurai Forum!",
@@ -49,7 +26,7 @@ export default function AuthForm() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Invalid OTP. Please try again.",
+        description: "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -70,7 +47,7 @@ export default function AuthForm() {
               <p className="text-foreground text-base">Meeting Management System</p>
             </div>
             
-            <form onSubmit={otpSent ? handleVerifyOTP : handleSendOTP} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               <div>
                 <Label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                   Email Address
@@ -81,39 +58,42 @@ export default function AuthForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  disabled={otpSent}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
                 />
               </div>
               
-              {otpSent && (
-                <div className="fade-in">
-                  <Label htmlFor="otp" className="block text-sm font-medium text-foreground mb-2">
-                    Enter OTP
-                  </Label>
-                  <Input
-                    type="text"
-                    id="otp"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    placeholder="000000"
-                    maxLength={6}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-center text-2xl tracking-widest"
-                  />
-                  <p className="text-sm text-gray-600 mt-2 text-center">OTP sent to your email</p>
-                </div>
-              )}
+              <div>
+                <Label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                  Password
+                </Label>
+                <Input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                />
+              </div>
               
               <Button
                 type="submit"
                 disabled={loading}
                 className="w-full bg-accent hover:bg-accent/90 text-white py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide ripple transition-colors"
               >
-                {loading ? 'LOADING...' : (otpSent ? 'VERIFY OTP' : 'SEND OTP')}
+                {loading ? 'LOADING...' : 'LOGIN'}
               </Button>
             </form>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">Demo Credentials:</p>
+              <p className="text-xs text-gray-500 mt-2">
+                Sonai: sonai@cedoi.com / sonai123<br />
+                Chairman: chairman@cedoi.com / chairman123
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

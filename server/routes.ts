@@ -6,41 +6,37 @@ import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.post("/api/auth/send-otp", async (req, res) => {
+  app.post("/api/auth/login", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
       
-      if (!email) {
-        return res.status(400).json({ message: "Email is required" });
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
       }
 
-      // In a real app, you'd send an OTP via email service
-      // For now, we'll just return success
-      res.json({ message: "OTP sent successfully" });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to send OTP" });
-    }
-  });
-
-  app.post("/api/auth/verify-otp", async (req, res) => {
-    try {
-      const { email, otp } = req.body;
-      
-      if (!email || !otp) {
-        return res.status(400).json({ message: "Email and OTP are required" });
-      }
-
-      // In a real app, you'd verify the OTP
-      // For now, we'll just check if user exists
+      // Check if user exists
       const user = await storage.getUserByEmail(email);
       
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // For demo purposes, we'll use simple password validation
+      // In production, use proper password hashing (bcrypt, etc.)
+      const validPasswords = {
+        "sonai@cedoi.com": "sonai123",
+        "chairman@cedoi.com": "chairman123",
+        "priya@cedoi.com": "priya123",
+        "rajesh@cedoi.com": "rajesh123"
+      };
+
+      if (validPasswords[email as keyof typeof validPasswords] !== password) {
+        return res.status(401).json({ message: "Invalid email or password" });
       }
 
       res.json({ user });
     } catch (error) {
-      res.status(500).json({ message: "Failed to verify OTP" });
+      res.status(500).json({ message: "Login failed" });
     }
   });
 
