@@ -37,15 +37,24 @@ export default function AuthForm() {
   return (
     <div className="min-h-screen bg-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <div className="text-center mb-6">
+          <div className="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 p-2 shadow-lg">
+            <img 
+              src="https://static.wixstatic.com/media/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg/v1/fill/w_160,h_90,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1a4736_ad22f191e98e4fb1a0d013093676fccf~mv2.jpg" 
+              alt="CEDOI Logo" 
+              className="w-full h-full object-contain rounded-xl"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <span className="material-icons text-primary text-3xl hidden">groups</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">CEDOI Madurai</h2>
+          <p className="text-white opacity-90 text-sm">Meeting Management System</p>
+        </div>
         <Card className="slide-up shadow-material-lg">
           <CardContent className="pt-8">
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-icons text-white text-3xl">groups</span>
-              </div>
-              <h1 className="text-2xl font-medium text-primary mb-2">CEDOI Madurai Forum</h1>
-              <p className="text-foreground text-base">Meeting Management System</p>
-            </div>
             
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
