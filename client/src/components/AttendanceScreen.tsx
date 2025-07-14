@@ -138,37 +138,68 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
           />
         </div>
         {unmarkedCount > 0 && (
-          <div className="mt-2 text-xs text-amber-600 flex items-center">
-            <span className="material-icons text-sm mr-1">warning</span>
-            {unmarkedCount} member{unmarkedCount !== 1 ? 's' : ''} not yet marked
+          <div className="mt-2 flex items-center justify-between">
+            <div className="text-xs text-amber-600 flex items-center">
+              <span className="material-icons text-sm mr-1">warning</span>
+              {unmarkedCount} member{unmarkedCount !== 1 ? 's' : ''} not yet marked
+            </div>
+            {absentCount > 0 && (
+              <div className="text-xs text-gray-600">
+                <span className="text-red-600 font-medium">{absentCount} absent</span> • 
+                <span className="text-green-600 font-medium ml-1">{presentCount} present</span>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Quick Actions */}
       <div className="bg-white p-4 border-b border-gray-100">
-        <div className="flex space-x-3">
-          <Button 
-            onClick={() => setShowQRScanner(true)}
-            className="flex-1 bg-accent hover:bg-accent/90 text-white py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
-          >
-            <span className="material-icons mr-2">qr_code_scanner</span>
-            SCAN QR
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
-            onClick={() => {
-              members.forEach(member => {
-                if (!attendanceStatus[member.id]) {
-                  handleStatusChange(member.id, 'present');
-                }
-              });
-            }}
-          >
-            <span className="material-icons mr-2">how_to_reg</span>
-            MARK ALL PRESENT
-          </Button>
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex space-x-3">
+            <Button 
+              onClick={() => setShowQRScanner(true)}
+              className="flex-1 bg-accent hover:bg-accent/90 text-white py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+            >
+              <span className="material-icons mr-2">qr_code_scanner</span>
+              SCAN QR
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 py-3 px-4 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+              onClick={() => {
+                members.forEach(member => {
+                  if (!attendanceStatus[member.id]) {
+                    handleStatusChange(member.id, 'present');
+                  }
+                });
+              }}
+            >
+              <span className="material-icons mr-2">how_to_reg</span>
+              MARK ALL PRESENT
+            </Button>
+          </div>
+          
+          {unmarkedCount > 0 && absentCount > 0 && (
+            <Button
+              variant="outline"
+              className="w-full py-2 px-4 rounded-lg font-medium text-sm border-success text-success hover:bg-green-50"
+              onClick={() => {
+                members.forEach(member => {
+                  if (!attendanceStatus[member.id]) {
+                    handleStatusChange(member.id, 'present');
+                  }
+                });
+                toast({
+                  title: "Remaining Members Marked Present",
+                  description: `${unmarkedCount} unmarked members automatically marked as present`,
+                });
+              }}
+            >
+              <span className="material-icons mr-2">playlist_add_check</span>
+              MARK REMAINING {unmarkedCount} AS PRESENT
+            </Button>
+          )}
         </div>
       </div>
 
@@ -259,16 +290,39 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
         {!isAttendanceComplete ? (
           <div className="space-y-3">
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-              <div className="flex items-center">
-                <span className="material-icons text-amber-600 mr-2">warning</span>
-                <div>
-                  <p className="text-sm font-medium text-amber-800">
-                    Attendance Incomplete
-                  </p>
-                  <p className="text-xs text-amber-600">
-                    Please mark all {unmarkedCount} remaining member{unmarkedCount !== 1 ? 's' : ''} as present or absent
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="material-icons text-amber-600 mr-2">warning</span>
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">
+                      Attendance Incomplete
+                    </p>
+                    <p className="text-xs text-amber-600">
+                      {unmarkedCount} member{unmarkedCount !== 1 ? 's' : ''} still need{unmarkedCount === 1 ? 's' : ''} to be marked
+                    </p>
+                  </div>
                 </div>
+                {absentCount > 0 && unmarkedCount > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-success text-success hover:bg-green-50 text-xs px-2 py-1"
+                    onClick={() => {
+                      members.forEach(member => {
+                        if (!attendanceStatus[member.id]) {
+                          handleStatusChange(member.id, 'present');
+                        }
+                      });
+                      toast({
+                        title: "Quick Complete",
+                        description: `${unmarkedCount} remaining members marked as present`,
+                      });
+                    }}
+                  >
+                    <span className="material-icons text-xs mr-1">done_all</span>
+                    REST AS PRESENT
+                  </Button>
+                )}
               </div>
             </div>
             <Button
