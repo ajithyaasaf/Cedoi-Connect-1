@@ -174,8 +174,12 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                     {status ? (
                       <div className="flex items-center space-x-2">
                         <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          isPresent ? 'bg-success text-white' : 'bg-destructive text-white'
-                        }`}>
+                          isPresent ? 'text-white' : 'text-white'
+                        }`}
+                        style={{ 
+                          backgroundColor: isPresent ? '#16a34a' : '#dc2626',
+                          color: 'white'
+                        }}>
                           {status.toUpperCase()}
                         </div>
                         <span className="text-xs text-gray-500">
@@ -183,21 +187,21 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                         </span>
                       </div>
                     ) : (
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2">
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleStatusChange(member.id, 'absent')}
-                          className="bg-red-500 hover:bg-red-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide"
+                          className="bg-red-500 hover:bg-red-600 text-white border-0 px-4 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
+                          style={{ backgroundColor: '#dc2626', color: 'white' }}
                         >
                           <span className="material-icons text-sm mr-1">close</span>
                           ABSENT
                         </Button>
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleStatusChange(member.id, 'present')}
-                          className="bg-green-500 hover:bg-green-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide"
+                          className="bg-green-500 hover:bg-green-600 text-white border-0 px-4 py-2 rounded-lg font-medium text-xs uppercase tracking-wide shadow-md"
+                          style={{ backgroundColor: '#16a34a', color: 'white' }}
                         >
                           <span className="material-icons text-sm mr-1">check</span>
                           PRESENT
