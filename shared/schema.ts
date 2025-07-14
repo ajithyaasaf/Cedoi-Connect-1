@@ -5,6 +5,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  company: string;
   role: string; // 'sonai', 'chairman', or 'member'
   qrCode: string | null;
   createdAt: Date | null;
@@ -33,6 +34,7 @@ export interface AttendanceRecord {
 export const insertUserSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),
+  company: z.string().min(1),
   role: z.enum(['sonai', 'chairman', 'member']),
   qrCode: z.string().nullable().optional(),
 });

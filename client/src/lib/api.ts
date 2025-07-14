@@ -7,6 +7,7 @@ const mockUsers: User[] = [
     id: "1",
     email: "sonai@cedoi.com",
     name: "Sonai",
+    company: "CEDOI Administration",
     role: "sonai",
     qrCode: "sonai_qr_123",
     createdAt: new Date()
@@ -15,6 +16,7 @@ const mockUsers: User[] = [
     id: "2", 
     email: "chairman@cedoi.com",
     name: "Chairman",
+    company: "CEDOI Board",
     role: "chairman",
     qrCode: "chairman_qr_456",
     createdAt: new Date()
@@ -23,6 +25,7 @@ const mockUsers: User[] = [
     id: "3",
     email: "priya@cedoi.com",
     name: "Priya Sharma",
+    company: "Tech Solutions Pvt Ltd",
     role: "member",
     qrCode: "priya_qr_789",
     createdAt: new Date()
@@ -31,6 +34,7 @@ const mockUsers: User[] = [
     id: "4",
     email: "rajesh.kumar@cedoi.com",
     name: "Rajesh Kumar",
+    company: "Kumar Industries Ltd",
     role: "member",
     qrCode: "rajesh_qr_101",
     createdAt: new Date()
@@ -39,6 +43,7 @@ const mockUsers: User[] = [
     id: "5",
     email: "anita.singh@cedoi.com",
     name: "Anita Singh",
+    company: "Singh Textiles",
     role: "member",
     qrCode: "anita_qr_102",
     createdAt: new Date()
@@ -47,6 +52,7 @@ const mockUsers: User[] = [
     id: "6",
     email: "suresh.patel@cedoi.com",
     name: "Suresh Patel",
+    company: "Patel Trading Co",
     role: "member",
     qrCode: "suresh_qr_103",
     createdAt: new Date()
@@ -55,6 +61,7 @@ const mockUsers: User[] = [
     id: "7",
     email: "kavitha.reddy@cedoi.com",
     name: "Kavitha Reddy",
+    company: "Reddy Enterprises",
     role: "member",
     qrCode: "kavitha_qr_104",
     createdAt: new Date()
@@ -63,6 +70,7 @@ const mockUsers: User[] = [
     id: "8",
     email: "ramesh.gupta@cedoi.com",
     name: "Ramesh Gupta",
+    company: "Gupta Steel Works",
     role: "member",
     qrCode: "ramesh_qr_105",
     createdAt: new Date()
@@ -71,6 +79,7 @@ const mockUsers: User[] = [
     id: "9",
     email: "deepa.iyer@cedoi.com",
     name: "Deepa Iyer",
+    company: "Iyer Consulting",
     role: "member",
     qrCode: "deepa_qr_106",
     createdAt: new Date()
@@ -79,6 +88,7 @@ const mockUsers: User[] = [
     id: "10",
     email: "vijay.mehta@cedoi.com",
     name: "Vijay Mehta",
+    company: "Mehta Electronics",
     role: "member",
     qrCode: "vijay_qr_107",
     createdAt: new Date()
@@ -87,6 +97,7 @@ const mockUsers: User[] = [
     id: "11",
     email: "sunita.shah@cedoi.com",
     name: "Sunita Shah",
+    company: "Shah Jewelers",
     role: "member",
     qrCode: "sunita_qr_108",
     createdAt: new Date()
@@ -95,6 +106,7 @@ const mockUsers: User[] = [
     id: "12",
     email: "arun.nair@cedoi.com",
     name: "Arun Nair",
+    company: "Nair Construction",
     role: "member",
     qrCode: "arun_qr_109",
     createdAt: new Date()
@@ -103,6 +115,7 @@ const mockUsers: User[] = [
     id: "13",
     email: "meera.joshi@cedoi.com",
     name: "Meera Joshi",
+    company: "Joshi Pharmaceuticals",
     role: "member",
     qrCode: "meera_qr_110",
     createdAt: new Date()
@@ -111,6 +124,7 @@ const mockUsers: User[] = [
     id: "14",
     email: "ravi.krishnan@cedoi.com",
     name: "Ravi Krishnan",
+    company: "Krishnan Auto Parts",
     role: "member",
     qrCode: "ravi_qr_111",
     createdAt: new Date()
@@ -119,6 +133,7 @@ const mockUsers: User[] = [
     id: "15",
     email: "lakshmi.pillai@cedoi.com",
     name: "Lakshmi Pillai",
+    company: "Pillai Foods",
     role: "member",
     qrCode: "lakshmi_qr_112",
     createdAt: new Date()
@@ -127,6 +142,7 @@ const mockUsers: User[] = [
     id: "16",
     email: "gopal.rao@cedoi.com",
     name: "Gopal Rao",
+    company: "Rao Logistics",
     role: "member",
     qrCode: "gopal_qr_113",
     createdAt: new Date()
@@ -135,6 +151,7 @@ const mockUsers: User[] = [
     id: "17",
     email: "sita.venkat@cedoi.com",
     name: "Sita Venkat",
+    company: "Venkat Exports",
     role: "member",
     qrCode: "sita_qr_114",
     createdAt: new Date()
@@ -143,6 +160,7 @@ const mockUsers: User[] = [
     id: "18",
     email: "mohan.das@cedoi.com",
     name: "Mohan Das",
+    company: "Das Chemicals",
     role: "member",
     qrCode: "mohan_qr_115",
     createdAt: new Date()
@@ -151,6 +169,7 @@ const mockUsers: User[] = [
     id: "19",
     email: "nisha.bansal@cedoi.com",
     name: "Nisha Bansal",
+    company: "Bansal Fashion House",
     role: "member",
     qrCode: "nisha_qr_116",
     createdAt: new Date()
@@ -159,6 +178,7 @@ const mockUsers: User[] = [
     id: "20",
     email: "arjun.mishra@cedoi.com",
     name: "Arjun Mishra",
+    company: "Mishra Tech Solutions",
     role: "member",
     qrCode: "arjun_qr_117",
     createdAt: new Date()
@@ -167,6 +187,7 @@ const mockUsers: User[] = [
     id: "21",
     email: "divya.agarwal@cedoi.com",
     name: "Divya Agarwal",
+    company: "Agarwal Imports",
     role: "member",
     qrCode: "divya_qr_118",
     createdAt: new Date()
@@ -175,6 +196,7 @@ const mockUsers: User[] = [
     id: "22",
     email: "kiran.bhat@cedoi.com",
     name: "Kiran Bhat",
+    company: "Bhat Hospitality",
     role: "member",
     qrCode: "kiran_qr_119",
     createdAt: new Date()

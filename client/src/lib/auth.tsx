@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: `user_${Date.now()}`,
         email: email,
         name: email.split('@')[0],
+        company: email.includes('sonai') ? 'CEDOI Administration' : email.includes('chairman') ? 'CEDOI Board' : 'Guest Company',
         role: email.includes('sonai') ? 'sonai' : email.includes('chairman') ? 'chairman' : 'member',
         qrCode: null,
         createdAt: new Date()

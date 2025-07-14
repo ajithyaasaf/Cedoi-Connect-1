@@ -166,7 +166,8 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                     </div>
                     <div>
                       <h3 className="font-medium text-foreground">{member.name}</h3>
-                      <p className="text-sm text-gray-600 capitalize">{member.role}</p>
+                      <p className="text-sm text-gray-600">{member.company}</p>
+                      <p className="text-xs text-gray-500 capitalize">{member.role}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -182,24 +183,26 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
                         </span>
                       </div>
                     ) : (
-                      <>
+                      <div className="flex items-center space-x-3">
                         <Button
-                          size="icon"
+                          size="sm"
                           variant="outline"
                           onClick={() => handleStatusChange(member.id, 'absent')}
-                          className="w-10 h-10 bg-destructive hover:bg-destructive/90 text-white rounded-full border-0 ripple"
+                          className="bg-red-500 hover:bg-red-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide"
                         >
-                          <span className="material-icons text-sm">close</span>
+                          <span className="material-icons text-sm mr-1">close</span>
+                          ABSENT
                         </Button>
                         <Button
-                          size="icon"
+                          size="sm"
                           variant="outline"
                           onClick={() => handleStatusChange(member.id, 'present')}
-                          className="w-10 h-10 bg-success hover:bg-success/90 text-white rounded-full border-0 ripple"
+                          className="bg-green-500 hover:bg-green-600 text-white border-0 px-3 py-2 rounded-lg font-medium text-xs uppercase tracking-wide"
                         >
-                          <span className="material-icons text-sm">check</span>
+                          <span className="material-icons text-sm mr-1">check</span>
+                          PRESENT
                         </Button>
-                      </>
+                      </div>
                     )}
                   </div>
                 </CardContent>
