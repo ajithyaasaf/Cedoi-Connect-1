@@ -16,7 +16,7 @@ export default function AppHeader() {
           <img 
             src={cedoiLogo} 
             alt="CEDOI Logo" 
-            className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0"
+            className="w-14 h-14 sm:w-16 sm:h-16 object-contain flex-shrink-0"
             onError={(e) => {
               // Fallback to icon if image fails to load
               e.currentTarget.style.display = 'none';
