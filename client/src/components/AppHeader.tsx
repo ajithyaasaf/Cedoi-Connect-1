@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import cedoiLogo from '@assets/image_1752498683514.png';
 
 export default function AppHeader() {
   const { user, logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { toast } = useToast();
 
   return (
     <header className="bg-primary text-white p-3 sm:p-4 shadow-material safe-area-pt">
@@ -37,10 +40,30 @@ export default function AppHeader() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={logout}
-            className="p-1.5 sm:p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white w-8 h-8 sm:w-10 sm:h-10"
+            onClick={async () => {
+              setIsLoggingOut(true);
+              try {
+                await logout();
+                toast({
+                  title: "Logged out successfully",
+                  description: "See you next time!",
+                });
+              } catch (error) {
+                toast({
+                  title: "Logout error",
+                  description: "You have been logged out anyway",
+                  variant: "destructive",
+                });
+              } finally {
+                setIsLoggingOut(false);
+              }
+            }}
+            disabled={isLoggingOut}
+            className="p-1.5 sm:p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white w-8 h-8 sm:w-10 sm:h-10 disabled:opacity-50"
           >
-            <span className="material-icons text-lg sm:text-xl">logout</span>
+            <span className="material-icons text-lg sm:text-xl">
+              {isLoggingOut ? 'refresh' : 'logout'}
+            </span>
           </Button>
         </div>
       </div>

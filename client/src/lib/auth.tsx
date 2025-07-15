@@ -150,17 +150,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async (): Promise<void> => {
     try {
+      console.log('Logout initiated');
+      
       if (auth) {
-        await signOut(auth);
-        // User state will be cleared by the onAuthStateChanged listener
+        try {
+          await signOut(auth);
+          console.log('Firebase signOut successful');
+          // User state will be cleared by the onAuthStateChanged listener
+        } catch (firebaseError) {
+          console.log('Firebase signOut failed, clearing local state:', firebaseError);
+          // Clear local state if Firebase signOut fails
+          setUser(null);
+          localStorage.removeItem('cedoi-user');
+        }
       } else {
-        // Fallback logout
+        console.log('No Firebase auth, clearing local state');
+        // Fallback logout for development mode
         setUser(null);
         localStorage.removeItem('cedoi-user');
       }
     } catch (error) {
       console.error('Logout error:', error);
-      // Clear local state anyway
+      // Always clear local state to ensure logout works
       setUser(null);
       localStorage.removeItem('cedoi-user');
     }
