@@ -178,14 +178,14 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
       {/* Role-specific Meeting Management */}
       {user?.role === 'organizer' && (
         <>
-          {/* Organizer's Assigned Meetings */}
+          {/* Organizer's Assigned Meetings - Hide Details */}
           <Card className="shadow-material mb-6">
             <CardContent className="p-0">
               <div className="p-4 border-b border-gray-100">
                 <h3 className="text-lg font-medium text-foreground">My Organized Meetings</h3>
               </div>
               
-              {/* Upcoming Meetings */}
+              {/* Upcoming Meetings - Minimal Info */}
               <div className="p-4">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
                   <span className="material-icons text-blue-500 mr-2">schedule</span>
@@ -203,17 +203,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
+                                weekday: 'short',
+                                month: 'short',
                                 day: 'numeric'
-                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
                           </div>
                           <Button
                             onClick={() => onMarkAttendance(meeting.id)}
@@ -229,7 +223,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                 )}
               </div>
               
-              {/* Completed Meetings */}
+              {/* Completed Meetings - Minimal Info */}
               <div className="p-4 border-t border-gray-100">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
                   <span className="material-icons text-green-500 mr-2">check_circle</span>
@@ -249,14 +243,12 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                               {new Date(meeting.date).toLocaleDateString('en-US', {
                                 weekday: 'short',
                                 month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
+                                day: 'numeric'
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
                           </div>
                           <div className="text-right">
-                            <AttendanceStats meetingId={meeting.id} />
+                            <div className="text-xs bg-green-100 px-2 py-1 rounded-full">Completed</div>
                           </div>
                         </div>
                       </div>
