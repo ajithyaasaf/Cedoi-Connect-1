@@ -154,43 +154,46 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
   return (
     <div className="min-h-screen bg-background">
       {/* Page Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-white border-b border-gray-200 p-3 sm:p-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 min-w-[44px] min-h-[44px]"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
             <div>
-              <h1 className="text-xl font-medium text-gray-900">Create Meeting</h1>
-              <p className="text-sm text-gray-600">Schedule new meeting</p>
+              <h1 className="text-lg sm:text-xl font-medium text-gray-900">Create Meeting</h1>
+              <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Schedule new meeting</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 min-w-[44px] min-h-[44px] hidden sm:flex"
           >
             <span className="material-icons">help_outline</span>
           </Button>
         </div>
       </div>
 
-      <main className="p-4 pb-20">
+      <main className="p-3 sm:p-4 pb-20 max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Date & Time */}
           <Card className="shadow-material">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-medium text-foreground mb-4">Date & Time</h3>
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-lg font-medium text-foreground mb-3 sm:mb-4 flex items-center">
+                <span className="material-icons mr-2 text-accent">event</span>
+                Date & Time
+              </h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div>
                   <Label htmlFor="date" className="block text-sm font-medium text-foreground mb-2">
-                    Date
+                    Meeting Date
                   </Label>
                   <Input
                     type="date"
@@ -198,18 +201,19 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     required
-                    className="w-full"
+                    className="w-full h-12 text-base"
                   />
                 </div>
+                
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-2">
-                    Time
+                    Meeting Time
                   </Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <div>
-                      <Label className="text-xs text-gray-500">Hour</Label>
+                      <Label className="text-xs text-gray-500 mb-1 block">Hour</Label>
                       <Select value={selectedHour} onValueChange={setSelectedHour}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full h-12 text-base">
                           <SelectValue placeholder="Hour" />
                         </SelectTrigger>
                         <SelectContent>
@@ -222,9 +226,9 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-xs text-gray-500">Minute</Label>
+                      <Label className="text-xs text-gray-500 mb-1 block">Minute</Label>
                       <Select value={selectedMinute} onValueChange={setSelectedMinute}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full h-12 text-base">
                           <SelectValue placeholder="Min" />
                         </SelectTrigger>
                         <SelectContent>
@@ -237,9 +241,9 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-xs text-gray-500">Period</Label>
+                      <Label className="text-xs text-gray-500 mb-1 block">Period</Label>
                       <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full h-12 text-base">
                           <SelectValue placeholder="AM/PM" />
                         </SelectTrigger>
                         <SelectContent>
@@ -250,22 +254,25 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
                     </div>
                   </div>
                   {selectedHour && selectedMinute && selectedPeriod && (
-                    <p className="text-xs text-gray-500 mt-2 flex items-center">
-                      <span className="material-icons text-sm mr-1">schedule</span>
-                      Selected: {selectedHour}:{selectedMinute} {selectedPeriod}
-                    </p>
+                    <div className="mt-3 p-2 bg-accent/10 rounded-lg flex items-center">
+                      <span className="material-icons text-accent text-sm mr-2">schedule</span>
+                      <span className="text-sm text-accent font-medium">
+                        Selected: {selectedHour}:{selectedMinute} {selectedPeriod}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
               
-              <div className="mt-4 flex items-center space-x-2">
+              <div className="mt-4 flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                 <Checkbox
                   id="repeat"
                   checked={repeatWeekly}
                   onCheckedChange={(checked) => setRepeatWeekly(checked as boolean)}
+                  className="min-w-[20px] min-h-[20px]"
                 />
-                <Label htmlFor="repeat" className="text-sm text-foreground">
-                  Repeat weekly
+                <Label htmlFor="repeat" className="text-sm text-foreground cursor-pointer">
+                  Repeat weekly (every week at the same time)
                 </Label>
               </div>
             </CardContent>
@@ -273,89 +280,125 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
 
           {/* Venue */}
           <Card className="shadow-material">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-medium text-foreground mb-4">Venue</h3>
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-lg font-medium text-foreground mb-3 sm:mb-4 flex items-center">
+                <span className="material-icons mr-2 text-accent">location_on</span>
+                Venue
+              </h3>
               <div className="space-y-4">
-                <Select value={venue} onValueChange={setVenue}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select venue" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Mariat Hotel, Madurai">Mariat Hotel, Madurai</SelectItem>
-                    <SelectItem value="CEDOI Office, Madurai">CEDOI Office, Madurai</SelectItem>
-                    <SelectItem value="Community Hall, Madurai">Community Hall, Madurai</SelectItem>
-                    <SelectItem value="Online Meeting (Zoom)">Online Meeting (Zoom)</SelectItem>
-                    <SelectItem value="custom">Custom Venue</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div>
+                  <Label className="block text-sm font-medium text-foreground mb-2">
+                    Select Meeting Location
+                  </Label>
+                  <Select value={venue} onValueChange={setVenue}>
+                    <SelectTrigger className="w-full h-12 text-base">
+                      <SelectValue placeholder="Choose a venue" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Mariat Hotel, Madurai">Mariat Hotel, Madurai</SelectItem>
+                      <SelectItem value="CEDOI Office, Madurai">CEDOI Office, Madurai</SelectItem>
+                      <SelectItem value="Community Hall, Madurai">Community Hall, Madurai</SelectItem>
+                      <SelectItem value="Online Meeting (Zoom)">Online Meeting (Zoom)</SelectItem>
+                      <SelectItem value="custom">Custom Venue</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
                 {venue === 'custom' && (
                   <div>
-                    <Label htmlFor="customVenue" className="text-sm font-medium text-foreground">
-                      Enter custom venue
+                    <Label htmlFor="customVenue" className="block text-sm font-medium text-foreground mb-2">
+                      Enter Custom Venue
                     </Label>
                     <Input
                       id="customVenue"
                       value={customVenue}
                       onChange={(e) => setCustomVenue(e.target.value)}
                       placeholder="Enter venue address or details"
-                      className="mt-1"
+                      className="h-12 text-base"
                     />
                   </div>
                 )}
                 
-                <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg">
-                  <span className="material-icons text-blue-600">location_on</span>
-                  <div>
-                    <p className="text-sm font-medium text-blue-900">
-                      {venue === 'custom' ? (customVenue || 'Custom venue') : venue}
-                    </p>
-                    <p className="text-xs text-blue-600">Meeting location</p>
+                {venue && (
+                  <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                    <span className="material-icons text-blue-600 mt-0.5">location_on</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-blue-900 break-words">
+                        {venue === 'custom' ? (customVenue || 'Custom venue') : venue}
+                      </p>
+                      <p className="text-xs text-blue-600 mt-1">Meeting location</p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
           {/* Agenda */}
           <Card className="shadow-material">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-medium text-foreground mb-4">Agenda</h3>
-              <Textarea
-                value={agenda}
-                onChange={(e) => setAgenda(e.target.value)}
-                placeholder="Enter meeting agenda and topics to discuss..."
-                rows={4}
-                className="w-full resize-none"
-              />
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-lg font-medium text-foreground mb-3 sm:mb-4 flex items-center">
+                <span className="material-icons mr-2 text-accent">description</span>
+                Agenda
+              </h3>
+              <div>
+                <Label className="block text-sm font-medium text-foreground mb-2">
+                  Meeting Topics & Discussion Points
+                </Label>
+                <Textarea
+                  value={agenda}
+                  onChange={(e) => setAgenda(e.target.value)}
+                  placeholder="Enter meeting agenda and topics to discuss..."
+                  rows={4}
+                  className="w-full resize-none text-base min-h-[100px]"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Optional: Add agenda items to help members prepare
+                </p>
+              </div>
             </CardContent>
           </Card>
 
           {/* Notifications */}
           <Card className="shadow-material">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-medium text-foreground mb-4">Notifications</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
+            <CardContent className="p-3 sm:p-4">
+              <h3 className="text-lg font-medium text-foreground mb-3 sm:mb-4 flex items-center">
+                <span className="material-icons mr-2 text-accent">notifications</span>
+                Notifications
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                   <Checkbox
                     id="notify"
                     checked={notifyMembers}
                     onCheckedChange={(checked) => setNotifyMembers(checked as boolean)}
+                    className="min-w-[20px] min-h-[20px] mt-0.5"
                   />
-                  <Label htmlFor="notify" className="text-sm text-foreground">
-                    Notify all members
-                  </Label>
+                  <div className="flex-1">
+                    <Label htmlFor="notify" className="text-sm font-medium text-foreground cursor-pointer">
+                      Notify all members
+                    </Label>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Send notification to all forum members about this meeting
+                    </p>
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                   <Checkbox
                     id="reminder"
                     checked={sendReminder}
                     onCheckedChange={(checked) => setSendReminder(checked as boolean)}
+                    className="min-w-[20px] min-h-[20px] mt-0.5"
                   />
-                  <Label htmlFor="reminder" className="text-sm text-foreground">
-                    Send reminder 1 hour before
-                  </Label>
+                  <div className="flex-1">
+                    <Label htmlFor="reminder" className="text-sm font-medium text-foreground cursor-pointer">
+                      Send reminder 1 hour before
+                    </Label>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Automatic reminder will be sent to all members
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -363,13 +406,23 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
 
           {/* Submit Button */}
           <Card className="shadow-material">
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <Button
                 type="submit"
                 disabled={createMeetingMutation.isPending}
-                className="w-full bg-accent hover:bg-accent/90 text-white py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+                className="w-full bg-accent hover:bg-accent/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-4 px-6 rounded-lg font-medium text-base sm:text-sm uppercase tracking-wide ripple min-h-[56px] transition-all duration-200"
               >
-                {createMeetingMutation.isPending ? 'CREATING...' : 'CREATE MEETING'}
+                {createMeetingMutation.isPending ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>CREATING...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="material-icons">add_circle</span>
+                    <span>CREATE MEETING</span>
+                  </div>
+                )}
               </Button>
             </CardContent>
           </Card>
