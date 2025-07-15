@@ -10,6 +10,7 @@ import { execSync } from 'child_process';
 interface GuardianConfig {
   criticalModules: string[];
   firebaseModules: string[];
+  reactModules: string[];
   autoRepair: boolean;
   logLevel: 'error' | 'warning' | 'info';
 }
@@ -35,6 +36,11 @@ export class DependencyGuardian {
         'firebase/app',
         'firebase/firestore',
         'firebase/auth'
+      ],
+      reactModules: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime'
       ],
       autoRepair: true,
       logLevel: 'info',
@@ -156,6 +162,44 @@ export class DependencyGuardian {
     }
   }
 
+  private checkReactIntegrity(): boolean {
+    this.log('Checking React integrity...');
+    
+    for (const module of this.config.reactModules) {
+      const modulePath = join(process.cwd(), 'node_modules', module.split('/')[0]);
+      
+      if (!existsSync(modulePath)) {
+        this.log(`React module ${module} not found at ${modulePath}`, 'error');
+        return false;
+      }
+    }
+    
+    // Check React version
+    const reactPackagePath = join(process.cwd(), 'node_modules', 'react', 'package.json');
+    if (existsSync(reactPackagePath)) {
+      try {
+        const reactPackage = JSON.parse(readFileSync(reactPackagePath, 'utf8'));
+        this.log(`React version ${reactPackage.version} detected`);
+      } catch (error) {
+        this.log('Failed to read React package.json', 'warning');
+      }
+    }
+    
+    // Check React-DOM version
+    const reactDomPackagePath = join(process.cwd(), 'node_modules', 'react-dom', 'package.json');
+    if (existsSync(reactDomPackagePath)) {
+      try {
+        const reactDomPackage = JSON.parse(readFileSync(reactDomPackagePath, 'utf8'));
+        this.log(`React-DOM version ${reactDomPackage.version} detected`);
+      } catch (error) {
+        this.log('Failed to read React-DOM package.json', 'warning');
+      }
+    }
+    
+    this.log('React integrity check passed');
+    return true;
+  }
+
   private async performAutoRepair(): Promise<boolean> {
     if (!this.config.autoRepair) {
       this.log('Auto-repair disabled');
@@ -174,8 +218,13 @@ export class DependencyGuardian {
       execSync('npm uninstall firebase', { stdio: 'pipe' });
       execSync('npm install firebase@latest', { stdio: 'pipe' });
       
+      // Reinstall React if needed
+      this.log('Reinstalling React...');
+      execSync('npm uninstall react react-dom', { stdio: 'pipe' });
+      execSync('npm install react@latest react-dom@latest', { stdio: 'pipe' });
+      
       // Verify repair
-      const repairSuccess = this.checkNodeModules() && this.checkFirebaseIntegrity();
+      const repairSuccess = this.checkNodeModules() && this.checkFirebaseIntegrity() && this.checkReactIntegrity();
       
       if (repairSuccess) {
         this.log('Auto-repair completed successfully');
@@ -196,7 +245,8 @@ export class DependencyGuardian {
     const checks = [
       this.checkPackageJson(),
       this.checkNodeModules(),
-      this.checkFirebaseIntegrity()
+      this.checkFirebaseIntegrity(),
+      this.checkReactIntegrity()
     ];
     
     const allPassed = checks.every(check => check);
@@ -228,7 +278,8 @@ export class DependencyGuardian {
     const checks = [
       { name: 'Package.json', passed: this.checkPackageJson() },
       { name: 'Node Modules', passed: this.checkNodeModules() },
-      { name: 'Firebase Integrity', passed: this.checkFirebaseIntegrity() }
+      { name: 'Firebase Integrity', passed: this.checkFirebaseIntegrity() },
+      { name: 'React Integrity', passed: this.checkReactIntegrity() }
     ];
     
     return {
