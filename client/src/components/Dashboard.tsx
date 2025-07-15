@@ -74,10 +74,28 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
 
   // For Organizer - show only their assigned meetings
   const organizerUpcomingMeetings = user?.role === 'organizer' ? 
-    upcomingMeetings.filter(meeting => meeting.createdBy === user.id) : [];
+    upcomingMeetings.filter(meeting => {
+      console.log('Checking meeting:', meeting.id, 'createdBy:', meeting.createdBy, 'user.id:', user.id);
+      return meeting.createdBy === user.id;
+    }) : [];
   
   const organizerCompletedMeetings = user?.role === 'organizer' ? 
-    completedMeetings.filter(meeting => meeting.createdBy === user.id) : [];
+    completedMeetings.filter(meeting => {
+      console.log('Checking completed meeting:', meeting.id, 'createdBy:', meeting.createdBy, 'user.id:', user.id);
+      return meeting.createdBy === user.id;
+    }) : [];
+
+  // Debug logging
+  console.log('Dashboard Debug:', {
+    userRole: user?.role,
+    userId: user?.id,
+    totalMeetings: meetings.length,
+    upcomingMeetings: upcomingMeetings.length,
+    completedMeetings: completedMeetings.length,
+    organizerUpcomingMeetings: organizerUpcomingMeetings.length,
+    organizerCompletedMeetings: organizerCompletedMeetings.length,
+    meetings: meetings.map(m => ({ id: m.id, date: m.date, createdBy: m.createdBy }))
+  });
 
   // For Chairman - show all meetings
   const chairmanUpcomingMeetings = user?.role === 'chairman' ? upcomingMeetings : [];
@@ -312,11 +330,23 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'short',
-                                month: 'short',
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
                                 day: 'numeric'
+                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
                               })}
                             </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            {meeting.agenda && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                <span className="material-icons text-xs mr-1">description</span>
+                                {meeting.agenda}
+                              </p>
+                            )}
                           </div>
                           <div className="text-right">
                             <div className="text-xs text-gray-500">Assigned to Organizer</div>
@@ -347,11 +377,23 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'short',
-                                month: 'short',
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
                                 day: 'numeric'
+                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
                               })}
                             </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            {meeting.agenda && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                <span className="material-icons text-xs mr-1">description</span>
+                                {meeting.agenda}
+                              </p>
+                            )}
                           </div>
                           <div className="text-right">
                             <AttendanceStats meetingId={meeting.id} />
