@@ -3,7 +3,7 @@ import { useAuth } from '@/lib/auth';
 import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
 import Dashboard from '@/components/Dashboard';
-import AttendanceScreenMobile from '@/components/AttendanceScreenMobile';
+import AttendanceScreenImproved from '@/components/AttendanceScreenImproved';
 import ReportsScreen from '@/components/ReportsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -55,7 +55,7 @@ export default function Home() {
         );
       case 'attendance':
         return attendanceMeetingId ? (
-          <AttendanceScreenMobile
+          <AttendanceScreenImproved
             meetingId={attendanceMeetingId}
             onBack={handleBackToDashboard}
           />

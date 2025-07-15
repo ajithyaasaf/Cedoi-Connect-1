@@ -112,6 +112,28 @@
   .attendance-card:hover {
     @apply -translate-y-1;
   }
+
+  /* Touch-optimized styles for attendance interface */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .status-button {
+    @apply transition-all duration-200 touch-manipulation;
+  }
+  
+  .status-button:active {
+    @apply scale-95;
+  }
+  
+  .status-badge-clickable {
+    @apply cursor-pointer transition-all duration-200 touch-manipulation;
+  }
+  
+  .status-badge-clickable:active {
+    @apply scale-95;
+  }
   
   .floating-action-button {
     @apply fixed right-4;
