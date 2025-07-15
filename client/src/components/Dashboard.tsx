@@ -72,30 +72,12 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
     new Date(meeting.date) <= new Date()
   );
 
-  // For Organizer - show only their assigned meetings
-  const organizerUpcomingMeetings = user?.role === 'organizer' ? 
-    upcomingMeetings.filter(meeting => {
-      console.log('Checking meeting:', meeting.id, 'createdBy:', meeting.createdBy, 'user.id:', user.id);
-      return meeting.createdBy === user.id;
-    }) : [];
+  // For Organizer/Sonai - show only their assigned meetings
+  const organizerUpcomingMeetings = user?.role === 'sonai' ? 
+    upcomingMeetings.filter(meeting => meeting.createdBy === user.id) : [];
   
-  const organizerCompletedMeetings = user?.role === 'organizer' ? 
-    completedMeetings.filter(meeting => {
-      console.log('Checking completed meeting:', meeting.id, 'createdBy:', meeting.createdBy, 'user.id:', user.id);
-      return meeting.createdBy === user.id;
-    }) : [];
-
-  // Debug logging
-  console.log('Dashboard Debug:', {
-    userRole: user?.role,
-    userId: user?.id,
-    totalMeetings: meetings.length,
-    upcomingMeetings: upcomingMeetings.length,
-    completedMeetings: completedMeetings.length,
-    organizerUpcomingMeetings: organizerUpcomingMeetings.length,
-    organizerCompletedMeetings: organizerCompletedMeetings.length,
-    meetings: meetings.map(m => ({ id: m.id, date: m.date, createdBy: m.createdBy }))
-  });
+  const organizerCompletedMeetings = user?.role === 'sonai' ? 
+    completedMeetings.filter(meeting => meeting.createdBy === user.id) : [];
 
   // For Chairman - show all meetings
   const chairmanUpcomingMeetings = user?.role === 'chairman' ? upcomingMeetings : [];
@@ -180,7 +162,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                 <span className="material-icons text-success mr-2">check_circle</span>
                 <span className="text-sm text-gray-700">Meeting Active</span>
               </div>
-              {user?.role === 'organizer' && (
+              {user?.role === 'sonai' && (
                 <Button
                   onClick={() => onMarkAttendance(todaysMeeting.id)}
                   className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
@@ -194,7 +176,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
       )}
 
       {/* Role-specific Meeting Management */}
-      {user?.role === 'organizer' && (
+      {user?.role === 'sonai' && (
         <>
           {/* Organizer's Assigned Meetings */}
           <Card className="shadow-material mb-6">
