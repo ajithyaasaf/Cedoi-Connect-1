@@ -166,182 +166,157 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Sticky Header */}
+      {/* Compact Header with integrated controls */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between px-4 py-2">
+          <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="h-10 w-10 rounded-full hover:bg-gray-100 touch-target"
+              className="h-8 w-8 rounded-full hover:bg-gray-100 touch-target"
             >
-              <span className="material-icons">arrow_back</span>
+              <span className="material-icons text-lg">arrow_back</span>
             </Button>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Mark Attendance</h1>
-              <p className="text-sm text-gray-500">
-                {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-              </p>
+              <h1 className="text-base font-semibold text-gray-900">Mark Attendance</h1>
+              <div className="flex items-center space-x-3 text-xs text-gray-500">
+                <span>{presentCount + absentCount}/{members.length} marked</span>
+                <span>{Math.round(progressPercentage)}%</span>
+                {isComplete && <span className="text-green-600">✓ Complete</span>}
+              </div>
             </div>
           </div>
-          <Button
-            size="icon"
-            onClick={() => setShowQRScanner(true)}
-            className="h-10 w-10 bg-[#EB8A2F] hover:bg-[#EB8A2F]/90 text-white rounded-full touch-target"
-          >
-            <span className="material-icons">qr_code_scanner</span>
-          </Button>
-        </div>
-
-        {/* Simple Progress Bar */}
-        <div className="px-4 pb-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              {presentCount + absentCount} of {members.length} marked
-            </span>
-            <span className="text-sm text-gray-500">
-              {Math.round(progressPercentage)}%
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                isComplete 
-                  ? 'bg-green-500' 
-                  : 'bg-gradient-to-r from-[#04004B] to-[#EB8A2F]'
-              }`}
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-          {isComplete && (
-            <div className="mt-2 flex items-center space-x-2 text-green-600">
-              <span className="material-icons text-sm">check_circle</span>
-              <span className="text-sm font-medium">All members marked!</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className="bg-white px-4 py-3 border-b">
-        <div className="relative">
-          <Input
-            type="text"
-            placeholder="Search members..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-gray-200 focus:border-[#EB8A2F] rounded-full"
-          />
-          <span className="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
-            search
-          </span>
-          {searchQuery && (
+          
+          <div className="flex items-center space-x-2">
+            {pendingCount > 0 && (
+              <Button
+                onClick={handleMarkAllPending}
+                size="sm"
+                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-xs rounded-full"
+                disabled={updateAttendanceMutation.isPending}
+              >
+                Mark All ({pendingCount})
+              </Button>
+            )}
             <Button
-              variant="ghost"
               size="icon"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 rounded-full"
-            >
-              <span className="material-icons text-sm">close</span>
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="bg-white border-b">
-        <div className="flex px-4 py-2 overflow-x-auto">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'present', label: 'Present' },
-            { key: 'absent', label: 'Absent' },
-            { key: 'pending', label: 'Pending' },
-          ].map(tab => (
-            <Button
-              key={tab.key}
-              variant={activeTab === tab.key ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab(tab.key as any)}
-              className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium mr-2 ${
-                activeTab === tab.key
-                  ? 'bg-[#04004B] text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {tab.label} ({tabCounts[tab.key as keyof typeof tabCounts]})
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Actions - Only show when there are pending members */}
-      {pendingCount > 0 && (
-        <div className="bg-white px-4 py-3 border-b">
-          <div className="flex space-x-2">
-            <Button
-              onClick={handleMarkAllPending}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-full py-2 font-medium status-button touch-target"
-              disabled={updateAttendanceMutation.isPending}
-            >
-              <span className="material-icons mr-2 text-sm">how_to_reg</span>
-              Mark All Present ({pendingCount})
-            </Button>
-            <Button
               onClick={() => setShowQRScanner(true)}
-              className="flex-1 bg-[#EB8A2F] hover:bg-[#EB8A2F]/90 text-white rounded-full py-2 font-medium status-button touch-target"
+              className="h-8 w-8 bg-[#EB8A2F] hover:bg-[#EB8A2F]/90 text-white rounded-full touch-target"
             >
-              <span className="material-icons mr-2 text-sm">qr_code_scanner</span>
-              QR Scan
+              <span className="material-icons text-lg">qr_code_scanner</span>
             </Button>
           </div>
         </div>
-      )}
 
-      {/* Members List */}
+        {/* Compact search and filter row */}
+        <div className="px-4 pb-2">
+          <div className="flex items-center space-x-2">
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 border-gray-200 focus:border-[#EB8A2F] rounded-full text-sm"
+              />
+              <span className="material-icons absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                search
+              </span>
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 rounded-full"
+                >
+                  <span className="material-icons text-xs">close</span>
+                </Button>
+              )}
+            </div>
+            
+            {/* Compact tab buttons */}
+            <div className="flex space-x-1">
+              {[
+                { key: 'all', label: 'All', count: members.length },
+                { key: 'present', label: 'Present', count: presentCount },
+                { key: 'absent', label: 'Absent', count: absentCount },
+                { key: 'pending', label: 'Pending', count: pendingCount },
+              ].map(tab => (
+                <Button
+                  key={tab.key}
+                  variant={activeTab === tab.key ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveTab(tab.key as any)}
+                  className={`px-2 py-1 text-xs rounded-full ${
+                    activeTab === tab.key
+                      ? 'bg-[#04004B] text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {tab.label} ({tab.count})
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Thin progress bar */}
+        <div className="h-1 bg-gray-200">
+          <div
+            className={`h-full transition-all duration-300 ${
+              isComplete 
+                ? 'bg-green-500' 
+                : 'bg-gradient-to-r from-[#04004B] to-[#EB8A2F]'
+            }`}
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Maximized Members List */}
       <div className="flex-1 overflow-y-auto">
         {filteredMembers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <span className="material-icons text-gray-400 text-2xl">
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+              <span className="material-icons text-gray-400 text-lg">
                 {searchQuery ? 'search_off' : 'people_outline'}
               </span>
             </div>
             <p className="text-gray-500 text-sm">
               {searchQuery ? 'No members found' : 'No members in this category'}
             </p>
-            {searchQuery && (
-              <p className="text-gray-400 text-xs mt-1">Try adjusting your search</p>
-            )}
           </div>
         ) : (
-          <div className="p-4 space-y-3">
+          <div className="p-2 space-y-1">
             {filteredMembers.map(member => {
               const status = attendanceStatus[member.id];
               return (
-                <Card key={member.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
+                <Card key={member.id} className="border-0 shadow-sm">
+                  <CardContent className="p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1 min-w-0">
-                        <Avatar className="h-10 w-10 bg-[#04004B] text-white flex-shrink-0">
-                          <AvatarFallback className="bg-[#04004B] text-white text-sm font-medium">
+                        <Avatar className="h-8 w-8 bg-[#04004B] text-white flex-shrink-0">
+                          <AvatarFallback className="bg-[#04004B] text-white text-xs font-medium">
                             {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-gray-900 truncate">{member.name}</h3>
-                          <p className="text-sm text-gray-500 truncate">{member.company}</p>
-                          <Badge variant="outline" className="text-xs mt-1">
-                            {member.role}
-                          </Badge>
+                          <h3 className="font-medium text-gray-900 truncate text-sm">{member.name}</h3>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-xs text-gray-500 truncate">{member.company}</p>
+                            <Badge variant="outline" className="text-xs px-1 py-0">
+                              {member.role}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-2 ml-4 flex-shrink-0">
+                      <div className="flex items-center space-x-1 ml-3 flex-shrink-0">
                         {status ? (
                           <Badge
                             variant={status === 'present' ? 'default' : 'destructive'}
-                            className={`text-xs px-3 py-1 status-badge-clickable ${
+                            className={`text-xs px-2 py-1 status-badge-clickable cursor-pointer ${
                               status === 'present'
                                 ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200'
                                 : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200'
@@ -355,7 +330,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
                             <Button
                               size="sm"
                               onClick={() => handleStatusChange(member.id, 'present')}
-                              className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium h-8 status-button touch-target"
+                              className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full text-xs h-6 status-button touch-target"
                               disabled={updateAttendanceMutation.isPending}
                             >
                               Present
@@ -364,7 +339,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
                               size="sm"
                               variant="outline"
                               onClick={() => handleStatusChange(member.id, 'absent')}
-                              className="border-red-200 text-red-600 hover:bg-red-50 px-3 py-1 rounded-full text-xs font-medium h-8 status-button touch-target"
+                              className="border-red-200 text-red-600 hover:bg-red-50 px-2 py-1 rounded-full text-xs h-6 status-button touch-target"
                               disabled={updateAttendanceMutation.isPending}
                             >
                               Absent
@@ -381,41 +356,35 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         )}
       </div>
 
-      {/* Submit Button - Show when all members are marked or when there's at least some attendance */}
-      {(isComplete || Object.keys(attendanceStatus).length > 0) && (
-        <div className="bg-white border-t p-4 safe-area-pb">
+      {/* Compact Submit Button - Show when there's attendance data */}
+      {Object.keys(attendanceStatus).length > 0 && (
+        <div className="bg-white border-t px-4 py-2 safe-area-pb">
           <Button
             onClick={handleSubmitAttendance}
             disabled={isSaving || Object.keys(attendanceStatus).length === 0}
-            className={`w-full py-3 font-semibold text-base rounded-full transition-all duration-200 ${
+            className={`w-full py-2 font-medium text-sm rounded-full transition-all duration-200 ${
               isComplete 
                 ? 'bg-green-500 hover:bg-green-600 text-white' 
                 : 'bg-[#04004B] hover:bg-[#04004B]/90 text-white'
             }`}
           >
             {isSaving ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Saving Attendance...</span>
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Saving...</span>
               </div>
             ) : isComplete ? (
-              <div className="flex items-center space-x-2">
-                <span className="material-icons">check_circle</span>
-                <span>Submit Complete Attendance ({members.length} members)</span>
+              <div className="flex items-center justify-center space-x-2">
+                <span className="material-icons text-sm">check_circle</span>
+                <span>Submit ({members.length} members)</span>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <span className="material-icons">save</span>
-                <span>Save Progress ({Object.keys(attendanceStatus).length}/{members.length} marked)</span>
+              <div className="flex items-center justify-center space-x-2">
+                <span className="material-icons text-sm">save</span>
+                <span>Save Progress ({Object.keys(attendanceStatus).length}/{members.length})</span>
               </div>
             )}
           </Button>
-          
-          {!isComplete && Object.keys(attendanceStatus).length > 0 && (
-            <p className="text-xs text-gray-500 text-center mt-2">
-              You can save progress and continue later, or mark remaining {pendingCount} members
-            </p>
-          )}
         </div>
       )}
 
