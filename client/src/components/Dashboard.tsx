@@ -296,17 +296,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
+                                weekday: 'short',
+                                month: 'short',
                                 day: 'numeric'
-                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
                           </div>
                           <div className="text-right">
                             <div className="text-xs text-gray-500">Assigned to Organizer</div>
@@ -339,11 +333,9 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                               {new Date(meeting.date).toLocaleDateString('en-US', {
                                 weekday: 'short',
                                 month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
+                                day: 'numeric'
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
                           </div>
                           <div className="text-right">
                             <AttendanceStats meetingId={meeting.id} />
