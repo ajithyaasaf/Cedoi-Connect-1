@@ -4,6 +4,7 @@ import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
 import Dashboard from '@/components/Dashboard';
 import AttendanceScreenImproved from '@/components/AttendanceScreenImproved';
+import AttendanceLandingScreen from '@/components/AttendanceLandingScreen';
 import ReportsEnhanced from '@/components/ReportsEnhanced';
 import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
@@ -37,7 +38,12 @@ export default function Home() {
 
   const handleMarkAttendance = (meetingId: string) => {
     setAttendanceMeetingId(meetingId);
-    setActiveTab('attendance');
+    setActiveTab('attendance-marking');
+  };
+
+  const handleSelectMeetingForAttendance = (meetingId: string) => {
+    setAttendanceMeetingId(meetingId);
+    setActiveTab('attendance-marking');
   };
 
   const handleBackToDashboard = () => {
@@ -55,6 +61,12 @@ export default function Home() {
           />
         );
       case 'attendance':
+        return (
+          <AttendanceLandingScreen
+            onSelectMeeting={handleSelectMeetingForAttendance}
+          />
+        );
+      case 'attendance-marking':
         return attendanceMeetingId ? (
           <AttendanceScreenImproved
             meetingId={attendanceMeetingId}
