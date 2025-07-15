@@ -42,13 +42,14 @@ export default function AuthForm() {
           <img 
             src={cedoiLogo} 
             alt="CEDOI Logo" 
-            className="w-48 h-48 object-contain mx-auto mb-4"
+            className="w-20 h-20 object-contain mx-auto mb-4"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
               e.currentTarget.nextElementSibling?.classList.remove('hidden');
             }}
           />
           <span className="material-icons text-white text-5xl hidden">groups</span>
+          <h2 className="text-2xl font-bold text-white mb-2">CEDOI Madurai</h2>
           <p className="text-white opacity-90 text-sm">Meeting Management System</p>
         </div>
         <Card className="slide-up shadow-material-lg">
