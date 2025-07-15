@@ -4,7 +4,8 @@ import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
 import Dashboard from '@/components/Dashboard';
 import AttendanceScreenImproved from '@/components/AttendanceScreenImproved';
-import ReportsScreen from '@/components/ReportsScreen';
+import ReportsEnhanced from '@/components/ReportsEnhanced';
+import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -65,15 +66,11 @@ export default function Home() {
           </div>
         );
       case 'reports':
-        return <ReportsScreen onBack={handleBackToDashboard} />;
+        return <ReportsEnhanced onBack={handleBackToDashboard} />;
       case 'create-meeting':
         return <CreateMeetingScreen onBack={handleBackToDashboard} />;
       case 'settings':
-        return (
-          <div className="p-4 text-center">
-            <p className="text-gray-600">Settings page coming soon</p>
-          </div>
-        );
+        return <SettingsScreen onBack={handleBackToDashboard} />;
       default:
         return null;
     }

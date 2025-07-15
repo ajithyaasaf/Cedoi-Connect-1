@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import type { Meeting, User, AttendanceRecord } from '@shared/schema';
 
@@ -14,12 +15,18 @@ interface ReportsScreenProps {
 export default function ReportsScreen({ onBack }: ReportsScreenProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('all');
   const [selectedMeeting, setSelectedMeeting] = useState('all');
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const { data: meetings = [] } = useQuery<Meeting[]>({
     queryKey: ['meetings'],
     queryFn: () => api.meetings.getAll(),
   });
+
+  // Filter meetings based on user role
+  const userMeetings = user?.role === 'sonai' ? 
+    meetings.filter(meeting => meeting.createdBy === user.id) : 
+    meetings; // Chairman and members can see all meetings
 
   const { data: users = [] } = useQuery<User[]>({
     queryKey: ['users'],
@@ -38,7 +45,7 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
   });
 
   // Filter data based on selected period
-  const filteredMeetings = meetings.filter(meeting => {
+  const filteredMeetings = userMeetings.filter(meeting => {
     const meetingDate = new Date(meeting.date);
     const now = new Date();
     
@@ -117,6 +124,18 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
     });
   };
 
+  // Role-based page title
+  const getPageTitle = () => {
+    switch (user?.role) {
+      case 'sonai':
+        return 'My Meeting Reports';
+      case 'chairman':
+        return 'All Meeting Reports';
+      default:
+        return 'Meeting Reports';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Page Header */}
@@ -132,8 +151,10 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
               <span className="material-icons">arrow_back</span>
             </Button>
             <div>
-              <h1 className="text-xl font-medium text-gray-900">Attendance Reports</h1>
-              <p className="text-sm text-gray-600">View detailed attendance statistics</p>
+              <h1 className="text-xl font-medium text-gray-900">{getPageTitle()}</h1>
+              <p className="text-sm text-gray-600">
+                {user?.role === 'sonai' ? 'View your meeting statistics' : 'View detailed attendance statistics'}
+              </p>
             </div>
           </div>
           <Button

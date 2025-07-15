@@ -129,6 +129,33 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### July 15, 2025 - Role-Based Reports & Settings Implementation + Bug Fixes
+- **Fixed Sonai Dashboard Bug**: 
+  - Corrected role check from 'organizer' to 'sonai' in Dashboard component
+  - Updated schema to reflect actual role values ('sonai', 'chairman', 'member')
+  - Sonai can now properly see upcoming and completed meetings they created
+- **Role-Based Reports System**:
+  - Added role-based access control to ReportsEnhanced component
+  - Sonai sees only their own meeting reports with title "My Meeting Reports"
+  - Chairman sees all meeting reports with title "All Meeting Reports"
+  - Members see standard meeting reports
+  - Proper filtering based on user role and meeting ownership
+- **Complete Settings Page Implementation**:
+  - Created comprehensive SettingsScreen component
+  - Profile management with name, email, company, and role display
+  - Notification settings with toggles for meeting reminders, attendance alerts, report updates, and email notifications
+  - App preferences including theme, language, timezone, and date format
+  - Account actions with secure logout functionality
+  - Role-based UI with proper user context integration
+- **Chairman Dashboard Restored**:
+  - Reverted Chairman dashboard to show full meeting details
+  - Chairman can see complete information: date, time, venue, agenda for all meetings
+  - Maintains oversight capabilities with full meeting visibility
+- **Updated Navigation**:
+  - Integrated new SettingsScreen into home page navigation
+  - Fixed component imports and routing
+  - Proper back navigation handling for all screens
+
 ### July 15, 2025 - Streamlined Attendance UX Implementation + Complete React Protection System
 - **Streamlined Attendance UX Implementation**:
   - Created unified AttendanceScreenImproved.tsx replacing separate desktop/mobile versions
