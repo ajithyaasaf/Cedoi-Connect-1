@@ -178,14 +178,14 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
       {/* Role-specific Meeting Management */}
       {user?.role === 'organizer' && (
         <>
-          {/* Organizer's Assigned Meetings - Hide Details */}
+          {/* Organizer's Assigned Meetings */}
           <Card className="shadow-material mb-6">
             <CardContent className="p-0">
               <div className="p-4 border-b border-gray-100">
                 <h3 className="text-lg font-medium text-foreground">My Organized Meetings</h3>
               </div>
               
-              {/* Upcoming Meetings - Minimal Info */}
+              {/* Upcoming Meetings */}
               <div className="p-4">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
                   <span className="material-icons text-blue-500 mr-2">schedule</span>
@@ -203,11 +203,23 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'short',
-                                month: 'short',
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
                                 day: 'numeric'
+                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
                               })}
                             </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            {meeting.agenda && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                <span className="material-icons text-xs mr-1">description</span>
+                                {meeting.agenda}
+                              </p>
+                            )}
                           </div>
                           <Button
                             onClick={() => onMarkAttendance(meeting.id)}
@@ -223,7 +235,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                 )}
               </div>
               
-              {/* Completed Meetings - Minimal Info */}
+              {/* Completed Meetings */}
               <div className="p-4 border-t border-gray-100">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
                   <span className="material-icons text-green-500 mr-2">check_circle</span>
@@ -241,14 +253,26 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
                             <p className="text-sm text-gray-600">
                               {new Date(meeting.date).toLocaleDateString('en-US', {
-                                weekday: 'short',
-                                month: 'short',
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
                                 day: 'numeric'
+                              })} at {new Date(meeting.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
                               })}
                             </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            {meeting.agenda && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                <span className="material-icons text-xs mr-1">description</span>
+                                {meeting.agenda}
+                              </p>
+                            )}
                           </div>
                           <div className="text-right">
-                            <div className="text-xs bg-green-100 px-2 py-1 rounded-full">Completed</div>
+                            <AttendanceStats meetingId={meeting.id} />
                           </div>
                         </div>
                       </div>
