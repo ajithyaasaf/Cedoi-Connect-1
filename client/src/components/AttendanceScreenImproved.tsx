@@ -41,7 +41,11 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
       return api.attendance.updateStatus(meetingId, userId, status);
     },
     onSuccess: (_, { userId, status }) => {
+      // Invalidate all related queries to ensure real-time updates
       queryClient.invalidateQueries({ queryKey: ['attendance', meetingId] });
+      queryClient.invalidateQueries({ queryKey: ['attendance', 'all'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
       const user = users.find(u => u.id === userId);
       toast({
         title: `${user?.name} marked ${status}`,

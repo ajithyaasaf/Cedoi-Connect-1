@@ -37,7 +37,10 @@ export default function CreateMeetingScreen({ onBack }: CreateMeetingScreenProps
       return api.meetings.create(meetingData);
     },
     onSuccess: async (createdMeeting) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/meetings'] });
+      // Invalidate all meeting-related queries to ensure real-time updates
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+      queryClient.invalidateQueries({ queryKey: ['meetings', 'today'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       
       // Send notifications if enabled
       if (notifyMembers) {
