@@ -44,7 +44,8 @@ export const getQueryFn: <T>(options: {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
+      // Remove the default queryFn so components must provide their own
+      // This allows us to use the API functions directly instead of HTTP requests
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

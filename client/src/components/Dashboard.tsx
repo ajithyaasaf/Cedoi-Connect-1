@@ -38,9 +38,14 @@ interface DashboardProps {
 export default function Dashboard({ onCreateMeeting, onMarkAttendance }: DashboardProps) {
   const { user } = useAuth();
   
-  const { data: meetings = [] } = useQuery<Meeting[]>({
+  const { data: meetings = [], isLoading: meetingsLoading } = useQuery<Meeting[]>({
     queryKey: ['meetings'],
-    queryFn: () => api.meetings.getAll(),
+    queryFn: async () => {
+      console.log('Fetching meetings...');
+      const result = await api.meetings.getAll();
+      console.log('Meetings fetched:', result);
+      return result;
+    },
   });
 
   const { data: todaysMeeting } = useQuery<Meeting | null>({

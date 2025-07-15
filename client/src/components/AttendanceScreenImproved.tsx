@@ -26,12 +26,17 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
 
-  const { data: users = [] } = useQuery<User[]>({
+  const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery<User[]>({
     queryKey: ['users'],
-    queryFn: () => api.users.getAll(),
+    queryFn: async () => {
+      console.log('Fetching users...');
+      const result = await api.users.getAll();
+      console.log('Users fetched:', result);
+      return result;
+    },
   });
 
-  const { data: attendanceRecords = [] } = useQuery<AttendanceRecord[]>({
+  const { data: attendanceRecords = [], isLoading: attendanceLoading } = useQuery<AttendanceRecord[]>({
     queryKey: ['attendance', meetingId],
     queryFn: () => api.attendance.getForMeeting(meetingId),
   });
@@ -167,6 +172,72 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
     absent: absentCount,
     pending: pendingCount
   };
+
+  // Show loading state
+  if (usersLoading) {
+    return (
+      <div className="flex flex-col h-screen bg-gray-50">
+        <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+          <div className="flex items-center justify-between px-4 py-2">
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="h-8 w-8 rounded-full hover:bg-gray-100 touch-target"
+              >
+                <span className="material-icons text-lg">arrow_back</span>
+              </Button>
+              <div>
+                <h1 className="text-base font-semibold text-gray-900">Mark Attendance</h1>
+                <div className="text-xs text-gray-500">Loading members...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-gray-500 text-sm">Loading members...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (usersError) {
+    console.error('Users error:', usersError);
+    return (
+      <div className="flex flex-col h-screen bg-gray-50">
+        <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+          <div className="flex items-center justify-between px-4 py-2">
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="h-8 w-8 rounded-full hover:bg-gray-100 touch-target"
+              >
+                <span className="material-icons text-lg">arrow_back</span>
+              </Button>
+              <div>
+                <h1 className="text-base font-semibold text-gray-900">Mark Attendance</h1>
+                <div className="text-xs text-red-500">Error loading members</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <span className="material-icons text-red-500 text-6xl mb-4">error</span>
+            <p className="text-gray-500 text-sm mb-2">Failed to load members</p>
+            <p className="text-xs text-gray-400">{usersError?.message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
