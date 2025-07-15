@@ -124,22 +124,45 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
     });
   };
 
-  // Role-based page title
+  // Role-based page title and subtitle
   const getPageTitle = () => {
     switch (user?.role) {
       case 'sonai':
         return 'My Meeting Reports';
       case 'chairman':
-        return 'All Meeting Reports';
+        return 'Organization Overview';
       default:
         return 'Meeting Reports';
+    }
+  };
+
+  const getPageSubtitle = () => {
+    switch (user?.role) {
+      case 'sonai':
+        return 'Track your meeting performance and member engagement';
+      case 'chairman':
+        return 'Monitor organizational health and meeting effectiveness';
+      default:
+        return 'View detailed attendance statistics';
+    }
+  };
+
+  // Role-based header color
+  const getHeaderColor = () => {
+    switch (user?.role) {
+      case 'sonai':
+        return 'bg-blue-50 border-blue-200';
+      case 'chairman':
+        return 'bg-purple-50 border-purple-200';
+      default:
+        return 'bg-white border-gray-200';
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Page Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className={`${getHeaderColor()} border-b p-4`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button
@@ -153,16 +176,16 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
             <div>
               <h1 className="text-xl font-medium text-gray-900">{getPageTitle()}</h1>
               <p className="text-sm text-gray-600">
-                {user?.role === 'sonai' ? 'View your meeting statistics' : 'View detailed attendance statistics'}
+                {getPageSubtitle()}
               </p>
             </div>
           </div>
           <Button
             onClick={exportToCSV}
-            className="bg-accent hover:bg-accent/90 text-white"
+            className={`${user?.role === 'sonai' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'} text-white transition-colors`}
           >
             <span className="material-icons mr-2">download</span>
-            Export CSV
+            {user?.role === 'sonai' ? 'Export My Reports' : 'Export All Reports'}
           </Button>
         </div>
       </div>
@@ -211,35 +234,132 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
           </CardContent>
         </Card>
 
-        {/* Overall Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="shadow-material">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-accent mb-2">{totalMeetings}</div>
-              <div className="text-sm text-gray-600">Total Meetings</div>
+        {/* Role-Specific Statistics */}
+        {user?.role === 'sonai' ? (
+          // Sonai-specific statistics
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Card className="shadow-material border-l-4 border-l-blue-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">{totalMeetings}</div>
+                <div className="text-sm text-gray-600">My Meetings</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-material border-l-4 border-l-green-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">{overallAttendanceRate}%</div>
+                <div className="text-sm text-gray-600">My Meeting Success</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-material border-l-4 border-l-orange-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-orange-600 mb-2">{actualAttendance}</div>
+                <div className="text-sm text-gray-600">Total Attendees</div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          // Chairman-specific statistics
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <Card className="shadow-material border-l-4 border-l-purple-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">{totalMeetings}</div>
+                <div className="text-sm text-gray-600">Total Meetings</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-material border-l-4 border-l-green-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">{overallAttendanceRate}%</div>
+                <div className="text-sm text-gray-600">Organization Health</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-material border-l-4 border-l-blue-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">{members.length}</div>
+                <div className="text-sm text-gray-600">Active Members</div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-material border-l-4 border-l-orange-500">
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-orange-600 mb-2">
+                  {Math.round(actualAttendance / (totalMeetings || 1))}
+                </div>
+                <div className="text-sm text-gray-600">Avg per Meeting</div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Role-Specific Insights */}
+        {user?.role === 'chairman' && (
+          <Card className="shadow-material mb-6 border-l-4 border-l-purple-500">
+            <CardContent className="p-4">
+              <h3 className="text-lg font-medium text-purple-700 mb-3">
+                <span className="material-icons mr-2 align-middle">insights</span>
+                Leadership Insights
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-purple-50 p-3 rounded-lg">
+                  <p className="text-sm text-purple-800">
+                    <strong>Organization Health:</strong> {overallAttendanceRate >= 75 ? 'Excellent' : overallAttendanceRate >= 60 ? 'Good' : 'Needs Attention'}
+                  </p>
+                  <p className="text-xs text-purple-600 mt-1">
+                    Overall attendance rate of {overallAttendanceRate}%
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Meeting Frequency:</strong> {totalMeetings} meetings tracked
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Average {Math.round(actualAttendance / (totalMeetings || 1))} attendees per meeting
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-          
-          <Card className="shadow-material">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-success mb-2">{overallAttendanceRate}%</div>
-              <div className="text-sm text-gray-600">Overall Attendance</div>
+        )}
+
+        {user?.role === 'sonai' && (
+          <Card className="shadow-material mb-6 border-l-4 border-l-blue-500">
+            <CardContent className="p-4">
+              <h3 className="text-lg font-medium text-blue-700 mb-3">
+                <span className="material-icons mr-2 align-middle">trending_up</span>
+                My Performance
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Meeting Success:</strong> {overallAttendanceRate >= 70 ? 'Excellent' : overallAttendanceRate >= 50 ? 'Good' : 'Improving'}
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    {overallAttendanceRate}% attendance rate for your meetings
+                  </p>
+                </div>
+                <div className="bg-green-50 p-3 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    <strong>Total Impact:</strong> {actualAttendance} member attendances
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    Across {totalMeetings} meetings you organized
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
-          
-          <Card className="shadow-material">
-            <CardContent className="p-4 text-center">
-              <div className="text-3xl font-bold text-primary mb-2">{members.length}</div>
-              <div className="text-sm text-gray-600">Total Members</div>
-            </CardContent>
-          </Card>
-        </div>
+        )}
 
         {/* Member Attendance Details */}
         <Card className="shadow-material">
           <CardContent className="p-0">
             <div className="p-4 border-b border-gray-100">
-              <h3 className="text-lg font-medium text-foreground">Member Attendance</h3>
+              <h3 className="text-lg font-medium text-foreground">
+                {user?.role === 'sonai' ? 'Your Meeting Attendees' : 'Member Attendance Overview'}
+              </h3>
             </div>
             
             <div className="divide-y divide-gray-100">
