@@ -1,28 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { User } from '@shared/schema';
 
-// Lazy import Firebase to avoid initialization issues
-let firebaseAuth: any = null;
-let firebaseAuthFunctions: any = null;
-let firestoreUsers: any = null;
-
-const initializeFirebase = async () => {
-  try {
-    if (!firebaseAuth) {
-      const firebaseModule = await import('./firebase');
-      firebaseAuth = firebaseModule.auth;
-      
-      const authFunctions = await import('firebase/auth');
-      firebaseAuthFunctions = authFunctions;
-      
-      const firestoreModule = await import('./firestore');
-      firestoreUsers = firestoreModule.firestoreUsers;
-    }
-  } catch (error) {
-    console.log('Firebase modules not available:', error);
-  }
-};
-
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -30,7 +8,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
-// Create context with default value to avoid null issues
+// Create context with default value
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
@@ -39,18 +17,15 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     const initializeAuth = async () => {
       setLoading(true);
       
       try {
-        // Initialize Firebase modules
-        await initializeFirebase();
-        
-        // First check if there's a saved user in localStorage
+        // Check if there's a saved user in localStorage
         const savedUser = localStorage.getItem('cedoi-user');
         if (savedUser) {
           try {
@@ -61,12 +36,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        // Try to set up Firebase Auth listener (only if auth is available)
-        if (firebaseAuth && firebaseAuthFunctions) {
-          try {
-            const unsubscribe = firebaseAuthFunctions.onAuthStateChanged(firebaseAuth, async (firebaseUser: any) => {
+        // Try Firebase Auth initialization
+        try {
+          const firebaseModule = await import('./firebase');
+          const authFunctions = await import('firebase/auth');
+          const firestoreModule = await import('./firestore');
+          
+          const firebaseAuth = firebaseModule.auth;
+          const firestoreUsers = firestoreModule.firestoreUsers;
+
+          if (firebaseAuth && authFunctions && firestoreUsers) {
+            const unsubscribe = authFunctions.onAuthStateChanged(firebaseAuth, async (firebaseUser: any) => {
               try {
-                if (firebaseUser && firestoreUsers) {
+                if (firebaseUser) {
                   // Try to get/create user in Firestore
                   let firestoreUser = await firestoreUsers.getByEmail(firebaseUser.email!);
                   
@@ -85,21 +67,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   
                   setUser(firestoreUser);
                   localStorage.setItem('cedoi-user', JSON.stringify(firestoreUser));
-                } else if (!savedUser) {
+                } else {
                   setUser(null);
                   localStorage.removeItem('cedoi-user');
                 }
               } catch (error) {
-                console.log('Firebase Auth available but Firestore failed, using local storage only');
+                console.error('Firebase auth state change error:', error);
               }
             });
-            
+
+            // Cleanup function
             return () => unsubscribe();
-          } catch (error) {
-            console.log('Firebase Auth listener failed:', error);
           }
-        } else {
-          console.log('Firebase Auth not available, using local storage only');
+        } catch (firebaseError) {
+          console.log('Firebase modules not available:', firebaseError);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -116,30 +97,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       console.log('Login attempt for:', email);
       
-      // Ensure Firebase is initialized
-      await initializeFirebase();
-      
-      // Try Firebase Auth first (only if available)
-      if (firebaseAuth && firebaseAuthFunctions) {
-        try {
-          await firebaseAuthFunctions.signInWithEmailAndPassword(firebaseAuth, email, password);
-          console.log('Firebase login successful for:', email);
-          // User will be set by the auth state change listener
-          return; // Exit early if Firebase login succeeds
-        } catch (firebaseError: any) {
-          console.log('Firebase auth failed:', firebaseError.message);
-        }
-      } else {
-        console.log('Firebase auth not available, using fallback');
-      }
-
-      // Fallback for development - create user with mock data or try Firestore directly
-      let user;
-      
+      // Try Firebase Auth first
       try {
-        // Try to get user from Firestore directly
+        const firebaseModule = await import('./firebase');
+        const authFunctions = await import('firebase/auth');
+        const firestoreModule = await import('./firestore');
+        
+        const firebaseAuth = firebaseModule.auth;
+        const firestoreUsers = firestoreModule.firestoreUsers;
+
+        if (firebaseAuth && authFunctions) {
+          try {
+            await authFunctions.signInWithEmailAndPassword(firebaseAuth, email, password);
+            console.log('Firebase login successful for:', email);
+            return; // Exit early if Firebase login succeeds
+          } catch (firebaseError: any) {
+            console.log('Firebase auth failed:', firebaseError.message);
+          }
+        }
+
+        // Fallback for development - try Firestore directly
         if (firestoreUsers) {
-          user = await firestoreUsers.getByEmail(email);
+          let user = await firestoreUsers.getByEmail(email);
           
           if (!user) {
             const userData = {
@@ -153,25 +132,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             };
             user = await firestoreUsers.create(userData);
           }
+          
+          setUser(user);
+          localStorage.setItem('cedoi-user', JSON.stringify(user));
+          return;
         }
-      } catch (firestoreError) {
-        console.log('Firestore also not available, creating mock user');
+      } catch (firebaseError) {
+        console.log('Firebase/Firestore not available, using fallback');
       }
       
       // Final fallback - create mock user
-      if (!user) {
-        user = {
-          id: `user_${Date.now()}`,
-          email: email,
-          name: email.split('@')[0],
-          company: email.includes('sonai') ? 'CEDOI Administration' : 
-                  email.includes('chairman') ? 'CEDOI Board' : 'Guest Company',
-          role: email.includes('sonai') ? 'sonai' : 
-               email.includes('chairman') ? 'chairman' : 'member',
-          qrCode: null,
-          createdAt: new Date()
-        };
-      }
+      const user = {
+        id: `user_${Date.now()}`,
+        email: email,
+        name: email.split('@')[0],
+        company: email.includes('sonai') ? 'CEDOI Administration' : 
+                email.includes('chairman') ? 'CEDOI Board' : 'Guest Company',
+        role: email.includes('sonai') ? 'sonai' : 
+             email.includes('chairman') ? 'chairman' : 'member',
+        qrCode: null,
+        createdAt: new Date()
+      };
       
       setUser(user);
       localStorage.setItem('cedoi-user', JSON.stringify(user));
@@ -184,17 +165,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async (): Promise<void> => {
-    await initializeFirebase();
-    
-    if (firebaseAuth && firebaseAuthFunctions) {
+    try {
+      // Try Firebase logout
       try {
-        await firebaseAuthFunctions.signOut(firebaseAuth);
-      } catch (error) {
-        console.log('Firebase signout failed:', error);
+        const firebaseModule = await import('./firebase');
+        const authFunctions = await import('firebase/auth');
+        
+        const firebaseAuth = firebaseModule.auth;
+        if (firebaseAuth && authFunctions) {
+          await authFunctions.signOut(firebaseAuth);
+        }
+      } catch (firebaseError) {
+        console.log('Firebase logout not available');
       }
+      
+      // Clear local state
+      setUser(null);
+      localStorage.removeItem('cedoi-user');
+    } catch (error) {
+      console.error('Logout error:', error);
     }
-    setUser(null);
-    localStorage.removeItem('cedoi-user');
   };
 
   return (
