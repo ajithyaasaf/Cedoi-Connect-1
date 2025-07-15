@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/lib/auth-simple';
+import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import type { Meeting, User } from '@shared/schema';
 

@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/lib/auth-simple';
+import { useAuth } from '@/lib/auth';
 import { notificationService } from '@/lib/notifications';
 
 interface CreateMeetingScreenProps {

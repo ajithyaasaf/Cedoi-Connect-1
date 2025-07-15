@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '@/lib/auth-simple';
+import { useAuth } from '@/lib/auth';
 import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
 import Dashboard from '@/components/Dashboard';
