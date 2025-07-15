@@ -21,6 +21,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'present' | 'absent' | 'pending'>('all');
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
@@ -98,6 +99,37 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         title: "Bulk update complete",
         description: `${pendingMembers.length} members marked present`,
       });
+    }
+  };
+
+  const handleSubmitAttendance = async () => {
+    setIsSaving(true);
+    try {
+      // Save attendance for all members who have a status
+      const attendancePromises = Object.entries(attendanceStatus).map(([userId, status]) => {
+        return api.attendance.updateStatus(meetingId, userId, status);
+      });
+      
+      await Promise.all(attendancePromises);
+      
+      toast({
+        title: "Attendance saved successfully",
+        description: `${Object.keys(attendanceStatus).length} members' attendance recorded`,
+      });
+      
+      // Go back to dashboard after successful save
+      setTimeout(() => {
+        onBack();
+      }, 1500);
+      
+    } catch (error) {
+      toast({
+        title: "Save failed",
+        description: "Please try again or contact support",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -348,6 +380,44 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
           </div>
         )}
       </div>
+
+      {/* Submit Button - Show when all members are marked or when there's at least some attendance */}
+      {(isComplete || Object.keys(attendanceStatus).length > 0) && (
+        <div className="bg-white border-t p-4 safe-area-pb">
+          <Button
+            onClick={handleSubmitAttendance}
+            disabled={isSaving || Object.keys(attendanceStatus).length === 0}
+            className={`w-full py-3 font-semibold text-base rounded-full transition-all duration-200 ${
+              isComplete 
+                ? 'bg-green-500 hover:bg-green-600 text-white' 
+                : 'bg-[#04004B] hover:bg-[#04004B]/90 text-white'
+            }`}
+          >
+            {isSaving ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Saving Attendance...</span>
+              </div>
+            ) : isComplete ? (
+              <div className="flex items-center space-x-2">
+                <span className="material-icons">check_circle</span>
+                <span>Submit Complete Attendance ({members.length} members)</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <span className="material-icons">save</span>
+                <span>Save Progress ({Object.keys(attendanceStatus).length}/{members.length} marked)</span>
+              </div>
+            )}
+          </Button>
+          
+          {!isComplete && Object.keys(attendanceStatus).length > 0 && (
+            <p className="text-xs text-gray-500 text-center mt-2">
+              You can save progress and continue later, or mark remaining {pendingCount} members
+            </p>
+          )}
+        </div>
+      )}
 
       {/* QR Scanner Modal */}
       {showQRScanner && (
