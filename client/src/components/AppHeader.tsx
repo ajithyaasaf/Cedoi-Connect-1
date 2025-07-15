@@ -16,7 +16,7 @@ export default function AppHeader() {
           <img 
             src={cedoiLogo} 
             alt="CEDOI Logo" 
-            className="w-14 h-14 sm:w-16 sm:h-16 object-contain flex-shrink-0"
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain flex-shrink-0"
             onError={(e) => {
               // Fallback to icon if image fails to load
               e.currentTarget.style.display = 'none';
@@ -25,7 +25,7 @@ export default function AppHeader() {
           />
           <span className="material-icons text-white text-lg sm:text-xl hidden">groups</span>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-medium truncate">CEDOI Madurai</h1>
+            <h1 className="text-lg sm:text-xl font-medium truncate">Logo</h1>
             <p className="text-xs sm:text-sm opacity-90 capitalize truncate">{user?.role || 'Member'}</p>
           </div>
         </div>
