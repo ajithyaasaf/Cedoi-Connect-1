@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@/lib/auth-new';
+import { useAuth } from '@/lib/auth-simple';
 import { Button } from '@/components/ui/button';
 import cedoiLogo from '@assets/image_1752498683514.png';
 
