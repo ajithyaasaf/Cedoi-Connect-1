@@ -63,13 +63,29 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
     queryFn: () => api.attendance.getStats(),
   });
 
+  // Filter meetings based on user role and status
   const upcomingMeetings = meetings.filter(meeting => 
     new Date(meeting.date) > new Date()
-  ).slice(0, 3);
+  );
 
-  const recentMeetings = meetings.filter(meeting => 
+  const completedMeetings = meetings.filter(meeting => 
     new Date(meeting.date) <= new Date()
-  ).slice(0, 3);
+  );
+
+  // For Sonai - show only their assigned meetings
+  const sonaiUpcomingMeetings = user?.role === 'sonai' ? 
+    upcomingMeetings.filter(meeting => meeting.createdBy === user.id) : [];
+  
+  const sonaiCompletedMeetings = user?.role === 'sonai' ? 
+    completedMeetings.filter(meeting => meeting.createdBy === user.id) : [];
+
+  // For Chairman - show all meetings
+  const chairmanUpcomingMeetings = user?.role === 'chairman' ? upcomingMeetings : [];
+  const chairmanCompletedMeetings = user?.role === 'chairman' ? completedMeetings : [];
+
+  // For regular display
+  const displayUpcomingMeetings = upcomingMeetings.slice(0, 3);
+  const displayRecentMeetings = completedMeetings.slice(0, 3);
 
   return (
     <div className="p-4 pb-20">
@@ -150,37 +166,196 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
         </Card>
       )}
 
-      {/* Recent Meetings */}
-      <Card className="shadow-material mb-6">
-        <CardContent className="p-0">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="text-lg font-medium text-foreground">Recent Meetings</h3>
-          </div>
-          
-          <div className="divide-y divide-gray-100">
-            {recentMeetings.map((meeting) => (
-              <div key={meeting.id} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-                      <span className="material-icons text-white text-sm">event</span>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-foreground">Weekly Meeting</h4>
-                      <p className="text-sm text-gray-600">
-                        {new Date(meeting.date).toLocaleDateString()}
-                      </p>
-                    </div>
+      {/* Role-specific Meeting Management */}
+      {user?.role === 'sonai' && (
+        <>
+          {/* Sonai's Assigned Meetings */}
+          <Card className="shadow-material mb-6">
+            <CardContent className="p-0">
+              <div className="p-4 border-b border-gray-100">
+                <h3 className="text-lg font-medium text-foreground">My Assigned Meetings</h3>
+              </div>
+              
+              {/* Upcoming Meetings */}
+              <div className="p-4">
+                <h4 className="font-medium text-foreground mb-3 flex items-center">
+                  <span className="material-icons text-blue-500 mr-2">schedule</span>
+                  Upcoming ({sonaiUpcomingMeetings.length})
+                </h4>
+                
+                {sonaiUpcomingMeetings.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No upcoming meetings</p>
+                ) : (
+                  <div className="space-y-2">
+                    {sonaiUpcomingMeetings.map((meeting) => (
+                      <div key={meeting.id} className="bg-blue-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium text-foreground">Weekly Meeting</h5>
+                            <p className="text-sm text-gray-600">
+                              {new Date(meeting.date).toLocaleDateString()} at {new Date(meeting.date).toLocaleTimeString()}
+                            </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                          </div>
+                          <Button
+                            onClick={() => onMarkAttendance(meeting.id)}
+                            size="sm"
+                            className="bg-blue-500 hover:bg-blue-600 text-white"
+                          >
+                            Mark Attendance
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-right">
-                    <AttendanceStats meetingId={meeting.id} />
+                )}
+              </div>
+              
+              {/* Completed Meetings */}
+              <div className="p-4 border-t border-gray-100">
+                <h4 className="font-medium text-foreground mb-3 flex items-center">
+                  <span className="material-icons text-green-500 mr-2">check_circle</span>
+                  Completed ({sonaiCompletedMeetings.length})
+                </h4>
+                
+                {sonaiCompletedMeetings.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No completed meetings</p>
+                ) : (
+                  <div className="space-y-2">
+                    {sonaiCompletedMeetings.slice(0, 5).map((meeting) => (
+                      <div key={meeting.id} className="bg-green-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium text-foreground">Weekly Meeting</h5>
+                            <p className="text-sm text-gray-600">
+                              {new Date(meeting.date).toLocaleDateString()}
+                            </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                          </div>
+                          <div className="text-right">
+                            <AttendanceStats meetingId={meeting.id} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {user?.role === 'chairman' && (
+        <>
+          {/* Chairman's Meeting Overview */}
+          <Card className="shadow-material mb-6">
+            <CardContent className="p-0">
+              <div className="p-4 border-b border-gray-100">
+                <h3 className="text-lg font-medium text-foreground">Meeting Overview</h3>
+              </div>
+              
+              {/* All Upcoming Meetings */}
+              <div className="p-4">
+                <h4 className="font-medium text-foreground mb-3 flex items-center">
+                  <span className="material-icons text-blue-500 mr-2">event_upcoming</span>
+                  All Upcoming Meetings ({chairmanUpcomingMeetings.length})
+                </h4>
+                
+                {chairmanUpcomingMeetings.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No upcoming meetings</p>
+                ) : (
+                  <div className="space-y-2">
+                    {chairmanUpcomingMeetings.map((meeting) => (
+                      <div key={meeting.id} className="bg-blue-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium text-foreground">Weekly Meeting</h5>
+                            <p className="text-sm text-gray-600">
+                              {new Date(meeting.date).toLocaleDateString()} at {new Date(meeting.date).toLocaleTimeString()}
+                            </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-xs text-gray-500">Assigned to Sonai</div>
+                            <div className="text-xs bg-blue-100 px-2 py-1 rounded-full">Upcoming</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* All Completed Meetings */}
+              <div className="p-4 border-t border-gray-100">
+                <h4 className="font-medium text-foreground mb-3 flex items-center">
+                  <span className="material-icons text-green-500 mr-2">history</span>
+                  Meeting History ({chairmanCompletedMeetings.length})
+                </h4>
+                
+                {chairmanCompletedMeetings.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No completed meetings</p>
+                ) : (
+                  <div className="space-y-2">
+                    {chairmanCompletedMeetings.slice(0, 5).map((meeting) => (
+                      <div key={meeting.id} className="bg-green-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className="font-medium text-foreground">Weekly Meeting</h5>
+                            <p className="text-sm text-gray-600">
+                              {new Date(meeting.date).toLocaleDateString()}
+                            </p>
+                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                          </div>
+                          <div className="text-right">
+                            <AttendanceStats meetingId={meeting.id} />
+                            <div className="text-xs bg-green-100 px-2 py-1 rounded-full mt-1">Completed</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {/* Recent Meetings - For Members */}
+      {user?.role === 'member' && (
+        <Card className="shadow-material mb-6">
+          <CardContent className="p-0">
+            <div className="p-4 border-b border-gray-100">
+              <h3 className="text-lg font-medium text-foreground">Recent Meetings</h3>
+            </div>
+            
+            <div className="divide-y divide-gray-100">
+              {displayRecentMeetings.map((meeting) => (
+                <div key={meeting.id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
+                        <span className="material-icons text-white text-sm">event</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-foreground">Weekly Meeting</h4>
+                        <p className="text-sm text-gray-600">
+                          {new Date(meeting.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <AttendanceStats meetingId={meeting.id} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Floating Action Button */}
       {user?.role === 'sonai' && (
