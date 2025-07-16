@@ -53,10 +53,10 @@ if (typeof window !== 'undefined' && import.meta.hot) {
   });
   
   // Additional protection for HMR module loading
-  const originalImport = window.import || ((specifier: string) => import(specifier));
+  const originalImport = (window as any).import || ((specifier: string) => import(/* @vite-ignore */ specifier));
   
   // Override import to handle HMR module loading errors
-  if (typeof window.import === 'undefined') {
+  if (typeof (window as any).import === 'undefined') {
     (window as any).import = async (specifier: string) => {
       try {
         return await originalImport(specifier);

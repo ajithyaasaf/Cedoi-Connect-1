@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import "./lib/react-guardian"; // Import guardian to prevent React errors
-import "./lib/hmr-fix"; // Import HMR fix to prevent RefreshRuntime errors
+// import "./lib/hmr-fix"; // Temporarily disabled to isolate 500 errors
 
 // Wrap in try-catch to prevent startup errors
 try {

@@ -6,8 +6,12 @@
 // Ensure React is globally available
 if (typeof window !== 'undefined' && !(window as any).React) {
   try {
-    const React = require('react');
-    (window as any).React = React;
+    // Use dynamic import instead of require in browser
+    import('react').then(React => {
+      (window as any).React = React;
+    }).catch(e => {
+      console.warn('React not found in window object');
+    });
   } catch (e) {
     console.warn('React not found in window object');
   }
