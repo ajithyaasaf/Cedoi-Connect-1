@@ -233,10 +233,21 @@ export const firestoreAttendance = {
     const querySnapshot = await getDocs(q);
     const records = querySnapshot.docs.map(doc => doc.data());
     
-    const totalMeetings = new Set(records.map(r => r.meetingId)).size;
-    const presentCount = records.filter(r => r.status === 'present').length;
-    const absentCount = records.filter(r => r.status === 'absent').length;
-    const averageAttendance = totalMeetings > 0 ? (presentCount / totalMeetings) * 100 : 0;
+    // Remove duplicates per user per meeting (keep latest status)
+    const uniqueRecords = new Map();
+    records.forEach(record => {
+      const key = `${record.meetingId}-${record.userId}`;
+      uniqueRecords.set(key, record);
+    });
+    
+    const dedupedRecords = Array.from(uniqueRecords.values());
+    const totalMeetings = new Set(dedupedRecords.map(r => r.meetingId)).size;
+    const presentCount = dedupedRecords.filter(r => r.status === 'present').length;
+    const absentCount = dedupedRecords.filter(r => r.status === 'absent').length;
+    const totalRecords = dedupedRecords.length;
+    
+    // Calculate attendance percentage based on present vs total attendance records
+    const averageAttendance = totalRecords > 0 ? Math.min(100, (presentCount / totalRecords) * 100) : 0;
     
     return {
       totalMeetings,
