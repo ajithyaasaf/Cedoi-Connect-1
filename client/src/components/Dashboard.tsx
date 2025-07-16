@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
+import { safeAgenda, safeText, safeRender } from '@/lib/render-safety';
 import type { Meeting, User } from '@shared/schema';
 
 // Component to show attendance stats for a specific meeting
@@ -192,12 +193,12 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
           <CardContent className="p-4">
             <div className="flex items-center mb-3">
               <span className="material-icons text-gray-500 mr-2">location_on</span>
-              <span className="text-sm text-gray-700">{todaysMeeting.venue}</span>
+              <span className="text-sm text-gray-700">{safeText(todaysMeeting.venue, 'Venue TBD')}</span>
             </div>
             
             <div className="mb-4">
               <h4 className="font-medium text-foreground mb-2">Agenda</h4>
-              <p className="text-sm text-gray-600">{todaysMeeting.agenda || 'No agenda specified'}</p>
+              <p className="text-sm text-gray-600">{safeAgenda(todaysMeeting.agenda)}</p>
             </div>
             
             <div className="mb-4">
@@ -286,11 +287,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                                 hour12: true
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            <p className="text-xs text-gray-500">{safeText(meeting.venue, 'Venue TBD')}</p>
                             {meeting.agenda && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {meeting.agenda}
+                                {safeAgenda(meeting.agenda)}
                               </p>
                             )}
                           </div>
@@ -336,11 +337,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                                 hour12: true
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            <p className="text-xs text-gray-500">{safeText(meeting.venue, 'Venue TBD')}</p>
                             {meeting.agenda && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {meeting.agenda}
+                                {safeAgenda(meeting.agenda)}
                               </p>
                             )}
                           </div>
@@ -395,11 +396,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                                 hour12: true
                               })}
                             </p>
-                            <p className="text-xs text-gray-500">{meeting.venue}</p>
+                            <p className="text-xs text-gray-500">{safeText(meeting.venue, 'Venue TBD')}</p>
                             {meeting.agenda && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {meeting.agenda}
+                                {safeAgenda(meeting.agenda)}
                               </p>
                             )}
                           </div>

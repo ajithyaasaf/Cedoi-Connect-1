@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { api } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { safeName, safeCompany, safeText } from '@/lib/render-safety';
 import QRScanner from './QRScanner';
 import type { User, AttendanceRecord } from '@shared/schema';
 
@@ -57,7 +58,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       const user = users.find(u => u.id === userId);
       toast({
-        title: `${user?.name} marked ${status}`,
+        title: `${safeName(user?.name)} marked ${status}`,
         description: "Attendance updated",
       });
     },
@@ -65,7 +66,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
       const user = users.find(u => u.id === userId);
       toast({
         title: "Update failed",
-        description: `Please try again for ${user?.name}`,
+        description: `Please try again for ${safeName(user?.name)}`,
         variant: "destructive",
       });
     },

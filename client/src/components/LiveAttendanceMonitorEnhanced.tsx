@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { safeName, safeCompany, safeText, safeAgenda } from '@/lib/render-safety';
 import type { Meeting, User, AttendanceRecord } from '@shared/schema';
 import cedoiLogoUrl from '@assets/Logo_1752669479851.png';
 
