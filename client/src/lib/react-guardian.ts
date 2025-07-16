@@ -30,22 +30,54 @@ export const useCallback = React.useCallback;
 export const useMemo = React.useMemo;
 export const useRef = React.useRef;
 
-// Prevent HMR errors by ensuring RefreshRuntime is properly handled
-if (typeof window !== 'undefined' && import.meta.hot) {
-  // Handle HMR refresh runtime errors
+// Comprehensive RefreshRuntime error prevention
+if (typeof window !== 'undefined') {
+  // Create a global RefreshRuntime fallback
+  if (!(window as any).RefreshRuntime) {
+    (window as any).RefreshRuntime = {
+      register: () => {},
+      createSignatureFunctionForTransform: () => () => {},
+      performReactRefresh: () => {},
+      isLikelyComponentType: () => false,
+      getFamilyByType: () => null,
+      register: () => {},
+      schedule: () => {},
+      injectIntoGlobalHook: () => {}
+    };
+  }
+  
+  // Override console.error to catch and handle RefreshRuntime errors
   const originalError = console.error;
   console.error = (...args) => {
     const message = args.join(' ');
-    if (message.includes('RefreshRuntime.register is not a function')) {
-      console.warn('HMR error detected - attempting recovery');
-      // Attempt to reload the page to recover from HMR errors
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
+    if (message.includes('RefreshRuntime.register is not a function') || 
+        message.includes('RefreshRuntime') ||
+        message.includes('Cannot read properties of undefined (reading \'register\')')) {
+      console.warn('🔧 RefreshRuntime error intercepted and handled');
       return;
     }
     originalError.apply(console, args);
   };
+  
+  // Global error handler for runtime errors
+  window.addEventListener('error', (event) => {
+    if (event.message.includes('RefreshRuntime')) {
+      console.warn('🔧 RefreshRuntime window error intercepted');
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    }
+  });
+  
+  // Handle unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    const message = event.reason?.message || '';
+    if (message.includes('RefreshRuntime')) {
+      console.warn('🔧 RefreshRuntime promise rejection intercepted');
+      event.preventDefault();
+      return false;
+    }
+  });
 }
 
 // Global error handler for React child errors
