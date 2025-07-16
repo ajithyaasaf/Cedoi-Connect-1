@@ -481,7 +481,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
       )}
 
       {/* Floating Action Button */}
-      {user?.role === 'sonai' && (
+      {user?.role === 'chairman' && (
         <Button
           onClick={onCreateMeeting}
           className="floating-action-button w-14 h-14 bg-accent hover:bg-accent/90 text-white rounded-full shadow-material-lg ripple"

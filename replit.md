@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a mobile-first Progressive Web Application (PWA) designed for the CEDOI Madurai Forum to simplify meeting scheduling, attendance marking, and reporting. The application serves two main user roles: Sonai (meeting organizer) and Chairman (meeting oversight and reporting).
+This is a mobile-first Progressive Web Application (PWA) designed for the CEDOI Madurai Forum to simplify meeting scheduling, attendance marking, and reporting. The application serves two main user roles: Chairman (meeting creator) and Sonai (attendance marker).
 
 **Current Status (July 2025)**: Completely integrated with Firebase/Firestore database with fallback support, responsive navigation, and enhanced meeting creation interface. Full Firestore implementation for all data operations.
 
@@ -39,7 +39,7 @@ Preferred communication style: Simple, everyday language.
 - **User Context**: React context for authentication state
 - **Firestore Integration**: User data stored and retrieved from Firestore
 - **Auto User Creation**: New users automatically created in Firestore on first login
-- **User Roles**: 'sonai' (organizer), 'chairman' (oversight), and 'member'
+- **User Roles**: 'sonai' (attendance marker), 'chairman' (meeting creator), and 'member'
 
 ### Meeting Management
 - **Enhanced Meeting Creation**: Improved time picker with dropdown selectors (Hour/Minute/AM-PM)
@@ -72,8 +72,8 @@ Preferred communication style: Simple, everyday language.
    - Session persisted in localStorage
 
 2. **Meeting Creation Flow**:
-   - Sonai creates meeting → Validated with Zod → Stored in database
-   - Meeting appears in dashboard → Available for attendance marking
+   - Chairman creates meeting → Validated with Zod → Stored in database
+   - Meeting appears in dashboard → Available for attendance marking by Sonai
 
 3. **Attendance Flow**:
    - Meeting selected → User list displayed → Attendance status toggled
