@@ -23,12 +23,20 @@ function AttendanceStats({ meetingId }: { meetingId: string }) {
   });
 
   const totalMembers = users.filter(u => u.role === 'member' || u.role === 'sonai').length;
-  const presentCount = attendanceRecords.filter(r => r.status === 'present').length;
-  const totalMarked = attendanceRecords.length; // Present + Absent
   
-  // Calculate both attendance rate and completion rate
-  const attendancePercentage = totalMembers > 0 ? Math.round((presentCount / totalMembers) * 100) : 0;
-  const completionPercentage = totalMembers > 0 ? Math.round((totalMarked / totalMembers) * 100) : 0;
+  // Create a map to avoid duplicate records per user
+  const attendanceMap = new Map();
+  attendanceRecords.forEach(record => {
+    attendanceMap.set(record.userId, record.status);
+  });
+  
+  // Count unique users who are marked as present
+  const presentCount = Array.from(attendanceMap.values()).filter(status => status === 'present').length;
+  const totalMarked = attendanceMap.size; // Unique users marked (present + absent)
+  
+  // Calculate both attendance rate and completion rate - cap at 100%
+  const attendancePercentage = totalMembers > 0 ? Math.min(100, Math.round((presentCount / totalMembers) * 100)) : 0;
+  const completionPercentage = totalMembers > 0 ? Math.min(100, Math.round((totalMarked / totalMembers) * 100)) : 0;
   
   // Determine what to show based on completion status
   const isCompleted = completionPercentage >= 80; // Consider completed when 80%+ marked
