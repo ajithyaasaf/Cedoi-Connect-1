@@ -162,6 +162,150 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
     }
   };
 
+  const handleCSVExport = () => {
+    const csvData = [];
+    
+    // Add header
+    csvData.push(['Name', 'Company', 'Role', 'Status']);
+    
+    // Add member data
+    members.forEach(member => {
+      const status = attendanceMap.get(member.id);
+      csvData.push([
+        member.name,
+        member.company,
+        member.role,
+        status === 'present' ? 'Present' : status === 'absent' ? 'Absent' : 'Pending'
+      ]);
+    });
+    
+    // Convert to CSV string
+    const csvContent = csvData.map(row => 
+      row.map(field => `"${field}"`).join(',')
+    ).join('\n');
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    
+    const meetingDate = new Date(meeting.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).replace(/\//g, '-');
+    
+    link.setAttribute('download', `attendance-report-${meetingDate}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrintReport = () => {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    const meetingDate = new Date(meeting.date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Attendance Report - CEDOI Madurai Forum</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #04004B; padding-bottom: 15px; }
+            .title { color: #04004B; margin: 0; font-size: 24px; }
+            .subtitle { color: #666; margin: 5px 0; }
+            .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+            .stat-box { text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+            .stat-number { font-size: 24px; font-weight: bold; color: #04004B; }
+            .stat-label { font-size: 12px; color: #666; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #04004B; color: white; font-weight: bold; }
+            .present { background-color: #d4edda; color: #155724; }
+            .absent { background-color: #f8d7da; color: #721c24; }
+            .pending { background-color: #fff3cd; color: #856404; }
+            .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1 class="title">CEDOI Madurai Forum</h1>
+            <h2 class="subtitle">Attendance Report</h2>
+            <p class="subtitle">${meetingDate} • ${meeting.venue}</p>
+            <p class="subtitle">Generated on: ${new Date().toLocaleString()}</p>
+          </div>
+          
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-number">${totalMembers}</div>
+              <div class="stat-label">Total Members</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">${presentCount}</div>
+              <div class="stat-label">Present</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">${absentCount}</div>
+              <div class="stat-label">Absent</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">${pendingCount}</div>
+              <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">${attendancePercentage}%</div>
+              <div class="stat-label">Attendance Rate</div>
+            </div>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${members.map(member => {
+                const status = attendanceMap.get(member.id);
+                const statusText = status === 'present' ? 'Present' : status === 'absent' ? 'Absent' : 'Pending';
+                const statusClass = status === 'present' ? 'present' : status === 'absent' ? 'absent' : 'pending';
+                
+                return `
+                  <tr>
+                    <td>${member.name}</td>
+                    <td>${member.company}</td>
+                    <td>${member.role}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+          
+          <div class="footer">
+            <p>This report was generated automatically by the CEDOI Madurai Forum Meeting Management System</p>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Enhanced Header */}
@@ -417,11 +561,21 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                 <p className="text-sm text-gray-600">Download attendance report for this meeting</p>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleCSVExport}
+                  className="hover:bg-green-50 hover:border-green-200"
+                >
                   <span className="material-icons text-sm mr-1">file_download</span>
                   CSV Export
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handlePrintReport}
+                  className="hover:bg-blue-50 hover:border-blue-200"
+                >
                   <span className="material-icons text-sm mr-1">print</span>
                   Print Report
                 </Button>
