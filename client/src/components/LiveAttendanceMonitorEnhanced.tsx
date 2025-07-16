@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import type { Meeting, User, AttendanceRecord } from '@shared/schema';
+import cedoiLogoUrl from '@assets/Logo_1752669479851.png';
 
 interface LiveAttendanceMonitorEnhancedProps {
   meetingId: string;
@@ -236,57 +237,80 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
     document.body.removeChild(link);
   };
 
-  const handlePrintReport = () => {
-    const printWindow = window.open('', '', 'height=600,width=800');
-    const meetingDate = new Date(meeting.date).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    const meetingTime = new Date(meeting.date).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-    
-    const printContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Attendance Report - CEDOI Madurai Forum</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #04004B; padding-bottom: 15px; }
-            .logo { max-width: 300px; height: auto; margin-bottom: 20px; }
-            .subtitle { color: #666; margin: 5px 0; font-size: 16px; }
-            .meeting-details { margin: 15px 0; }
-            .stats { display: flex; justify-content: space-around; margin: 20px 0; }
-            .stat-box { text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-            .stat-number { font-size: 24px; font-weight: bold; color: #04004B; }
-            .stat-label { font-size: 12px; color: #666; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #04004B; color: white; font-weight: bold; }
-            .present { background-color: #d4edda; color: #155724; }
-            .absent { background-color: #f8d7da; color: #721c24; }
-            .pending { background-color: #fff3cd; color: #856404; }
-            .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <img src="/attached_assets/Logo_1752669479851.png" alt="CEDOI Logo" class="logo" />
-            <h2 class="subtitle">Attendance Report</h2>
-            <div class="meeting-details">
-              <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
-              <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
-              <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
-              ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
-              <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+  const handlePrintReport = async () => {
+    // Convert image to base64 for embedding in print document
+    const convertImageToBase64 = (url: string): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx?.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/png');
+          resolve(dataURL);
+        };
+        img.onerror = () => reject('Failed to load image');
+        img.src = url;
+      });
+    };
+
+    try {
+      // Get base64 version of logo
+      const logoBase64 = await convertImageToBase64(cedoiLogoUrl);
+      
+      const printWindow = window.open('', '', 'height=600,width=800');
+      const meetingDate = new Date(meeting.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      const meetingTime = new Date(meeting.date).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Attendance Report - CEDOI Madurai Forum</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #04004B; padding-bottom: 15px; }
+              .logo { max-width: 300px; height: auto; margin-bottom: 20px; }
+              .subtitle { color: #666; margin: 5px 0; font-size: 16px; }
+              .meeting-details { margin: 15px 0; }
+              .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+              .stat-box { text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+              .stat-number { font-size: 24px; font-weight: bold; color: #04004B; }
+              .stat-label { font-size: 12px; color: #666; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #04004B; color: white; font-weight: bold; }
+              .present { background-color: #d4edda; color: #155724; }
+              .absent { background-color: #f8d7da; color: #721c24; }
+              .pending { background-color: #fff3cd; color: #856404; }
+              .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <img src="${logoBase64}" alt="CEDOI Logo" class="logo" />
+              <h2 class="subtitle">Attendance Report</h2>
+              <div class="meeting-details">
+                <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
+                <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
+                <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
+                ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
+                <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+              </div>
             </div>
-          </div>
           
           <div class="stats">
             <div class="stat-box">
@@ -345,10 +369,127 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
       </html>
     `;
     
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    } catch (error) {
+      console.error('Failed to load logo for print:', error);
+      // Fallback: create a simple text-based print without logo
+      const printWindow = window.open('', '', 'height=600,width=800');
+      const meetingDate = new Date(meeting.date).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      const meetingTime = new Date(meeting.date).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      
+      const fallbackContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Attendance Report - CEDOI Madurai Forum</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #04004B; padding-bottom: 15px; }
+              .title { color: #04004B; margin: 0; font-size: 24px; font-weight: bold; }
+              .subtitle { color: #666; margin: 5px 0; font-size: 16px; }
+              .meeting-details { margin: 15px 0; }
+              .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+              .stat-box { text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+              .stat-number { font-size: 24px; font-weight: bold; color: #04004B; }
+              .stat-label { font-size: 12px; color: #666; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #04004B; color: white; font-weight: bold; }
+              .present { background-color: #d4edda; color: #155724; }
+              .absent { background-color: #f8d7da; color: #721c24; }
+              .pending { background-color: #fff3cd; color: #856404; }
+              .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1 class="title">CEDOI Madurai Forum</h1>
+              <h2 class="subtitle">Building Outstanding Entrepreneurs</h2>
+              <h3 class="subtitle">Attendance Report</h3>
+              <div class="meeting-details">
+                <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
+                <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
+                <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
+                ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
+                <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+              </div>
+            </div>
+            
+            <div class="stats">
+              <div class="stat-box">
+                <div class="stat-number">${totalMembers}</div>
+                <div class="stat-label">Total Members</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${presentCount}</div>
+                <div class="stat-label">Present</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${absentCount}</div>
+                <div class="stat-label">Absent</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${pendingCount}</div>
+                <div class="stat-label">Pending</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">${attendancePercentage}%</div>
+                <div class="stat-label">Attendance Rate</div>
+              </div>
+            </div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${members.map(member => {
+                  const status = attendanceMap.get(member.id);
+                  const statusText = status === 'present' ? 'Present' : status === 'absent' ? 'Absent' : 'Pending';
+                  const statusClass = status === 'present' ? 'present' : status === 'absent' ? 'absent' : 'pending';
+                  
+                  return `
+                    <tr>
+                      <td>${member.name}</td>
+                      <td>${member.company}</td>
+                      <td>${member.role}</td>
+                      <td class="${statusClass}">${statusText}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+            
+            <div class="footer">
+              <p>This report was generated automatically by the CEDOI Madurai Forum Meeting Management System</p>
+            </div>
+          </body>
+        </html>
+      `;
+      
+      printWindow?.document.write(fallbackContent);
+      printWindow?.document.close();
+      printWindow?.focus();
+      printWindow?.print();
+    }
   };
 
   return (
