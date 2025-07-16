@@ -290,15 +290,40 @@ export const api = {
       () => mockMeetings.find(m => m.id === id) || null
     ),
     getTodaysMeeting: async () => withFirestoreFallback(
-      () => firestoreMeetings.getTodaysMeeting(),
-      () => {
-        const today = new Date();
-        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-        
-        return mockMeetings.find(m => 
-          m.date >= todayStart && m.date < todayEnd && m.isActive
-        ) || null;
+      async () => {
+        console.log('API: Attempting Firestore getTodaysMeeting...');
+        const result = await firestoreMeetings.getTodaysMeeting();
+        console.log('API: Firestore getTodaysMeeting result:', result);
+        return result;
+      },
+      async () => {
+        console.log('API: Firestore getTodaysMeeting failed, using getAll() to find today\'s meeting...');
+        // Fallback: Use getAll() and filter for today's meeting
+        try {
+          const allMeetings = await firestoreMeetings.getAll();
+          console.log('API: Got all meetings from Firestore for today filter:', allMeetings);
+          
+          const today = new Date();
+          const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+          
+          const todaysMeeting = allMeetings.find(m => {
+            const meetingDate = new Date(m.date);
+            return meetingDate >= todayStart && meetingDate < todayEnd && m.isActive;
+          });
+          
+          console.log('API: Found today\'s meeting from getAll():', todaysMeeting);
+          return todaysMeeting || null;
+        } catch (error) {
+          console.log('API: Firestore getAll() also failed, using mock data:', error);
+          const today = new Date();
+          const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+          
+          return mockMeetings.find(m => 
+            m.date >= todayStart && m.date < todayEnd && m.isActive
+          ) || null;
+        }
       }
     ),
     getByUser: async (userId: string) => withFirestoreFallback(
