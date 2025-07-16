@@ -197,7 +197,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
             
             <div className="mb-4">
               <h4 className="font-medium text-foreground mb-2">Agenda</h4>
-              <p className="text-sm text-gray-600">{todaysMeeting.agenda}</p>
+              <p className="text-sm text-gray-600">{todaysMeeting.agenda || 'No agenda specified'}</p>
             </div>
             
             <div className="mb-4">
