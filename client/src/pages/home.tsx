@@ -8,12 +8,14 @@ import AttendanceLandingScreen from '@/components/AttendanceLandingScreen';
 import ReportsEnhanced from '@/components/ReportsEnhanced';
 import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
+import LiveAttendanceMonitor from '@/components/LiveAttendanceMonitor';
 import BottomNavigation from '@/components/BottomNavigation';
 
 export default function Home() {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [attendanceMeetingId, setAttendanceMeetingId] = useState<string | null>(null);
+  const [liveMonitorMeetingId, setLiveMonitorMeetingId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -46,9 +48,15 @@ export default function Home() {
     setActiveTab('attendance-marking');
   };
 
+  const handleViewLiveAttendance = (meetingId: string) => {
+    setLiveMonitorMeetingId(meetingId);
+    setActiveTab('live-monitor');
+  };
+
   const handleBackToDashboard = () => {
     setActiveTab('dashboard');
     setAttendanceMeetingId(null);
+    setLiveMonitorMeetingId(null);
   };
 
   const renderContent = () => {
@@ -58,6 +66,7 @@ export default function Home() {
           <Dashboard
             onCreateMeeting={handleCreateMeeting}
             onMarkAttendance={handleMarkAttendance}
+            onViewLiveAttendance={handleViewLiveAttendance}
           />
         );
       case 'attendance':
@@ -81,6 +90,17 @@ export default function Home() {
         return <ReportsEnhanced onBack={handleBackToDashboard} />;
       case 'create-meeting':
         return <CreateMeetingScreen onBack={handleBackToDashboard} />;
+      case 'live-monitor':
+        return liveMonitorMeetingId ? (
+          <LiveAttendanceMonitor
+            meetingId={liveMonitorMeetingId}
+            onBack={handleBackToDashboard}
+          />
+        ) : (
+          <div className="p-4 text-center">
+            <p className="text-gray-600">No meeting selected for live monitoring</p>
+          </div>
+        );
       case 'settings':
         return <SettingsScreen onBack={handleBackToDashboard} />;
       default:

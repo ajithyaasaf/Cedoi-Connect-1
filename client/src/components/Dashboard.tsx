@@ -33,9 +33,10 @@ function AttendanceStats({ meetingId }: { meetingId: string }) {
 interface DashboardProps {
   onCreateMeeting: () => void;
   onMarkAttendance: (meetingId: string) => void;
+  onViewLiveAttendance: (meetingId: string) => void;
 }
 
-export default function Dashboard({ onCreateMeeting, onMarkAttendance }: DashboardProps) {
+export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiveAttendance }: DashboardProps) {
   const { user } = useAuth();
   
   const { data: meetings = [], isLoading: meetingsLoading } = useQuery<Meeting[]>({
@@ -157,19 +158,41 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance }: Dashboa
               <p className="text-sm text-gray-600">{todaysMeeting.agenda}</p>
             </div>
             
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-medium text-foreground">Live Attendance</h4>
+                <AttendanceStats meetingId={todaysMeeting.id} />
+              </div>
+              <div className="text-xs text-gray-500">
+                Updates automatically • Last refresh: {new Date().toLocaleTimeString()}
+              </div>
+            </div>
+            
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <span className="material-icons text-success mr-2">check_circle</span>
                 <span className="text-sm text-gray-700">Meeting Active</span>
               </div>
-              {user?.role === 'sonai' && (
-                <Button
-                  onClick={() => onMarkAttendance(todaysMeeting.id)}
-                  className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
-                >
-                  MARK ATTENDANCE
-                </Button>
-              )}
+              <div className="flex items-center space-x-2">
+                {user?.role === 'chairman' && (
+                  <Button
+                    onClick={() => onViewLiveAttendance(todaysMeeting.id)}
+                    variant="outline"
+                    className="px-4 py-2 text-sm font-medium"
+                  >
+                    <span className="material-icons mr-1 text-sm">visibility</span>
+                    LIVE STATUS
+                  </Button>
+                )}
+                {user?.role === 'sonai' && (
+                  <Button
+                    onClick={() => onMarkAttendance(todaysMeeting.id)}
+                    className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-medium text-sm uppercase tracking-wide ripple"
+                  >
+                    MARK ATTENDANCE
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
