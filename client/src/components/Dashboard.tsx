@@ -24,12 +24,35 @@ function AttendanceStats({ meetingId }: { meetingId: string }) {
 
   const totalMembers = users.filter(u => u.role === 'member' || u.role === 'sonai').length;
   const presentCount = attendanceRecords.filter(r => r.status === 'present').length;
+  const totalMarked = attendanceRecords.length; // Present + Absent
+  
+  // Calculate both attendance rate and completion rate
   const attendancePercentage = totalMembers > 0 ? Math.round((presentCount / totalMembers) * 100) : 0;
+  const completionPercentage = totalMembers > 0 ? Math.round((totalMarked / totalMembers) * 100) : 0;
+  
+  // Determine what to show based on completion status
+  const isCompleted = completionPercentage >= 80; // Consider completed when 80%+ marked
+  const showAttendanceRate = isCompleted || totalMarked > 0;
 
   return (
     <>
-      <div className="text-sm font-medium text-success">{attendancePercentage}%</div>
-      <div className="text-xs text-gray-500">attendance</div>
+      {showAttendanceRate ? (
+        <>
+          <div className={`text-sm font-medium ${attendancePercentage >= 70 ? 'text-green-600' : attendancePercentage >= 50 ? 'text-orange-600' : 'text-red-600'}`}>
+            {attendancePercentage}%
+          </div>
+          <div className="text-xs text-gray-500">
+            {isCompleted ? 'attendance' : `attendance (${completionPercentage}% marked)`}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="text-sm font-medium text-gray-400">
+            {completionPercentage}%
+          </div>
+          <div className="text-xs text-gray-500">marking progress</div>
+        </>
+      )}
     </>
   );
 }
