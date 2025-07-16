@@ -34,11 +34,15 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
       console.log('Users fetched:', result);
       return result;
     },
+    refetchInterval: 60000, // Refresh users every minute
+    refetchOnWindowFocus: true,
   });
 
   const { data: attendanceRecords = [], isLoading: attendanceLoading } = useQuery<AttendanceRecord[]>({
     queryKey: ['attendance', meetingId],
     queryFn: () => api.attendance.getForMeeting(meetingId),
+    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    refetchOnWindowFocus: true,
   });
 
   const updateAttendanceMutation = useMutation({

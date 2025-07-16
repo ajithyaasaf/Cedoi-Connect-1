@@ -8,7 +8,7 @@ import AttendanceLandingScreen from '@/components/AttendanceLandingScreen';
 import ReportsEnhanced from '@/components/ReportsEnhanced';
 import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
-import LiveAttendanceMonitor from '@/components/LiveAttendanceMonitor';
+import LiveAttendanceMonitorEnhanced from '@/components/LiveAttendanceMonitorEnhanced';
 import BottomNavigation from '@/components/BottomNavigation';
 
 export default function Home() {
@@ -92,7 +92,7 @@ export default function Home() {
         return <CreateMeetingScreen onBack={handleBackToDashboard} />;
       case 'live-monitor':
         return liveMonitorMeetingId ? (
-          <LiveAttendanceMonitor
+          <LiveAttendanceMonitorEnhanced
             meetingId={liveMonitorMeetingId}
             onBack={handleBackToDashboard}
           />

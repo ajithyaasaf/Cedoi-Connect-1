@@ -11,11 +11,15 @@ function AttendanceStats({ meetingId }: { meetingId: string }) {
   const { data: attendanceRecords = [] } = useQuery({
     queryKey: ['attendance', meetingId],
     queryFn: () => api.attendance.getForMeeting(meetingId),
+    refetchInterval: 15000, // Auto-refresh every 15 seconds for live stats
+    refetchOnWindowFocus: true,
   });
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => api.users.getAll(),
+    refetchInterval: 60000, // Refresh users every minute
+    refetchOnWindowFocus: true,
   });
 
   const totalMembers = users.filter(u => u.role === 'member' || u.role === 'sonai').length;
@@ -52,6 +56,8 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
   const { data: todaysMeeting } = useQuery<Meeting | null>({
     queryKey: ['meetings', 'today'],
     queryFn: () => api.meetings.getTodaysMeeting(),
+    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    refetchOnWindowFocus: true, // Refresh when window gains focus
   });
 
   const { data: stats } = useQuery<{
@@ -163,8 +169,12 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 <h4 className="font-medium text-foreground">Live Attendance</h4>
                 <AttendanceStats meetingId={todaysMeeting.id} />
               </div>
-              <div className="text-xs text-gray-500">
-                Updates automatically • Last refresh: {new Date().toLocaleTimeString()}
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span className="flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                  Live updates • Every 30s
+                </span>
+                <span>Last: {new Date().toLocaleTimeString()}</span>
               </div>
             </div>
             
