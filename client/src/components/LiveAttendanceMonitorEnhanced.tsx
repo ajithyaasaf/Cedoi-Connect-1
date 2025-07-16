@@ -165,8 +165,41 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
   const handleCSVExport = () => {
     const csvData = [];
     
-    // Add header
-    csvData.push(['Name', 'Company', 'Role', 'Status']);
+    const meetingDateFormatted = new Date(meeting.date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    const meetingTimeFormatted = new Date(meeting.date).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    
+    // Add meeting details header
+    csvData.push(['CEDOI Madurai Forum - Attendance Report']);
+    csvData.push(['Meeting Date:', meetingDateFormatted]);
+    csvData.push(['Meeting Time:', meetingTimeFormatted]);
+    csvData.push(['Venue:', meeting.venue]);
+    if (meeting.agenda) {
+      csvData.push(['Agenda:', meeting.agenda]);
+    }
+    csvData.push(['Generated:', new Date().toLocaleString()]);
+    csvData.push([]); // Empty row for spacing
+    
+    // Add statistics
+    csvData.push(['Meeting Statistics']);
+    csvData.push(['Total Members:', totalMembers.toString()]);
+    csvData.push(['Present:', presentCount.toString()]);
+    csvData.push(['Absent:', absentCount.toString()]);
+    csvData.push(['Pending:', pendingCount.toString()]);
+    csvData.push(['Attendance Rate:', `${attendancePercentage}%`]);
+    csvData.push([]); // Empty row for spacing
+    
+    // Add attendance data header
+    csvData.push(['Member Name', 'Company', 'Role', 'Attendance Status']);
     
     // Add member data
     members.forEach(member => {
@@ -196,7 +229,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
       day: '2-digit'
     }).replace(/\//g, '-');
     
-    link.setAttribute('download', `attendance-report-${meetingDate}.csv`);
+    link.setAttribute('download', `CEDOI-attendance-${meetingDate}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -212,6 +245,12 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
       day: 'numeric'
     });
     
+    const meetingTime = new Date(meeting.date).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+    
     const printContent = `
       <!DOCTYPE html>
       <html>
@@ -220,8 +259,9 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #04004B; padding-bottom: 15px; }
-            .title { color: #04004B; margin: 0; font-size: 24px; }
-            .subtitle { color: #666; margin: 5px 0; }
+            .logo { max-width: 300px; height: auto; margin-bottom: 20px; }
+            .subtitle { color: #666; margin: 5px 0; font-size: 16px; }
+            .meeting-details { margin: 15px 0; }
             .stats { display: flex; justify-content: space-around; margin: 20px 0; }
             .stat-box { text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
             .stat-number { font-size: 24px; font-weight: bold; color: #04004B; }
@@ -237,10 +277,15 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
         </head>
         <body>
           <div class="header">
-            <h1 class="title">CEDOI Madurai Forum</h1>
+            <img src="/attached_assets/Logo_1752669479851.png" alt="CEDOI Logo" class="logo" />
             <h2 class="subtitle">Attendance Report</h2>
-            <p class="subtitle">${meetingDate} • ${meeting.venue}</p>
-            <p class="subtitle">Generated on: ${new Date().toLocaleString()}</p>
+            <div class="meeting-details">
+              <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
+              <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
+              <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
+              ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
+              <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+            </div>
           </div>
           
           <div class="stats">
