@@ -55,7 +55,12 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
 
   const { data: todaysMeeting } = useQuery<Meeting | null>({
     queryKey: ['meetings', 'today'],
-    queryFn: () => api.meetings.getTodaysMeeting(),
+    queryFn: async () => {
+      console.log('Dashboard: Fetching today\'s meeting...');
+      const result = await api.meetings.getTodaysMeeting();
+      console.log('Dashboard: Today\'s meeting result:', result);
+      return result;
+    },
     refetchInterval: 30000, // Auto-refresh every 30 seconds
     refetchOnWindowFocus: true, // Refresh when window gains focus
   });
@@ -186,7 +191,11 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
               <div className="flex items-center space-x-2">
                 {user?.role === 'chairman' && (
                   <Button
-                    onClick={() => onViewLiveAttendance(todaysMeeting.id)}
+                    onClick={() => {
+                      console.log('Dashboard: Clicking Live Status for meeting ID:', todaysMeeting.id);
+                      console.log('Dashboard: Today\'s meeting object:', todaysMeeting);
+                      onViewLiveAttendance(todaysMeeting.id);
+                    }}
                     variant="outline"
                     className="px-4 py-2 text-sm font-medium"
                   >

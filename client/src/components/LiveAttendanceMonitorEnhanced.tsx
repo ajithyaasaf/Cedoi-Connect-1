@@ -19,12 +19,18 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
   const [selectedView, setSelectedView] = useState<'overview' | 'present' | 'absent' | 'pending'>('overview');
 
   // Get meeting details
-  const { data: meeting } = useQuery({
+  const { data: meeting, isLoading: meetingLoading, error: meetingError } = useQuery({
     queryKey: ['meetings', meetingId],
     queryFn: async () => {
+      console.log('LiveAttendanceMonitor: Looking for meeting with ID:', meetingId);
       const meetings = await api.meetings.getAll();
-      return meetings.find(m => m.id === meetingId) || null;
+      console.log('LiveAttendanceMonitor: All meetings:', meetings);
+      const foundMeeting = meetings.find(m => m.id === meetingId);
+      console.log('LiveAttendanceMonitor: Found meeting:', foundMeeting);
+      return foundMeeting || null;
     },
+    refetchInterval: 30000, // Refresh meeting details every 30 seconds
+    refetchOnWindowFocus: true,
   });
 
   // Get all users
@@ -55,6 +61,46 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
     }
   }, [attendanceRecords]);
 
+  if (meetingLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="w-full max-w-md shadow-xl">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <span className="material-icons text-blue-500 text-2xl">hourglass_empty</span>
+            </div>
+            <h2 className="text-xl font-semibold mb-2">Loading Meeting...</h2>
+            <p className="text-gray-600">Please wait while we load the meeting details.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (meetingError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="w-full max-w-md shadow-xl">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-icons text-orange-500 text-2xl">warning</span>
+            </div>
+            <h2 className="text-xl font-semibold mb-2">Error Loading Meeting</h2>
+            <p className="text-gray-600 mb-6">There was an error loading the meeting data. Meeting ID: {meetingId}</p>
+            <div className="space-y-2">
+              <Button onClick={() => window.location.reload()} className="w-full">
+                Retry
+              </Button>
+              <Button onClick={onBack} variant="outline" className="w-full">
+                Back to Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!meeting) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -64,7 +110,8 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
               <span className="material-icons text-red-500 text-2xl">error_outline</span>
             </div>
             <h2 className="text-xl font-semibold mb-2">Meeting Not Found</h2>
-            <p className="text-gray-600 mb-6">The meeting you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-4">The meeting you're looking for doesn't exist.</p>
+            <p className="text-xs text-gray-500 mb-6">Meeting ID: {meetingId}</p>
             <Button onClick={onBack} className="w-full">
               Back to Dashboard
             </Button>
