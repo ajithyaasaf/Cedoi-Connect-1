@@ -41,6 +41,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
     new Date(meeting.date) > todaysDate
   );
 
+  // Note: Meeting creation is now restricted to Chairman only
   const isChairmanOrSonai = user?.role === 'chairman' || user?.role === 'sonai';
 
   return (
@@ -131,8 +132,8 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
         </div>
       </div>
 
-      {/* Quick Actions */}
-      {isChairmanOrSonai && (
+      {/* Quick Actions - Chairman Only */}
+      {user?.role === 'chairman' && (
         <div className="px-4 mb-6">
           <h3 className="text-lg font-bold text-gray-900 mb-3">Quick Actions</h3>
           <div className="grid grid-cols-2 gap-4">
