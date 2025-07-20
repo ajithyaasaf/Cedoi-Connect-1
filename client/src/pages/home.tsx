@@ -6,6 +6,7 @@ import MobileAppHeader from '@/components/MobileAppHeader';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import Dashboard from '@/components/Dashboard';
 import MobileHomePage from '@/components/MobileHomePage';
+import MeetingsPage from '@/components/MeetingsPage';
 import AttendanceScreenImproved from '@/components/AttendanceScreenImproved';
 import AttendanceLandingScreen from '@/components/AttendanceLandingScreen';
 import ReportsEnhanced from '@/components/ReportsEnhanced';
@@ -67,6 +68,14 @@ export default function Home() {
       case 'dashboard':
         return (
           <MobileHomePage
+            onCreateMeeting={handleCreateMeeting}
+            onMarkAttendance={handleMarkAttendance}
+            onViewLiveAttendance={handleViewLiveAttendance}
+          />
+        );
+      case 'meetings':
+        return (
+          <MeetingsPage
             onCreateMeeting={handleCreateMeeting}
             onMarkAttendance={handleMarkAttendance}
             onViewLiveAttendance={handleViewLiveAttendance}
