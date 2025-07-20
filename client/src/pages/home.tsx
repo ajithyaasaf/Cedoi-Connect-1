@@ -10,28 +10,11 @@ import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
 import LiveAttendanceMonitorEnhanced from '@/components/LiveAttendanceMonitorEnhanced';
 import BottomNavigation from '@/components/BottomNavigation';
-import { testFirestoreConnection } from '@/lib/test-firestore';
-
 export default function Home() {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [attendanceMeetingId, setAttendanceMeetingId] = useState<string | null>(null);
   const [liveMonitorMeetingId, setLiveMonitorMeetingId] = useState<string | null>(null);
-
-  // Test and initialize Firestore on app load
-  useEffect(() => {
-    const initializeFirestore = async () => {
-      console.log('🚀 Initializing Firestore connection and data...');
-      const result = await testFirestoreConnection();
-      if (result.success) {
-        console.log('✅ Firestore initialization successful:', result);
-      } else {
-        console.warn('⚠️ Firestore initialization failed:', result.error);
-      }
-    };
-
-    initializeFirestore();
-  }, []);
 
   if (loading) {
     return (
