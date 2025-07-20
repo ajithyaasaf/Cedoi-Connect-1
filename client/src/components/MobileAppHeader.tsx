@@ -11,9 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import NotificationCenter from './NotificationCenter';
 import cedoiLogo from '@assets/Logo_1753037717604.png';
 
-export default function MobileAppHeader() {
+interface MobileAppHeaderProps {
+  onMarkAttendance?: (meetingId: string) => void;
+  onViewMeeting?: (meetingId: string) => void;
+}
+
+export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: MobileAppHeaderProps) {
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { toast } = useToast();
@@ -55,14 +61,10 @@ export default function MobileAppHeader() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-10 h-10 rounded-2xl relative hover:bg-gray-100"
-          >
-            <span className="material-icons text-xl text-gray-600">notifications</span>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-          </Button>
+          <NotificationCenter 
+            onMarkAttendance={onMarkAttendance}
+            onViewMeeting={onViewMeeting}
+          />
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

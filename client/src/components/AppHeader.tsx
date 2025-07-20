@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import NotificationCenter from './NotificationCenter';
 import cedoiLogo from '@assets/Logo_1753037717604.png';
 
-export default function AppHeader() {
+interface AppHeaderProps {
+  onMarkAttendance?: (meetingId: string) => void;
+  onViewMeeting?: (meetingId: string) => void;
+}
+
+export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeaderProps) {
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { toast } = useToast();
@@ -39,13 +45,12 @@ export default function AppHeader() {
           </div>
         </div>
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="p-2 rounded-full hover:bg-white/20 transition-all duration-200 text-white w-10 h-10 hover:scale-110"
-          >
-            <span className="material-icons text-lg">notifications</span>
-          </Button>
+          <div className="[&>*]:text-white [&>*]:hover:bg-white/20">
+            <NotificationCenter 
+              onMarkAttendance={onMarkAttendance}
+              onViewMeeting={onViewMeeting}
+            />
+          </div>
           <Button
             variant="ghost"
             size="icon"

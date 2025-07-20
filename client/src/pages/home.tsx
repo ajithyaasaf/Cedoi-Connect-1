@@ -147,7 +147,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileAppHeader />
+      <MobileAppHeader 
+        onMarkAttendance={handleMarkAttendance}
+        onViewMeeting={handleSelectMeetingForAttendance}
+      />
       
       <main className="pb-20">
         {renderContent()}
