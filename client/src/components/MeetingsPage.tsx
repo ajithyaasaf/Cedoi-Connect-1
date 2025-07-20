@@ -68,7 +68,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
       </div>
 
       {/* Create Meeting Button - Chairman Only */}
-      {user?.role === 'chairman' && (
+      {user?.role === 'chairman' && user?.email?.includes('chairman') && (
         <div className="px-4 py-4">
           <Button
             onClick={onCreateMeeting}
