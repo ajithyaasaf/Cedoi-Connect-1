@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import cedoiLogo from '@assets/image_1752498683514.png';
 
 export default function MobileAppHeader() {
   const { user, logout } = useAuth();
@@ -30,15 +31,23 @@ export default function MobileAppHeader() {
   };
 
   return (
-    <div className="bg-white border-b border-gray-100 px-4 py-3 safe-area-pt">
+    <div className="bg-white shadow-sm border-b border-gray-100 px-4 py-3 safe-area-pt">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src="" alt={user?.name} />
-            <AvatarFallback className="bg-blue-600 text-white font-medium text-sm">
-              {getUserInitials()}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <img 
+              src={cedoiLogo} 
+              alt="CEDOI Logo" 
+              className="w-10 h-10 object-contain rounded-xl"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center hidden">
+              <span className="material-icons text-white text-lg">groups</span>
+            </div>
+          </div>
           <div>
             <h1 className="text-lg font-bold text-gray-900">CEDOI Forum</h1>
             <p className="text-sm text-gray-500">Meeting Management</p>
@@ -49,7 +58,7 @@ export default function MobileAppHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="w-10 h-10 rounded-full relative"
+            className="w-10 h-10 rounded-2xl relative hover:bg-gray-100"
           >
             <span className="material-icons text-xl text-gray-600">notifications</span>
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
@@ -57,11 +66,14 @@ export default function MobileAppHeader() {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full">
-                <span className="material-icons text-xl text-gray-600">more_vert</span>
-              </Button>
+              <Avatar className="w-10 h-10 cursor-pointer ring-2 ring-transparent hover:ring-blue-200 transition-all">
+                <AvatarImage src="" alt={user?.name} />
+                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-medium text-sm">
+                  {getUserInitials()}
+                </AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-48 rounded-2xl border-0 shadow-lg">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium">{user?.name}</p>

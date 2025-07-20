@@ -164,24 +164,27 @@ export default function CreateMeetingScreen({
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Page Header */}
-      <div className="bg-white border-b border-gray-200 p-3 sm:p-4 sticky top-0 z-10">
+      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 min-w-[44px] min-h-[44px]"
+              className="w-10 h-10 rounded-2xl hover:bg-gray-100"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="material-icons text-white text-lg">event</span>
+            </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-medium text-gray-900">
+              <h1 className="text-xl font-bold text-gray-900">
                 Create Meeting
               </h1>
-              <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+              <p className="text-sm text-gray-600">
                 Schedule new meeting
               </p>
             </div>
@@ -196,10 +199,10 @@ export default function CreateMeetingScreen({
         </div>
       </div>
 
-      <main className="p-3 sm:p-4 pb-20 max-w-2xl mx-auto">
+      <main className="px-4 py-4 pb-20">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Date & Time */}
-          <Card className="shadow-material">
+          <Card className="shadow-lg border-0 rounded-2xl">
             <CardContent className="p-3 sm:p-4">
               <h3 className="text-lg font-medium text-foreground mb-3 sm:mb-4 flex items-center">
                 <span className="material-icons mr-2 text-accent">event</span>

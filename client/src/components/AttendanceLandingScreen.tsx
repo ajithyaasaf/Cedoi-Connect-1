@@ -58,21 +58,21 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="bg-white border-b border-gray-200 p-3 sm:p-4">
+      <div className="min-h-screen bg-gray-50 pb-20">
+        <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">how_to_reg</span>
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-medium text-gray-900">Attendance</h1>
-              <p className="text-xs sm:text-sm text-gray-600">Select a meeting to mark attendance</p>
+              <h1 className="text-xl font-bold text-gray-900">Attendance</h1>
+              <p className="text-sm text-gray-600">Select a meeting to mark attendance</p>
             </div>
           </div>
         </div>
         <div className="p-4 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
             <p className="text-gray-500 text-sm">Loading meetings...</p>
           </div>
         </div>
@@ -81,37 +81,37 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-3 sm:p-4">
+      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
             <span className="material-icons text-white text-lg">how_to_reg</span>
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-medium text-gray-900">Attendance</h1>
-            <p className="text-xs sm:text-sm text-gray-600">
+            <h1 className="text-xl font-bold text-gray-900">Attendance</h1>
+            <p className="text-sm text-gray-600">
               {user?.role === 'sonai' ? 'Mark attendance for your meetings' : 'Mark attendance for meetings'}
             </p>
           </div>
         </div>
       </div>
 
-      <main className="p-3 sm:p-4 pb-20 max-w-2xl mx-auto">
+      <main className="px-4 py-4 pb-20">
         {/* Search and Filter */}
-        <Card className="shadow-material mb-4">
-          <CardContent className="p-3 sm:p-4">
-            <div className="space-y-3">
+        <Card className="shadow-lg border-0 rounded-2xl mb-4">
+          <CardContent className="p-4">
+            <div className="space-y-4">
               <div>
                 <Input
                   placeholder="Search meetings by venue or agenda..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
+                  className="w-full rounded-xl border-gray-200"
                 />
               </div>
               
-              <div className="flex space-x-2 overflow-x-auto pb-2">
+              <div className="flex space-x-3 overflow-x-auto pb-2">
                 {[
                   { key: 'all', label: 'All' },
                   { key: 'today', label: 'Today' },
@@ -123,7 +123,11 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
                     variant={selectedFilter === filter.key ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setSelectedFilter(filter.key as typeof selectedFilter)}
-                    className="whitespace-nowrap"
+                    className={`whitespace-nowrap rounded-full px-4 py-2 ${
+                      selectedFilter === filter.key 
+                        ? 'bg-blue-600 hover:bg-blue-700' 
+                        : 'border-gray-200 hover:bg-gray-100'
+                    }`}
                   >
                     {filter.label}
                   </Button>
@@ -135,7 +139,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
 
         {/* Meetings List */}
         {filteredMeetings.length === 0 ? (
-          <Card className="shadow-material">
+          <Card className="shadow-lg border-0 rounded-2xl">
             <CardContent className="p-6 text-center">
               <span className="material-icons text-gray-400 text-4xl mb-3">event_busy</span>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No meetings found</h3>
@@ -156,13 +160,13 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
               const status = getMeetingStatus(meetingDate);
               
               return (
-                <Card key={meeting.id} className="shadow-material hover:shadow-lg transition-shadow">
+                <Card key={meeting.id} className="shadow-lg border-0 rounded-2xl hover:shadow-xl transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="font-medium text-gray-900">Weekly Meeting</h3>
-                          <Badge className={`text-xs ${status.color}`}>
+                          <h3 className="font-semibold text-gray-900">{meeting.venue}</h3>
+                          <Badge className={`text-xs rounded-full ${status.color}`}>
                             {status.label}
                           </Badge>
                         </div>
@@ -201,10 +205,10 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
                       <Button
                         onClick={() => onSelectMeeting(meeting.id)}
                         size="sm"
-                        className="ml-3 bg-accent hover:bg-accent/90 text-white"
+                        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2"
                       >
                         <span className="material-icons mr-1 text-sm">how_to_reg</span>
-                        Mark Attendance
+                        Mark
                       </Button>
                     </div>
                   </CardContent>

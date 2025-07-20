@@ -67,33 +67,36 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Page Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+              className="w-10 h-10 rounded-2xl hover:bg-gray-100"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="material-icons text-white text-lg">settings</span>
+            </div>
             <div>
-              <h1 className="text-xl font-medium text-gray-900">Settings</h1>
+              <h1 className="text-xl font-bold text-gray-900">Settings</h1>
               <p className="text-sm text-gray-600">Manage your account and preferences</p>
             </div>
           </div>
         </div>
       </div>
 
-      <main className="p-4 pb-20 space-y-6">
+      <main className="px-4 py-4 pb-20 space-y-6">
         {/* Profile Settings */}
-        <Card className="shadow-material">
+        <Card className="shadow-lg border-0 rounded-2xl">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <span className="material-icons mr-2 text-primary">person</span>
+              <span className="material-icons mr-2 text-blue-600">person</span>
               Profile Information
             </CardTitle>
           </CardHeader>

@@ -160,21 +160,24 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Page Header */}
-      <div className={`${getHeaderColor()} border-b p-4`}>
+      <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={onBack}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+              className="w-10 h-10 rounded-2xl hover:bg-gray-100"
             >
               <span className="material-icons">arrow_back</span>
             </Button>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="material-icons text-white text-lg">analytics</span>
+            </div>
             <div>
-              <h1 className="text-xl font-medium text-gray-900">{getPageTitle()}</h1>
+              <h1 className="text-xl font-bold text-gray-900">{getPageTitle()}</h1>
               <p className="text-sm text-gray-600">
                 {getPageSubtitle()}
               </p>
@@ -182,19 +185,18 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
           </div>
           <Button
             onClick={exportToCSV}
-            className={`${user?.role === 'sonai' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-600 hover:bg-purple-700'} text-white transition-colors`}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-4 py-2 transition-colors"
           >
-            <span className="material-icons mr-2">download</span>
-            {user?.role === 'sonai' ? 'Export My Reports' : 'Export All Reports'}
+            <span className="material-icons text-sm">download</span>
           </Button>
         </div>
       </div>
 
-      <main className="p-4 pb-20">
+      <main className="px-4 py-4 pb-20">
         {/* Filters */}
-        <Card className="shadow-material mb-6">
+        <Card className="shadow-lg border-0 rounded-2xl mb-6">
           <CardContent className="p-4">
-            <h3 className="text-lg font-medium text-foreground mb-4">Filters</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
