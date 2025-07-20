@@ -10,32 +10,41 @@ export default function AppHeader() {
   const { toast } = useToast();
 
   return (
-    <header className="bg-primary text-white p-3 sm:p-4 shadow-material safe-area-pt">
-      <div className="flex items-center justify-between max-w-screen-xl mx-auto">
-        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-          <img 
-            src={cedoiLogo} 
-            alt="CEDOI Logo" 
-            className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0"
-            onError={(e) => {
-              // Fallback to icon if image fails to load
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.nextElementSibling?.classList.remove('hidden');
-            }}
-          />
-          <span className="material-icons text-white text-lg sm:text-xl hidden">groups</span>
+    <header className="bg-gradient-to-r from-primary via-blue-700 to-indigo-800 text-white p-3 sm:p-4 shadow-xl safe-area-pt relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-16 -mt-16"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full -ml-12 -mb-12"></div>
+      <div className="flex items-center justify-between max-w-screen-xl mx-auto relative z-10">
+        <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+          <div className="relative">
+            <img 
+              src={cedoiLogo} 
+              alt="CEDOI Logo" 
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0 rounded-lg shadow-md bg-white/10 p-1"
+              onError={(e) => {
+                // Fallback to icon if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <span className="material-icons text-white text-lg sm:text-xl hidden bg-white/10 rounded-lg p-2">groups</span>
+          </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-medium truncate">CEDOI Madurai</h1>
-            <p className="text-xs sm:text-sm opacity-90 capitalize truncate">{user?.role || 'Member'}</p>
+            <h1 className="text-lg sm:text-xl font-semibold truncate">CEDOI Madurai</h1>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <p className="text-xs sm:text-sm text-blue-100 capitalize truncate font-medium">
+                {user?.role === 'sonai' ? 'Organizer' : user?.role || 'Member'}
+              </p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+        <div className="flex items-center space-x-2 flex-shrink-0">
           <Button
             variant="ghost"
             size="icon"
-            className="p-1.5 sm:p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white w-8 h-8 sm:w-10 sm:h-10"
+            className="p-2 rounded-full hover:bg-white/20 transition-all duration-200 text-white w-10 h-10 hover:scale-110"
           >
-            <span className="material-icons text-lg sm:text-xl">notifications</span>
+            <span className="material-icons text-lg">notifications</span>
           </Button>
           <Button
             variant="ghost"
@@ -59,9 +68,9 @@ export default function AppHeader() {
               }
             }}
             disabled={isLoggingOut}
-            className="p-1.5 sm:p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors text-white w-8 h-8 sm:w-10 sm:h-10 disabled:opacity-50"
+            className="p-2 rounded-full hover:bg-white/20 transition-all duration-200 text-white w-10 h-10 disabled:opacity-50 hover:scale-110 disabled:hover:scale-100"
           >
-            <span className="material-icons text-lg sm:text-xl">
+            <span className={`material-icons text-lg transition-transform duration-200 ${isLoggingOut ? 'animate-spin' : ''}`}>
               {isLoggingOut ? 'refresh' : 'logout'}
             </span>
           </Button>
