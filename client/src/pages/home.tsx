@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
 import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
+import MobileAppHeader from '@/components/MobileAppHeader';
+import MobileBottomNav from '@/components/MobileBottomNav';
 import Dashboard from '@/components/Dashboard';
+import MobileHomePage from '@/components/MobileHomePage';
 import AttendanceScreenImproved from '@/components/AttendanceScreenImproved';
 import AttendanceLandingScreen from '@/components/AttendanceLandingScreen';
 import ReportsEnhanced from '@/components/ReportsEnhanced';
@@ -15,6 +18,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [attendanceMeetingId, setAttendanceMeetingId] = useState<string | null>(null);
   const [liveMonitorMeetingId, setLiveMonitorMeetingId] = useState<string | null>(null);
+  const [useMobileDesign, setUseMobileDesign] = useState(true); // Toggle for mobile design
 
   if (loading) {
     return (
@@ -62,7 +66,7 @@ export default function Home() {
     switch (activeTab) {
       case 'dashboard':
         return (
-          <Dashboard
+          <MobileHomePage
             onCreateMeeting={handleCreateMeeting}
             onMarkAttendance={handleMarkAttendance}
             onViewLiveAttendance={handleViewLiveAttendance}
@@ -108,14 +112,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader />
+    <div className="min-h-screen bg-gray-50">
+      <MobileAppHeader />
       
       <main className="pb-20">
         {renderContent()}
       </main>
       
-      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <MobileBottomNav activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
