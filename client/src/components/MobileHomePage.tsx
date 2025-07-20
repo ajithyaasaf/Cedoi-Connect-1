@@ -16,6 +16,9 @@ interface MobileHomePageProps {
 export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onViewLiveAttendance }: MobileHomePageProps) {
   const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'upcoming'>('today');
+  
+  // Debug: Log user role for troubleshooting
+  console.log('MobileHomePage - Current user:', { email: user?.email, role: user?.role, name: user?.name });
 
   const { data: meetings = [], isLoading } = useQuery<Meeting[]>({
     queryKey: ['meetings'],
