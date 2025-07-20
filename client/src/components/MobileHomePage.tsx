@@ -136,20 +136,13 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
       {user?.role === 'chairman' && user?.email?.includes('chairman') && (
         <div className="px-4 mb-6">
           <h3 className="text-lg font-bold text-gray-900 mb-3">Quick Actions</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex justify-center">
             <Button
               onClick={onCreateMeeting}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl h-16 flex flex-col items-center justify-center space-y-1 shadow-lg"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl h-16 w-48 flex flex-col items-center justify-center space-y-1 shadow-lg"
             >
               <span className="material-icons text-xl">add_circle</span>
               <span className="text-xs font-medium">New Meeting</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-200 hover:bg-gray-50 rounded-2xl h-16 flex flex-col items-center justify-center space-y-1 shadow-lg"
-            >
-              <span className="material-icons text-xl text-gray-600">analytics</span>
-              <span className="text-xs font-medium text-gray-600">Reports</span>
             </Button>
           </div>
         </div>

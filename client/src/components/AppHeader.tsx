@@ -45,7 +45,7 @@ export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeader
           </div>
         </div>
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <div className="[&>*]:text-white [&>*]:hover:bg-white/20">
+          <div className="[&_button]:text-white [&_button]:hover:bg-white/20 [&_span]:text-white">
             <NotificationCenter 
               onMarkAttendance={onMarkAttendance}
               onViewMeeting={onViewMeeting}

@@ -64,6 +64,31 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
       const now = new Date();
       const oneHour = 60 * 60 * 1000;
 
+      // Add demo notifications to show functionality
+      if (meetings.length > 0) {
+        newNotifications.push({
+          id: 'demo_reminder',
+          type: 'meeting_reminder',
+          title: 'Meeting Starting Soon',
+          message: 'Your next meeting starts in 30 minutes',
+          timestamp: now,
+          read: false,
+          actionRequired: true
+        });
+      }
+
+      if (user?.role === 'sonai') {
+        newNotifications.push({
+          id: 'demo_attendance',
+          type: 'attendance_required',
+          title: 'Attendance Required',
+          message: 'Please mark attendance for today\'s meeting',
+          timestamp: now,
+          read: false,
+          actionRequired: true
+        });
+      }
+
       // Meeting reminders (1 hour before)
       meetings.forEach(meeting => {
         const meetingTime = new Date(meeting.date);
@@ -205,9 +230,9 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
         <Button
           variant="ghost"
           size="icon"
-          className="w-10 h-10 rounded-2xl relative hover:bg-gray-100"
+          className="w-10 h-10 rounded-2xl relative hover:bg-gray-100 text-gray-600 hover:text-gray-900"
         >
-          <span className="material-icons text-xl text-gray-600">notifications</span>
+          <span className="material-icons text-xl">notifications</span>
           {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
