@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import cedoiLogo from '@assets/image_1752498683514.png';
+import cedoiLogo from '@assets/Logo_1753037717604.png';
 
 export default function MobileAppHeader() {
   const { user, logout } = useAuth();
@@ -38,14 +38,14 @@ export default function MobileAppHeader() {
             <img 
               src={cedoiLogo} 
               alt="CEDOI Logo" 
-              className="w-10 h-10 object-contain rounded-xl"
+              className="h-8 w-auto object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
               }}
             />
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center hidden">
-              <span className="material-icons text-white text-lg">groups</span>
+            <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center hidden">
+              <span className="material-icons text-white text-sm">groups</span>
             </div>
           </div>
           <div>

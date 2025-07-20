@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import cedoiLogo from '@assets/image_1752498683514.png';
+import cedoiLogo from '@assets/Logo_1753037717604.png';
 
 export default function AppHeader() {
   const { user, logout } = useAuth();
@@ -19,7 +19,7 @@ export default function AppHeader() {
             <img 
               src={cedoiLogo} 
               alt="CEDOI Logo" 
-              className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0 rounded-lg shadow-md bg-white/10 p-1"
+              className="h-8 sm:h-10 w-auto object-contain flex-shrink-0 rounded-lg shadow-md bg-white/10 p-1"
               onError={(e) => {
                 // Fallback to icon if image fails to load
                 e.currentTarget.style.display = 'none';
