@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
 import AuthForm from '@/components/AuthForm';
 import AppHeader from '@/components/AppHeader';
 import MobileAppHeader from '@/components/MobileAppHeader';
@@ -39,7 +40,13 @@ export default function Home() {
   }
 
   const handleCreateMeeting = () => {
-    setActiveTab('create-meeting');
+    // Only allow Chairman users to create meetings
+    if (user?.role === 'chairman') {
+      setActiveTab('create-meeting');
+    } else {
+      // Show access denied message or redirect back
+      console.warn('Access denied: Only Chairman users can create meetings');
+    }
   };
 
   const handleMarkAttendance = (meetingId: string) => {
@@ -101,7 +108,25 @@ export default function Home() {
       case 'reports':
         return <ReportsEnhanced onBack={handleBackToDashboard} />;
       case 'create-meeting':
-        return <CreateMeetingScreen onBack={handleBackToDashboard} />;
+        // Double-check role protection at route level
+        return user?.role === 'chairman' ? (
+          <CreateMeetingScreen onBack={handleBackToDashboard} />
+        ) : (
+          <div className="min-h-screen bg-gray-50 pb-20 flex items-center justify-center">
+            <div className="text-center p-6">
+              <span className="material-icons text-6xl text-red-400 mb-4 block">block</span>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
+              <p className="text-gray-600 mb-4">Only Chairman users can create meetings.</p>
+              <Button
+                onClick={handleBackToDashboard}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2"
+              >
+                <span className="material-icons text-sm mr-2">arrow_back</span>
+                Go Back
+              </Button>
+            </div>
+          </div>
+        );
       case 'live-monitor':
         return liveMonitorMeetingId ? (
           <LiveAttendanceMonitorEnhanced

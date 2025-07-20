@@ -36,8 +36,6 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
   const filteredMeetings = activeFilter === 'upcoming' ? upcomingMeetings : 
                           activeFilter === 'past' ? pastMeetings : meetings;
 
-  const isChairmanOrSonai = user?.role === 'chairman' || user?.role === 'sonai';
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -69,8 +67,8 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
         </div>
       </div>
 
-      {/* Create Meeting Button */}
-      {isChairmanOrSonai && (
+      {/* Create Meeting Button - Chairman Only */}
+      {user?.role === 'chairman' && (
         <div className="px-4 py-4">
           <Button
             onClick={onCreateMeeting}
@@ -100,7 +98,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
               {activeFilter === 'upcoming' ? 'No upcoming meetings' :
                activeFilter === 'past' ? 'No past meetings' : 'No meetings found'}
             </p>
-            {isChairmanOrSonai && activeFilter !== 'past' && (
+            {user?.role === 'chairman' && activeFilter !== 'past' && (
               <Button
                 onClick={onCreateMeeting}
                 className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
@@ -151,7 +149,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
                         </div>
                       </div>
                       <div className="flex flex-col space-y-2 ml-3">
-                        {isChairmanOrSonai && (isToday || !isPast) && (
+                        {(user?.role === 'chairman' || user?.role === 'sonai') && (isToday || !isPast) && (
                           <Button
                             size="sm"
                             onClick={() => onViewLiveAttendance(meeting.id)}

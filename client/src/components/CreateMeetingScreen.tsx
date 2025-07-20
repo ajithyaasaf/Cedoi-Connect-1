@@ -25,6 +25,28 @@ interface CreateMeetingScreenProps {
 export default function CreateMeetingScreen({
   onBack,
 }: CreateMeetingScreenProps) {
+  const { user } = useAuth();
+
+  // Redirect if user is not chairman
+  if (user?.role !== 'chairman') {
+    return (
+      <div className="min-h-screen bg-gray-50 pb-20 flex items-center justify-center">
+        <div className="text-center p-6">
+          <span className="material-icons text-6xl text-red-400 mb-4 block">block</span>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-4">Only Chairman users can create meetings.</p>
+          <Button
+            onClick={onBack}
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2"
+          >
+            <span className="material-icons text-sm mr-2">arrow_back</span>
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const [date, setDate] = useState("");
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
@@ -36,7 +58,6 @@ export default function CreateMeetingScreen({
   const [notifyMembers, setNotifyMembers] = useState(true);
   const [sendReminder, setSendReminder] = useState(true);
 
-  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

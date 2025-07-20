@@ -248,7 +248,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
             <div className="text-center py-12">
               <span className="material-icons text-6xl text-gray-300 mb-4 block">event_busy</span>
               <p className="text-gray-500 mb-2">No meetings scheduled for today</p>
-              {isChairmanOrSonai && (
+              {user?.role === 'chairman' && (
                 <Button
                   onClick={onCreateMeeting}
                   className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
@@ -269,7 +269,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
             <div className="text-center py-12">
               <span className="material-icons text-6xl text-gray-300 mb-4 block">event_note</span>
               <p className="text-gray-500 mb-2">No meetings found</p>
-              {isChairmanOrSonai && (
+              {user?.role === 'chairman' && (
                 <Button
                   onClick={onCreateMeeting}
                   className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
