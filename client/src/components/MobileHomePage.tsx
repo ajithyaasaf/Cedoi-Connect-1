@@ -142,7 +142,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
           <div className="flex justify-center">
             <Button
               onClick={onCreateMeeting}
-              className="bg-gradient-to-r from-[#0c5b84] to-[#0a5472] hover:from-[#0a5472] hover:to-[#084d60] text-white rounded-2xl h-16 w-48 flex flex-col items-center justify-center space-y-1 shadow-lg"
+              className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-16 w-48 flex flex-col items-center justify-center space-y-1 shadow-lg"
             >
               <span className="material-icons text-xl">add_circle</span>
               <span className="text-xs font-medium">New Meeting</span>
@@ -160,7 +160,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
               onClick={() => setActiveFilter(filter)}
               className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeFilter === filter
-                  ? 'bg-white shadow-sm text-[#0c5b84]'
+                  ? 'bg-white shadow-sm text-primary'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -195,7 +195,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <div className={`w-3 h-3 rounded-full ${
-                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-[#0c5b84]'
+                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-primary'
                           }`}></div>
                           <Badge variant={isToday ? "default" : isPast ? "secondary" : "outline"} className="text-xs">
                             {isToday ? 'Today' : isPast ? 'Completed' : 'Upcoming'}
@@ -219,7 +219,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                           <Button
                             size="sm"
                             onClick={() => onViewLiveAttendance(meeting.id)}
-                            className="bg-[#0c5b84]/10 hover:bg-[#0c5b84]/20 text-[#0c5b84] px-3 py-1 text-xs rounded-full"
+                            className="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1 text-xs rounded-full"
                           >
                             <span className="material-icons text-sm">visibility</span>
                           </Button>
@@ -248,7 +248,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
               {user?.role === 'chairman' && user?.email?.includes('chairman') && (
                 <Button
                   onClick={onCreateMeeting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
+                  className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2 mt-2"
                 >
                   <span className="material-icons text-sm mr-2">add</span>
                   Schedule Meeting
@@ -269,7 +269,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
               {user?.role === 'chairman' && user?.email?.includes('chairman') && (
                 <Button
                   onClick={onCreateMeeting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
+                  className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2 mt-2"
                 >
                   <span className="material-icons text-sm mr-2">add</span>
                   Create First Meeting

@@ -498,7 +498,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Enhanced Header */}
       <div className="bg-white shadow-lg sticky top-0 z-20 border-b border-gray-200">
         <div className="px-4 py-4">

@@ -278,9 +278,9 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
               </CardContent>
             </Card>
             
-            <Card className="shadow-material border-l-4 border-l-blue-500">
+            <Card className="shadow-material border-l-4 border-l-primary">
               <CardContent className="p-4 text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">{members.length}</div>
+                <div className="text-3xl font-bold text-primary mb-2">{members.length}</div>
                 <div className="text-sm text-gray-600">Active Members</div>
               </CardContent>
             </Card>
@@ -313,11 +313,11 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
                     Overall attendance rate of {overallAttendanceRate}%
                   </p>
                 </div>
-                <div className="bg-blue-50 p-3 rounded-lg">
-                  <p className="text-sm text-blue-800">
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="text-sm text-primary">
                     <strong>Meeting Frequency:</strong> {totalMeetings} meetings tracked
                   </p>
-                  <p className="text-xs text-blue-600 mt-1">
+                  <p className="text-xs text-primary/70 mt-1">
                     Average {Math.round(actualAttendance / (totalMeetings || 1))} attendees per meeting
                   </p>
                 </div>
@@ -327,18 +327,18 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
         )}
 
         {user?.role === 'sonai' && (
-          <Card className="shadow-material mb-6 border-l-4 border-l-blue-500">
+          <Card className="shadow-material mb-6 border-l-4 border-l-primary">
             <CardContent className="p-4">
-              <h3 className="text-lg font-medium text-blue-700 mb-3">
+              <h3 className="text-lg font-medium text-primary mb-3">
                 <span className="material-icons mr-2 align-middle">trending_up</span>
                 My Performance
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-blue-50 p-3 rounded-lg">
-                  <p className="text-sm text-blue-800">
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="text-sm text-primary">
                     <strong>Meeting Success:</strong> {overallAttendanceRate >= 70 ? 'Excellent' : overallAttendanceRate >= 50 ? 'Good' : 'Improving'}
                   </p>
-                  <p className="text-xs text-blue-600 mt-1">
+                  <p className="text-xs text-primary/70 mt-1">
                     {overallAttendanceRate}% attendance rate for your meetings
                   </p>
                 </div>

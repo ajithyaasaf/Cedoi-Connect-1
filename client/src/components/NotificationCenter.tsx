@@ -235,7 +235,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
                     queryClient.invalidateQueries({ queryKey: ['meetings'] });
                     queryClient.invalidateQueries({ queryKey: ['attendance'] });
                   }}
-                  className="text-xs text-blue-600 mt-2 hover:underline"
+                  className="text-xs text-primary mt-2 hover:underline"
                 >
                   Retry
                 </button>
@@ -263,7 +263,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
                           ? 'bg-orange-100'
                           : notification.type === 'attendance_update' && notification.title.includes('Low Attendance')
                           ? 'bg-yellow-100'
-                          : !notification.read ? 'bg-blue-100' : 'bg-gray-100'
+                          : !notification.read ? 'bg-primary/10' : 'bg-gray-100'
                       }`}>
                         <span className={`material-icons text-sm ${
                           notification.type === 'meeting_reminder' && notification.title.includes('Starting Now')
@@ -272,7 +272,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
                             ? 'text-orange-600'
                             : notification.type === 'attendance_update' && notification.title.includes('Low Attendance')
                             ? 'text-yellow-600'
-                            : !notification.read ? 'text-blue-600' : 'text-gray-500'
+                            : !notification.read ? 'text-primary' : 'text-gray-500'
                         }`}>
                           {getNotificationIcon(notification.type)}
                         </span>
@@ -285,7 +285,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
                             {notification.title}
                           </p>
                           {!notification.read && (
-                            <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
                           )}
                         </div>
                         <p className="text-xs text-gray-500 line-clamp-2">

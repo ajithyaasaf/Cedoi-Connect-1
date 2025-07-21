@@ -125,7 +125,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
                     onClick={() => setSelectedFilter(filter.key as typeof selectedFilter)}
                     className={`whitespace-nowrap rounded-full px-4 py-2 ${
                       selectedFilter === filter.key 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
+                        ? 'bg-primary hover:bg-primary/90' 
                         : 'border-gray-200 hover:bg-gray-100'
                     }`}
                   >
