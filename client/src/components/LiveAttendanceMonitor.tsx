@@ -123,50 +123,27 @@ export default function LiveAttendanceMonitor({ meetingId, onBack }: LiveAttenda
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                className="touch-target"
-              >
-                <span className="material-icons">arrow_back</span>
-              </Button>
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">Live Attendance Monitor</h1>
-                <p className="text-sm text-gray-600">
-                  {new Date(meeting.date).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-              </div>
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onBack}
+              className="touch-target"
+            >
+              <span className="material-icons">arrow_back</span>
+            </Button>
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">Live Attendance Monitor</h1>
+              <p className="text-sm text-gray-600">
+                {new Date(meeting.date).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefresh}
-                className="touch-target"
-              >
-                <span className="material-icons mr-1">refresh</span>
-                Refresh
-              </Button>
-              <Button
-                variant={autoRefresh ? "default" : "outline"}
-                size="sm"
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className="touch-target"
-              >
-                <span className="material-icons mr-1">
-                  {autoRefresh ? 'pause' : 'play_arrow'}
-                </span>
-                {autoRefresh ? 'Auto' : 'Manual'}
-              </Button>
-            </div>
+
           </div>
         </div>
       </div>
