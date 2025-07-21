@@ -284,10 +284,10 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
               }}
             />
-            <div className="w-12 h-12 bg-[#04004B] rounded-full flex items-center justify-center mx-auto mb-4 hidden">
+            <div className="w-12 h-12 bg-[#0c5b84] rounded-full flex items-center justify-center mx-auto mb-4 hidden">
               <span className="material-icons text-white text-lg">groups</span>
             </div>
-            <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="w-8 h-8 border-2 border-[#0c5b84] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
             <p className="text-gray-500 text-sm">Loading members...</p>
           </div>
         </div>

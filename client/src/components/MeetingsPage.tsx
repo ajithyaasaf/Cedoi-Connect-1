@@ -53,7 +53,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
               onClick={() => setActiveFilter(filter as any)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeFilter === filter
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#0c5b84] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -72,7 +72,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
         <div className="px-4 py-4">
           <Button
             onClick={onCreateMeeting}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-3"
+            className="w-full bg-[#0c5b84] hover:bg-[#0a5472] text-white rounded-2xl py-3"
           >
             <span className="material-icons text-sm mr-2">add</span>
             Schedule New Meeting
@@ -101,7 +101,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
             {user?.role === 'chairman' && activeFilter !== 'past' && (
               <Button
                 onClick={onCreateMeeting}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 mt-2"
+                className="bg-[#0c5b84] hover:bg-[#0a5472] text-white rounded-full px-6 py-2 mt-2"
               >
                 <span className="material-icons text-sm mr-2">add</span>
                 Create First Meeting

@@ -13,7 +13,7 @@
   --card-foreground: hsl(240, 100%, 15%);
   --border: hsl(0, 0%, 90%);
   --input: hsl(0, 0%, 90%);
-  --primary: hsl(196, 86%, 28%);
+  --primary: hsl(200, 75%, 29%);
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(0, 0%, 95%);
   --secondary-foreground: hsl(240, 100%, 15%);
@@ -21,7 +21,7 @@
   --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(196, 86%, 28%);
+  --ring: hsl(200, 75%, 29%);
   --radius: 0.5rem;
   --success: hsl(142, 71%, 45%);
   --success-foreground: hsl(0, 0%, 100%);
@@ -40,7 +40,7 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 4%, 16%);
   --input: hsl(240, 4%, 16%);
-  --primary: hsl(196, 86%, 28%);
+  --primary: hsl(200, 75%, 29%);
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(240, 4%, 16%);
   --secondary-foreground: hsl(0, 0%, 98%);
@@ -139,8 +139,8 @@
     @apply fixed right-4;
     bottom: calc(80px + 1rem + env(safe-area-inset-bottom));
     z-index: 60;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #3b82f6);
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, #0c5b84, #0a5472, #084d60);
+    box-shadow: 0 8px 32px rgba(12, 91, 132, 0.3);
   }
   
   .floating-action-button:hover {
@@ -207,7 +207,7 @@
   
   /* Enhanced gradients for mobile */
   .gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0c5b84 0%, #0a5472 100%);
   }
   
   .gradient-secondary {
@@ -215,7 +215,7 @@
   }
   
   .gradient-success {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background: linear-gradient(135deg, #0c5b84 0%, #0a5472 100%);
   }
   
   /* Line clamping utility */

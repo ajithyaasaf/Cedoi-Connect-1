@@ -230,7 +230,7 @@ export default function CreateMeetingScreen({
             >
               <span className="material-icons">arrow_back</span>
             </Button>
-            <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#0c5b84] to-[#0a5472] rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">event</span>
             </div>
             <div>
@@ -377,17 +377,17 @@ export default function CreateMeetingScreen({
                 </div>
 
                 {/* End Time Section - Optional */}
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="mt-6 p-4 bg-[#0c5b84]/10 rounded-lg border border-[#0c5b84]/20">
                   <div className="flex items-center justify-between mb-3">
-                    <Label className="text-sm font-medium text-blue-900">
+                    <Label className="text-sm font-medium text-[#0c5b84]">
                       End Time (Optional)
                     </Label>
-                    <span className="text-xs text-blue-600">Leave blank if not needed</span>
+                    <span className="text-xs text-[#0c5b84]/80">Leave blank if not needed</span>
                   </div>
                   
                   <div className="space-y-3">
                     <div>
-                      <Label className="block text-xs text-blue-700 mb-1">End Date</Label>
+                      <Label className="block text-xs text-[#0c5b84] mb-1">End Date</Label>
                       <Input
                         type="date"
                         value={endDate}
@@ -398,7 +398,7 @@ export default function CreateMeetingScreen({
                     
                     <div className="grid grid-cols-4 gap-2">
                       <div>
-                        <Label className="text-xs text-blue-700 mb-1 block">Hour</Label>
+                        <Label className="text-xs text-[#0c5b84] mb-1 block">Hour</Label>
                         <Select value={endSelectedHour} onValueChange={setEndSelectedHour}>
                           <SelectTrigger className="w-full h-10 text-sm">
                             <SelectValue placeholder="Hour" />
@@ -413,7 +413,7 @@ export default function CreateMeetingScreen({
                         </Select>
                       </div>
                       <div>
-                        <Label className="text-xs text-blue-700 mb-1 block">Min</Label>
+                        <Label className="text-xs text-[#0c5b84] mb-1 block">Min</Label>
                         <Input
                           type="number"
                           min="0"
@@ -430,7 +430,7 @@ export default function CreateMeetingScreen({
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-blue-700 mb-1 block">Sec</Label>
+                        <Label className="text-xs text-[#0c5b84] mb-1 block">Sec</Label>
                         <Input
                           type="number"
                           min="0"
@@ -447,7 +447,7 @@ export default function CreateMeetingScreen({
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-blue-700 mb-1 block">Period</Label>
+                        <Label className="text-xs text-[#0c5b84] mb-1 block">Period</Label>
                         <Select value={endSelectedPeriod} onValueChange={setEndSelectedPeriod}>
                           <SelectTrigger className="w-full h-10 text-sm">
                             <SelectValue placeholder="AM/PM" />
@@ -461,9 +461,9 @@ export default function CreateMeetingScreen({
                     </div>
                     
                     {endDate && endSelectedHour && endSelectedMinute && endSelectedPeriod && (
-                      <div className="p-2 bg-blue-100 rounded border border-blue-300 flex items-center">
-                        <span className="material-icons text-blue-600 text-sm mr-2">schedule</span>
-                        <span className="text-sm text-blue-800 font-medium">
+                      <div className="p-2 bg-[#0c5b84]/10 rounded border border-[#0c5b84]/30 flex items-center">
+                        <span className="material-icons text-[#0c5b84] text-sm mr-2">schedule</span>
+                        <span className="text-sm text-[#0c5b84] font-medium">
                           End: {endSelectedHour}:{endSelectedMinute.padStart(2, "0")}:{endSelectedSecond.padStart(2, "0")} {endSelectedPeriod}
                         </span>
                       </div>

@@ -25,13 +25,13 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
               onClick={() => onTabChange(item.id)}
               className={`flex flex-col items-center justify-center p-2 rounded-xl min-w-0 flex-1 transition-all duration-200 ${
                 isActive
-                  ? 'bg-blue-50 text-blue-600'
+                  ? 'bg-[#0c5b84]/10 text-[#0c5b84]'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <div className="relative">
                 <span className={`material-icons text-xl transition-all duration-200 ${
-                  isActive ? 'text-blue-600' : 'text-gray-600'
+                  isActive ? 'text-[#0c5b84]' : 'text-gray-600'
                 }`}>
                   {item.icon}
                 </span>
@@ -45,7 +45,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 )}
               </div>
               <span className={`text-xs font-medium mt-1 truncate transition-all duration-200 ${
-                isActive ? 'text-blue-600' : 'text-gray-600'
+                isActive ? 'text-[#0c5b84]' : 'text-gray-600'
               }`}>
                 {item.label}
               </span>

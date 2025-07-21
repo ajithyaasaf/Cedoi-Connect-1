@@ -65,11 +65,11 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
 
   if (meetingLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0c5b84]/10 to-[#0a5472]/20 flex items-center justify-center">
         <Card className="w-full max-w-md shadow-xl">
           <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <span className="material-icons text-blue-500 text-2xl">hourglass_empty</span>
+            <div className="w-16 h-16 bg-[#0c5b84]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <span className="material-icons text-[#0c5b84] text-2xl">hourglass_empty</span>
             </div>
             <h2 className="text-xl font-semibold mb-2">Loading Meeting...</h2>
             <p className="text-gray-600">Please wait while we load the meeting details.</p>
@@ -81,7 +81,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
 
   if (meetingError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0c5b84]/10 to-[#0a5472]/20 flex items-center justify-center">
         <Card className="w-full max-w-md shadow-xl">
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -105,7 +105,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
 
   if (!meeting) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0c5b84]/10 to-[#0a5472]/20 flex items-center justify-center">
         <Card className="w-full max-w-md shadow-xl">
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">

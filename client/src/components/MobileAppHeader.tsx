@@ -50,7 +50,7 @@ export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: Mob
                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
               }}
             />
-            <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center hidden">
+            <div className="h-8 w-8 bg-[#0c5b84] rounded-lg flex items-center justify-center hidden">
               <span className="material-icons text-white text-sm">groups</span>
             </div>
           </div>
@@ -68,9 +68,9 @@ export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: Mob
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="w-10 h-10 cursor-pointer ring-2 ring-transparent hover:ring-blue-200 transition-all">
+              <Avatar className="w-10 h-10 cursor-pointer ring-2 ring-transparent hover:ring-[#0c5b84]/20 transition-all">
                 <AvatarImage src="" alt={user?.name} />
-                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-medium text-sm">
+                <AvatarFallback className="bg-gradient-to-br from-[#0c5b84] to-[#0a5472] text-white font-medium text-sm">
                   {getUserInitials()}
                 </AvatarFallback>
               </Avatar>

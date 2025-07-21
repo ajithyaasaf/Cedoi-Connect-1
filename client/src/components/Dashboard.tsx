@@ -155,7 +155,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
 
       {/* Enhanced Quick Stats */}
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <Card className="bg-gradient-to-br from-[#085886] to-[#0a5e78] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <Card className="bg-gradient-to-br from-[#0c5b84] to-[#0a5472] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -189,7 +189,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
       {/* Today's Meeting Card */}
       {todaysMeeting && (
         <Card className="mb-8 overflow-hidden border-none shadow-xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white p-6 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#0c5b84] via-[#0a5472] to-[#084d60] text-white p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full -ml-12 -mb-12"></div>
             <div className="relative z-10">
@@ -202,7 +202,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                     <h3 className="text-xl font-semibold mb-1">Today's Meeting</h3>
                     <div className="flex items-center space-x-2">
                       <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                      <span className="text-sm text-blue-100">Active Now</span>
+                      <span className="text-sm text-white/80">Active Now</span>
                     </div>
                   </div>
                 </div>
@@ -235,7 +235,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
           <CardContent className="p-6">
             {/* Location */}
             <div className="flex items-center mb-6 p-3 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-lg">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-full flex items-center justify-center mr-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#0c5b84] to-[#0a5472] rounded-full flex items-center justify-center mr-3">
                 <span className="material-icons text-white text-sm">location_on</span>
               </div>
               <div>
@@ -333,8 +333,8 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
               {/* Upcoming Meetings */}
               <div className="p-6">
                 <h4 className="font-semibold text-foreground mb-4 flex items-center">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                    <span className="material-icons text-blue-600 text-sm">schedule</span>
+                  <div className="w-6 h-6 bg-[#0c5b84]/10 rounded-full flex items-center justify-center mr-2">
+                    <span className="material-icons text-[#0c5b84] text-sm">schedule</span>
                   </div>
                   Upcoming ({organizerUpcomingMeetings.length})
                 </h4>
@@ -349,15 +349,15 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-3">
                     {organizerUpcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-gradient-to-r from-[#085886]/10 to-[#0a5e78]/10 dark:from-[#085886]/20 dark:to-[#0a5e78]/20 p-4 rounded-xl border border-[#085886]/20 dark:border-[#085886]/30 hover:shadow-md transition-all duration-200">
+                      <div key={meeting.id} className="bg-gradient-to-r from-[#0c5b84]/10 to-[#0a5472]/10 dark:from-[#0c5b84]/20 dark:to-[#0a5472]/20 p-4 rounded-xl border border-[#0c5b84]/20 dark:border-[#0c5b84]/30 hover:shadow-md transition-all duration-200">
                         <div className="flex items-center justify-between">
                           <div className="flex items-start space-x-3 flex-1">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-[#0c5b84] to-[#0a5472] rounded-full flex items-center justify-center">
                               <span className="material-icons text-white text-sm">event</span>
                             </div>
                             <div className="flex-1 min-w-0">
                               <h5 className="font-semibold text-foreground">Weekly Meeting</h5>
-                              <div className="flex items-center space-x-1 mt-1 text-xs text-[#085886] dark:text-[#085886]/80">
+                              <div className="flex items-center space-x-1 mt-1 text-xs text-[#0c5b84] dark:text-[#0c5b84]/80">
                                 <span className="material-icons text-xs">schedule</span>
                                 <span>
                                   {new Date(meeting.date).toLocaleDateString('en-US', {
@@ -385,7 +385,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                           </div>
                           <Button
                             onClick={() => onMarkAttendance(meeting.id)}
-                            className="bg-gradient-to-r from-[#085886] to-[#0a5e78] hover:from-[#0a5e78] hover:to-[#0c6b8c] text-white shadow-md hover:shadow-lg transition-all duration-200 ml-3"
+                            className="bg-gradient-to-r from-[#0c5b84] to-[#0a5472] hover:from-[#0a5472] hover:to-[#084d60] text-white shadow-md hover:shadow-lg transition-all duration-200 ml-3"
                             size="sm"
                           >
                             <span className="material-icons text-sm mr-1">how_to_reg</span>
@@ -460,7 +460,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
               {/* All Upcoming Meetings */}
               <div className="p-4">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
-                  <span className="material-icons text-[#085886] mr-2">event_upcoming</span>
+                  <span className="material-icons text-[#0c5b84] mr-2">event_upcoming</span>
                   All Upcoming Meetings ({chairmanUpcomingMeetings.length})
                 </h4>
                 
@@ -469,7 +469,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-2">
                     {chairmanUpcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-[#085886]/10 p-3 rounded-lg">
+                      <div key={meeting.id} className="bg-[#0c5b84]/10 p-3 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
@@ -495,7 +495,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                           </div>
                           <div className="text-right">
                             <div className="text-xs text-gray-500">Assigned to Organizer</div>
-                            <div className="text-xs bg-[#085886]/10 text-[#085886] px-2 py-1 rounded-full">Upcoming</div>
+                            <div className="text-xs bg-[#0c5b84]/10 text-[#0c5b84] px-2 py-1 rounded-full">Upcoming</div>
                           </div>
                         </div>
                       </div>
@@ -571,7 +571,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-3">
                     {upcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-[#085886]/10 p-3 rounded-lg">
+                      <div key={meeting.id} className="bg-[#0c5b84]/10 p-3 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-medium text-foreground">Weekly Meeting</h4>
@@ -593,7 +593,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                             </p>
                           </div>
                           <div className="text-right">
-                            <div className="text-xs bg-[#085886]/10 text-[#085886] px-2 py-1 rounded-full">Upcoming</div>
+                            <div className="text-xs bg-[#0c5b84]/10 text-[#0c5b84] px-2 py-1 rounded-full">Upcoming</div>
                           </div>
                         </div>
                       </div>

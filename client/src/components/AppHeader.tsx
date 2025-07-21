@@ -16,7 +16,7 @@ export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeader
   const { toast } = useToast();
 
   return (
-    <header className="bg-gradient-to-r from-primary via-blue-700 to-indigo-800 text-white p-3 sm:p-4 shadow-xl safe-area-pt relative overflow-hidden">
+    <header className="bg-gradient-to-r from-primary via-[#0c5b84] to-[#0a5472] text-white p-3 sm:p-4 shadow-xl safe-area-pt relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-16 -mt-16"></div>
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full -ml-12 -mb-12"></div>
       <div className="flex items-center justify-between max-w-screen-xl mx-auto relative z-10">
@@ -38,7 +38,7 @@ export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeader
             <h1 className="text-lg sm:text-xl font-semibold truncate">CEDOI Madurai</h1>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <p className="text-xs sm:text-sm text-blue-100 capitalize truncate font-medium">
+              <p className="text-xs sm:text-sm text-white/80 capitalize truncate font-medium">
                 {user?.role === 'sonai' ? 'Organizer' : user?.role || 'Member'}
               </p>
             </div>
