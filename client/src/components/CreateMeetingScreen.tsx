@@ -50,6 +50,7 @@ export default function CreateMeetingScreen({
   const [date, setDate] = useState("");
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
+  const [selectedSecond, setSelectedSecond] = useState("0");
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [venue, setVenue] = useState("Mariat Hotel, Madurai");
   const [customVenue, setCustomVenue] = useState("");
@@ -147,7 +148,7 @@ export default function CreateMeetingScreen({
       hour24 = 0;
     }
 
-    const timeString = `${hour24.toString().padStart(2, "0")}:${selectedMinute}:00`;
+    const timeString = `${hour24.toString().padStart(2, "0")}:${selectedMinute.padStart(2, "0")}:${selectedSecond.padStart(2, "0")}`;
     const meetingDateTime = new Date(`${date}T${timeString}`);
 
     // Ensure the datetime is valid
@@ -252,7 +253,7 @@ export default function CreateMeetingScreen({
                   <Label className="block text-sm font-medium text-foreground mb-2">
                     Meeting Time
                   </Label>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3">
                     <div>
                       <Label className="text-xs text-gray-500 mb-1 block">
                         Hour
@@ -279,21 +280,39 @@ export default function CreateMeetingScreen({
                       <Label className="text-xs text-gray-500 mb-1 block">
                         Minute
                       </Label>
-                      <Select
+                      <Input
+                        type="number"
+                        min="0"
+                        max="59"
                         value={selectedMinute}
-                        onValueChange={setSelectedMinute}
-                      >
-                        <SelectTrigger className="w-full h-12 text-base">
-                          <SelectValue placeholder="Min" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {["00", "15", "30", "45"].map((minute) => (
-                            <SelectItem key={minute} value={minute}>
-                              {minute}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "" || (parseInt(value) >= 0 && parseInt(value) <= 59)) {
+                            setSelectedMinute(value);
+                          }
+                        }}
+                        placeholder="00"
+                        className="w-full h-12 text-base text-center"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500 mb-1 block">
+                        Second
+                      </Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="59"
+                        value={selectedSecond}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "" || (parseInt(value) >= 0 && parseInt(value) <= 59)) {
+                            setSelectedSecond(value);
+                          }
+                        }}
+                        placeholder="00"
+                        className="w-full h-12 text-base text-center"
+                      />
                     </div>
                     <div>
                       <Label className="text-xs text-gray-500 mb-1 block">
@@ -319,7 +338,7 @@ export default function CreateMeetingScreen({
                         schedule
                       </span>
                       <span className="text-sm text-accent font-medium">
-                        Selected: {selectedHour}:{selectedMinute}{" "}
+                        Selected: {selectedHour}:{selectedMinute.padStart(2, "0")}:{selectedSecond.padStart(2, "0")}{" "}
                         {selectedPeriod}
                       </span>
                     </div>
