@@ -68,32 +68,40 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
 
           {/* Today's Status */}
           {todaysMeeting ? (
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="material-icons text-lg">event_available</span>
-                    <span className="font-semibold">Today's Meeting</span>
+            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 border border-white/20 shadow-lg">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="material-icons text-lg text-green-300" aria-hidden="true">event_available</span>
+                    <span className="font-semibold text-white">Today's Meeting</span>
                   </div>
-                  <p className="text-sm opacity-90 mb-1">{todaysMeeting.venue}</p>
-                  <p className="text-xs opacity-75">{new Date(todaysMeeting.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+                  <h3 className="text-base font-medium text-white mb-2 truncate" title={todaysMeeting.venue}>
+                    {todaysMeeting.venue}
+                  </h3>
+                  <p className="text-sm text-blue-100 flex items-center">
+                    <span className="material-icons text-sm mr-1" aria-hidden="true">schedule</span>
+                    {new Date(todaysMeeting.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-2 flex-shrink-0">
                   {isChairmanOrSonai && (
                     <Button
                       size="sm"
                       onClick={() => onViewLiveAttendance(todaysMeeting.id)}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-xs rounded-full"
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-xs rounded-full shadow-md transition-all duration-200 hover:shadow-lg"
+                      aria-label="View live attendance"
                     >
-                      <span className="material-icons text-sm mr-1">live_tv</span>
+                      <span className="material-icons text-sm mr-1" aria-hidden="true">live_tv</span>
                       Live
                     </Button>
                   )}
                   <Button
                     size="sm"
                     onClick={() => onMarkAttendance(todaysMeeting.id)}
-                    className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 text-xs rounded-full border border-white/30"
+                    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 text-xs rounded-full border border-white/30 backdrop-blur-sm transition-all duration-200 hover:bg-white/40"
+                    aria-label="Mark attendance"
                   >
+                    <span className="material-icons text-sm mr-1" aria-hidden="true">check_circle</span>
                     Mark
                   </Button>
                 </div>
