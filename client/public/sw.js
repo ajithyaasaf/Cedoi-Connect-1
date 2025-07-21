@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cedoi-forum-v1';
+const CACHE_NAME = 'cedoi-forum-v2';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -20,6 +20,8 @@ self.addEventListener('install', (event) => {
         // Continue anyway, don't fail the service worker installation
       })
   );
+  // Force immediate activation of new service worker
+  self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -79,4 +81,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  // Take control immediately
+  event.waitUntil(self.clients.claim());
 });

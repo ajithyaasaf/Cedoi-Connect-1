@@ -499,146 +499,140 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Enhanced Header */}
+      {/* Mobile-First Enhanced Header */}
       <div className="bg-white shadow-lg sticky top-0 z-20 border-b border-gray-200">
-        <div className="px-4 py-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                <span className="material-icons text-gray-700">arrow_back</span>
-              </Button>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Live Attendance Monitor
-                </h1>
-                <p className="text-sm text-gray-600">
-                  {new Date(meeting.date).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })} • {meeting.venue}
-                </p>
-              </div>
+        <div className="px-3 py-3 sm:px-4 sm:py-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onBack}
+              className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <span className="material-icons text-gray-700 text-lg sm:text-xl">arrow_back</span>
+            </Button>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+                Live Attendance Monitor
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                {new Date(meeting.date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric'
+                })} • {meeting.venue}
+              </p>
             </div>
-            
-
           </div>
-
-
         </div>
       </div>
 
-      {/* Enhanced Stats Dashboard */}
-      <div className="p-4 space-y-6">
-        {/* Main Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white shadow-xl">
-            <CardContent className="p-4">
+      {/* Mobile-First Stats Dashboard */}
+      <div className="p-3 sm:p-4 space-y-4 sm:space-y-6">
+        {/* Main Stats Cards - Mobile Responsive Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium">Present</p>
-                  <p className="text-3xl font-bold">{presentCount}</p>
+                  <p className="text-green-100 text-xs sm:text-sm font-medium">Present</p>
+                  <p className="text-2xl sm:text-3xl font-bold">{presentCount}</p>
                 </div>
-                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <span className="material-icons text-2xl">check_circle</span>
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="material-icons text-lg sm:text-2xl">check_circle</span>
                 </div>
               </div>
               <div className="mt-2">
-                <div className="bg-white bg-opacity-20 rounded-full h-2">
+                <div className="bg-white bg-opacity-20 rounded-full h-1.5 sm:h-2">
                   <div 
-                    className="bg-white h-2 rounded-full transition-all duration-500"
+                    className="bg-white h-1.5 sm:h-2 rounded-full transition-all duration-500"
                     style={{ width: `${attendancePercentage}%` }}
                   ></div>
                 </div>
-                <p className="text-green-100 text-xs mt-1">{attendancePercentage}% attendance rate</p>
+                <p className="text-green-100 text-xs mt-1 hidden sm:block">{attendancePercentage}% rate</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white shadow-xl">
-            <CardContent className="p-4">
+          <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-red-100 text-sm font-medium">Absent</p>
-                  <p className="text-3xl font-bold">{absentCount}</p>
+                  <p className="text-red-100 text-xs sm:text-sm font-medium">Absent</p>
+                  <p className="text-2xl sm:text-3xl font-bold">{absentCount}</p>
                 </div>
-                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <span className="material-icons text-2xl">cancel</span>
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="material-icons text-lg sm:text-2xl">cancel</span>
                 </div>
               </div>
               <div className="mt-2">
-                <div className="bg-white bg-opacity-20 rounded-full h-2">
+                <div className="bg-white bg-opacity-20 rounded-full h-1.5 sm:h-2">
                   <div 
-                    className="bg-white h-2 rounded-full transition-all duration-500"
+                    className="bg-white h-1.5 sm:h-2 rounded-full transition-all duration-500"
                     style={{ width: `${totalMembers > 0 ? (absentCount / totalMembers) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-red-100 text-xs mt-1">
-                  {totalMembers > 0 ? Math.round((absentCount / totalMembers) * 100) : 0}% absent rate
+                <p className="text-red-100 text-xs mt-1 hidden sm:block">
+                  {totalMembers > 0 ? Math.round((absentCount / totalMembers) * 100) : 0}% rate
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-xl">
-            <CardContent className="p-4">
+          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100 text-sm font-medium">Pending</p>
-                  <p className="text-3xl font-bold">{pendingCount}</p>
+                  <p className="text-orange-100 text-xs sm:text-sm font-medium">Pending</p>
+                  <p className="text-2xl sm:text-3xl font-bold">{pendingCount}</p>
                 </div>
-                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <span className="material-icons text-2xl">schedule</span>
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="material-icons text-lg sm:text-2xl">schedule</span>
                 </div>
               </div>
               <div className="mt-2">
-                <div className="bg-white bg-opacity-20 rounded-full h-2">
+                <div className="bg-white bg-opacity-20 rounded-full h-1.5 sm:h-2">
                   <div 
-                    className="bg-white h-2 rounded-full transition-all duration-500"
+                    className="bg-white h-1.5 sm:h-2 rounded-full transition-all duration-500"
                     style={{ width: `${totalMembers > 0 ? (pendingCount / totalMembers) * 100 : 0}%` }}
                   ></div>
                 </div>
-                <p className="text-orange-100 text-xs mt-1">Awaiting attendance</p>
+                <p className="text-orange-100 text-xs mt-1 hidden sm:block">Awaiting</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl">
-            <CardContent className="p-4">
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">Total</p>
-                  <p className="text-3xl font-bold">{totalMembers}</p>
+                  <p className="text-blue-100 text-xs sm:text-sm font-medium">Total</p>
+                  <p className="text-2xl sm:text-3xl font-bold">{totalMembers}</p>
                 </div>
-                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <span className="material-icons text-2xl">people</span>
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="material-icons text-lg sm:text-2xl">people</span>
                 </div>
               </div>
               <div className="mt-2">
-                <div className="bg-white bg-opacity-20 rounded-full h-2">
+                <div className="bg-white bg-opacity-20 rounded-full h-1.5 sm:h-2">
                   <div 
-                    className="bg-white h-2 rounded-full transition-all duration-500"
+                    className="bg-white h-1.5 sm:h-2 rounded-full transition-all duration-500"
                     style={{ width: `${completionPercentage}%` }}
                   ></div>
                 </div>
-                <p className="text-blue-100 text-xs mt-1">{completionPercentage}% completion</p>
+                <p className="text-blue-100 text-xs mt-1 hidden sm:block">{completionPercentage}% done</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* View Filter Buttons */}
+        {/* Mobile-First Filter Section */}
         <Card className="shadow-lg">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">{getViewTitle()}</CardTitle>
-              <div className="flex space-x-1">
+          <CardHeader className="pb-2 sm:pb-3">
+            <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+              <CardTitle className="text-base sm:text-lg">{getViewTitle()}</CardTitle>
+              
+              {/* Mobile Filter Buttons - Horizontal Scroll */}
+              <div className="flex space-x-1 overflow-x-auto pb-1 sm:pb-0">
                 {[
                   { key: 'overview', label: 'All', icon: 'people' },
                   { key: 'present', label: 'Present', icon: 'check_circle', color: 'text-green-600' },
@@ -650,22 +644,23 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                     variant={selectedView === key ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSelectedView(key as any)}
-                    className={`text-xs ${selectedView === key ? '' : color || ''}`}
+                    className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedView === key ? '' : color || ''}`}
                   >
                     <span className="material-icons text-sm mr-1">{icon}</span>
-                    {label}
+                    <span className="hidden sm:inline">{label}</span>
+                    <span className="sm:hidden">{label.slice(0,3)}</span>
                   </Button>
                 ))}
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            {/* Members List */}
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+          <CardContent className="pt-2 sm:pt-4">
+            {/* Mobile-First Members List */}
+            <div className="space-y-2 sm:space-y-3 max-h-80 sm:max-h-96 overflow-y-auto">
               {getFilteredMembers().length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <span className="material-icons text-4xl mb-2 opacity-50">people_outline</span>
-                  <p>No members in this category</p>
+                <div className="text-center py-6 sm:py-8 text-gray-500">
+                  <span className="material-icons text-3xl sm:text-4xl mb-2 opacity-50">people_outline</span>
+                  <p className="text-sm sm:text-base">No members in this category</p>
                 </div>
               ) : (
                 getFilteredMembers().map((member) => {
@@ -675,25 +670,31 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                                     'text-orange-600 bg-orange-50';
                   
                   return (
-                    <div key={member.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                    <div key={member.id} className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm flex-shrink-0">
                           {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                         </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900">{member.name}</h4>
-                          <p className="text-sm text-gray-500">{member.company}</p>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{member.name}</h4>
+                          <p className="text-xs sm:text-sm text-gray-500 truncate">{member.company}</p>
                         </div>
                       </div>
                       <Badge 
-                        className={`${statusColor} border-0 font-medium`}
+                        className={`${statusColor} border-0 font-medium text-xs flex-shrink-0 ml-2`}
                       >
                         <span className="material-icons text-sm mr-1">
                           {status === 'present' ? 'check_circle' : 
                            status === 'absent' ? 'cancel' : 'schedule'}
                         </span>
-                        {status === 'present' ? 'Present' : 
-                         status === 'absent' ? 'Absent' : 'Pending'}
+                        <span className="hidden sm:inline">
+                          {status === 'present' ? 'Present' : 
+                           status === 'absent' ? 'Absent' : 'Pending'}
+                        </span>
+                        <span className="sm:hidden">
+                          {status === 'present' ? 'P' : 
+                           status === 'absent' ? 'A' : '?'}
+                        </span>
                       </Badge>
                     </div>
                   );
@@ -703,32 +704,34 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
           </CardContent>
         </Card>
 
-        {/* Export Actions */}
+        {/* Mobile-First Export Actions */}
         <Card className="shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900">Export Current Status</h3>
-                <p className="text-sm text-gray-600">Download attendance report for this meeting</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex-1">
+                <h3 className="font-medium text-gray-900 text-sm sm:text-base">Export Current Status</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Download attendance report for this meeting</p>
               </div>
               <div className="flex space-x-2">
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={handleCSVExport}
-                  className="hover:bg-green-50 hover:border-green-200"
+                  className="hover:bg-green-50 hover:border-green-200 flex-1 sm:flex-none"
                 >
                   <span className="material-icons text-sm mr-1">file_download</span>
-                  CSV Export
+                  <span className="hidden sm:inline">CSV Export</span>
+                  <span className="sm:hidden">CSV</span>
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={handlePrintReport}
-                  className="hover:bg-blue-50 hover:border-blue-200"
+                  className="hover:bg-blue-50 hover:border-blue-200 flex-1 sm:flex-none"
                 >
                   <span className="material-icons text-sm mr-1">print</span>
-                  Print Report
+                  <span className="hidden sm:inline">Print Report</span>
+                  <span className="sm:hidden">Print</span>
                 </Button>
               </div>
             </div>
