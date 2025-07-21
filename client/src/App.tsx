@@ -10,6 +10,8 @@ import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import HelpSupport from "@/pages/help-support";
 import NotFound from "@/pages/not-found";
+// Import the member update utility for console access
+import "@/utils/updateMembers";
 
 function Router() {
   return (

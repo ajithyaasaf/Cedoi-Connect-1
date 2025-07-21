@@ -173,19 +173,38 @@ async function withFirestoreFallback<T>(
 export const api = {
   // User operations
   users: {
-    getAll: async () => {
-      // Force use mock data to show new members
-      console.log('Using mock data with new members');
-      return mockUsers;
-    },
-    getById: async (id: string) => {
-      // Force use mock data to show new members
-      return mockUsers.find(u => u.id === id) || null;
-    },
-    getByEmail: async (email: string) => {
-      // Force use mock data to show new members
-      return mockUsers.find(u => u.email === email) || null;
-    },
+    getAll: async () => withFirestoreFallback(
+      () => firestoreUsers.getAll(),
+      () => mockUsers
+    ),
+    getById: async (id: string) => withFirestoreFallback(
+      () => firestoreUsers.getById(id),
+      () => mockUsers.find(u => u.id === id) || null
+    ),
+    getByEmail: async (email: string) => withFirestoreFallback(
+      () => firestoreUsers.getByEmail(email),
+      () => mockUsers.find(u => u.email === email) || null
+    ),
+    deleteAll: async () => withFirestoreFallback(
+      () => firestoreUsers.deleteAll(),
+      () => { 
+        const count = mockUsers.length;
+        mockUsers.length = 0; // Clear mock users
+        return count;
+      }
+    ),
+    bulkCreate: async (users: Omit<User, 'id' | 'createdAt'>[]) => withFirestoreFallback(
+      () => firestoreUsers.bulkCreate(users),
+      () => {
+        const newUsers = users.map((userData, index) => ({
+          id: `user_${Date.now()}_${index}`,
+          ...userData,
+          createdAt: new Date()
+        }));
+        mockUsers.push(...newUsers);
+        return newUsers;
+      }
+    ),
     create: async (userData: Omit<User, 'id' | 'createdAt'>) => withFirestoreFallback(
       () => firestoreUsers.create(userData),
       () => {

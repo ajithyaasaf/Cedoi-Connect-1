@@ -66,6 +66,32 @@ export const firestoreUsers = {
       id: doc.id, 
       ...doc.data() 
     })) as User[];
+  },
+
+  async deleteAll() {
+    const querySnapshot = await getDocs(collection(db, COLLECTIONS.USERS));
+    const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+    return querySnapshot.docs.length;
+  },
+
+  async bulkCreate(users: Omit<User, 'id' | 'createdAt'>[]) {
+    const createPromises = users.map(userData => 
+      addDoc(collection(db, COLLECTIONS.USERS), {
+        ...userData,
+        createdAt: serverTimestamp()
+      })
+    );
+    const docRefs = await Promise.all(createPromises);
+    
+    // Get the created documents
+    const getPromises = docRefs.map(docRef => getDoc(docRef));
+    const docSnaps = await Promise.all(getPromises);
+    
+    return docSnaps.map((docSnap, index) => ({
+      id: docRefs[index].id,
+      ...docSnap.data()
+    })) as User[];
   }
 };
 
