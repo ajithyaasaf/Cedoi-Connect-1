@@ -82,50 +82,161 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
     retry: 1,
   });
 
-  // Simple static notifications to prevent infinite loops
+  // Generate real-time notifications with stable dependencies
   useEffect(() => {
-    // Only set initial notifications once and don't regenerate on every render
-    if (notifications.length === 0 && !meetingsLoading && !todaysMeetingLoading && !attendanceLoading) {
-      const staticNotifications: Notification[] = [
-        {
+    if (meetingsLoading || todaysMeetingLoading || attendanceLoading || !user) {
+      return;
+    }
+
+    const generateRealTimeNotifications = () => {
+      const newNotifications: Notification[] = [];
+      const now = new Date();
+      const oneHour = 60 * 60 * 1000;
+      const thirtyMinutes = 30 * 60 * 1000;
+
+      // Meeting reminders for upcoming meetings
+      if (meetings && Array.isArray(meetings)) {
+        meetings.forEach(meeting => {
+          const meetingDate = new Date(meeting.date);
+          const timeDiff = meetingDate.getTime() - now.getTime();
+          
+          // Show reminder if meeting is within 1 hour but more than 5 minutes away
+          if (timeDiff > 5 * 60 * 1000 && timeDiff <= oneHour) {
+            const minutesUntil = Math.round(timeDiff / (60 * 1000));
+            newNotifications.push({
+              id: `reminder_${meeting.id}`,
+              type: 'meeting_reminder',
+              title: 'Upcoming Meeting',
+              message: `Meeting at ${meeting.venue} starts in ${minutesUntil} minutes`,
+              timestamp: now,
+              read: false,
+              meetingId: meeting.id,
+              actionRequired: true
+            });
+          }
+
+          // Show immediate alert if meeting starts in 5 minutes or less
+          if (timeDiff > 0 && timeDiff <= 5 * 60 * 1000) {
+            newNotifications.push({
+              id: `urgent_${meeting.id}`,
+              type: 'meeting_reminder',
+              title: 'Meeting Starting Now!',
+              message: `Meeting at ${meeting.venue} is starting now`,
+              timestamp: now,
+              read: false,
+              meetingId: meeting.id,
+              actionRequired: true
+            });
+          }
+        });
+      }
+
+      // Today's meeting attendance notifications for Sonai
+      if (todaysMeeting && user.role === 'sonai') {
+        const userAttendanceRecord = attendanceRecords?.find(record => record.userId === user.id);
+        if (!userAttendanceRecord) {
+          newNotifications.push({
+            id: `attendance_required_${todaysMeeting.id}`,
+            type: 'attendance_required',
+            title: 'Attendance Required',
+            message: `Please mark your attendance for today's meeting at ${todaysMeeting.venue}`,
+            timestamp: now,
+            read: false,
+            meetingId: todaysMeeting.id,
+            actionRequired: true
+          });
+        } else if (userAttendanceRecord.status === 'absent') {
+          newNotifications.push({
+            id: `marked_absent_${todaysMeeting.id}`,
+            type: 'attendance_update',
+            title: 'Marked as Absent',
+            message: `You are marked absent for today's meeting. Contact organizer if this is incorrect.`,
+            timestamp: now,
+            read: false,
+            meetingId: todaysMeeting.id,
+            actionRequired: false
+          });
+        }
+      }
+
+      // Live attendance updates for Chairman
+      if (todaysMeeting && user.role === 'chairman' && attendanceRecords && attendanceRecords.length > 0) {
+        const presentCount = attendanceRecords.filter(record => record.status === 'present').length;
+        const totalMembers = attendanceRecords.length;
+        const attendancePercentage = Math.round((presentCount / totalMembers) * 100);
+
+        newNotifications.push({
+          id: `live_attendance_${todaysMeeting.id}`,
+          type: 'attendance_update',
+          title: 'Live Attendance Update',
+          message: `${presentCount}/${totalMembers} members present (${attendancePercentage}%)`,
+          timestamp: now,
+          read: false,
+          meetingId: todaysMeeting.id,
+          actionRequired: false
+        });
+
+        // Alert if attendance is low
+        if (attendancePercentage < 50 && totalMembers > 5) {
+          newNotifications.push({
+            id: `low_attendance_${todaysMeeting.id}`,
+            type: 'attendance_update',
+            title: 'Low Attendance Alert',
+            message: `Only ${attendancePercentage}% attendance. Consider sending reminders.`,
+            timestamp: now,
+            read: false,
+            meetingId: todaysMeeting.id,
+            actionRequired: true
+          });
+        }
+      }
+
+      // New meetings created in last 24 hours
+      if (meetings && Array.isArray(meetings)) {
+        const recentMeetings = meetings.filter(meeting => {
+          const meetingDate = new Date(meeting.date);
+          const daysSinceCreated = (now.getTime() - new Date(meeting.createdAt || meeting.date).getTime()) / (24 * 60 * 60 * 1000);
+          return daysSinceCreated <= 1 && meetingDate > now;
+        });
+
+        recentMeetings.forEach(meeting => {
+          newNotifications.push({
+            id: `new_meeting_${meeting.id}`,
+            type: 'meeting_created',
+            title: 'New Meeting Scheduled',
+            message: `Meeting scheduled for ${new Date(meeting.date).toLocaleDateString()} at ${meeting.venue}`,
+            timestamp: new Date(meeting.createdAt || meeting.date),
+            read: false,
+            meetingId: meeting.id,
+            actionRequired: false
+          });
+        });
+      }
+
+      // Welcome notification for first-time users
+      if (newNotifications.length === 0) {
+        newNotifications.push({
           id: 'welcome',
           type: 'meeting_reminder',
           title: 'Welcome to CEDOI Forum',
-          message: 'Check your meeting schedules and attendance status',
-          timestamp: new Date(),
-          read: false,
-          actionRequired: false
-        }
-      ];
-
-      // Add role-specific notifications
-      if (user?.role === 'sonai') {
-        staticNotifications.push({
-          id: 'sonai_reminder',
-          type: 'attendance_required',
-          title: 'Attendance Reminder',
-          message: 'Remember to mark attendance for meetings',
-          timestamp: new Date(),
+          message: user.role === 'chairman' 
+            ? 'You can create meetings and monitor live attendance'
+            : user.role === 'sonai'
+            ? 'You can mark attendance for meetings'
+            : 'Stay updated with meeting schedules and notifications',
+          timestamp: now,
           read: false,
           actionRequired: false
         });
       }
 
-      if (user?.role === 'chairman') {
-        staticNotifications.push({
-          id: 'chairman_reminder',
-          type: 'meeting_created',
-          title: 'Chairman Dashboard',
-          message: 'View live attendance and manage meetings',
-          timestamp: new Date(),
-          read: false,
-          actionRequired: false
-        });
-      }
+      return newNotifications;
+    };
 
-      setNotifications(staticNotifications);
-    }
-  }, [user, meetingsLoading, todaysMeetingLoading, attendanceLoading, notifications.length]);
+    const newNotifications = generateRealTimeNotifications();
+    setNotifications(newNotifications);
+
+  }, [meetings, todaysMeeting, attendanceRecords, user, meetingsLoading, todaysMeetingLoading, attendanceLoading]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -265,10 +376,22 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
                   >
                     <div className="flex items-start space-x-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        !notification.read ? 'bg-blue-100' : 'bg-gray-100'
+                        notification.type === 'meeting_reminder' && notification.title.includes('Starting Now') 
+                          ? 'bg-red-100 animate-pulse' 
+                          : notification.type === 'attendance_required'
+                          ? 'bg-orange-100'
+                          : notification.type === 'attendance_update' && notification.title.includes('Low Attendance')
+                          ? 'bg-yellow-100'
+                          : !notification.read ? 'bg-blue-100' : 'bg-gray-100'
                       }`}>
                         <span className={`material-icons text-sm ${
-                          !notification.read ? 'text-blue-600' : 'text-gray-500'
+                          notification.type === 'meeting_reminder' && notification.title.includes('Starting Now')
+                            ? 'text-red-600'
+                            : notification.type === 'attendance_required'
+                            ? 'text-orange-600'
+                            : notification.type === 'attendance_update' && notification.title.includes('Low Attendance')
+                            ? 'text-yellow-600'
+                            : !notification.read ? 'text-blue-600' : 'text-gray-500'
                         }`}>
                           {getNotificationIcon(notification.type)}
                         </span>
