@@ -82,127 +82,50 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
     retry: 1,
   });
 
-  // Generate notifications based on data using useMemo to prevent infinite loops
-  const generatedNotifications = React.useMemo(() => {
-    // Don't generate notifications if data is still loading
-    if (meetingsLoading || todaysMeetingLoading || attendanceLoading) {
-      return [];
-    }
-
-    const newNotifications: Notification[] = [];
-    const now = new Date();
-    const oneHour = 60 * 60 * 1000;
-
-    // Only proceed if we have valid data
-    if (!meetings || !Array.isArray(meetings)) {
-      return [];
-    }
-
-    // Add demo notifications to show functionality
-    if (meetings.length > 0) {
-      newNotifications.push({
-        id: 'demo_reminder',
-        type: 'meeting_reminder',
-        title: 'Meeting Starting Soon',
-        message: 'Your next meeting starts in 30 minutes',
-        timestamp: now,
-        read: false,
-        actionRequired: true
-      });
-    }
-
-    if (user?.role === 'sonai') {
-      newNotifications.push({
-        id: 'demo_attendance',
-        type: 'attendance_required',
-        title: 'Attendance Required',
-        message: 'Please mark attendance for today\'s meeting',
-        timestamp: now,
-        read: false,
-        actionRequired: true
-      });
-    }
-
-    // Meeting reminders (1 hour before)
-    meetings.forEach(meeting => {
-      const meetingTime = new Date(meeting.date);
-      const timeDiff = meetingTime.getTime() - now.getTime();
-      
-      if (timeDiff > 0 && timeDiff <= oneHour) {
-        newNotifications.push({
-          id: `reminder_${meeting.id}`,
-          type: 'meeting_reminder',
-          title: 'Upcoming Meeting',
-          message: `Meeting at ${meeting.venue} starts in ${Math.round(timeDiff / (60 * 1000))} minutes`,
-          timestamp: now,
-          read: false,
-          meetingId: meeting.id,
-          actionRequired: true
-        });
-      }
-    });
-
-    // Today's meeting attendance required
-    if (todaysMeeting && user?.role === 'sonai') {
-      const userAttendance = attendanceRecords.find(record => record.userId === user.id);
-      if (!userAttendance) {
-        newNotifications.push({
-          id: `attendance_${todaysMeeting.id}`,
-          type: 'attendance_required',
-          title: 'Attendance Required',
-          message: `Please mark attendance for today's meeting at ${todaysMeeting.venue}`,
-          timestamp: now,
-          read: false,
-          meetingId: todaysMeeting.id,
-          actionRequired: true
-        });
-      }
-    }
-
-    // New meeting created notifications
-    const recentMeetings = meetings.filter(meeting => {
-      const created = new Date(meeting.date);
-      const daysDiff = (now.getTime() - created.getTime()) / (24 * 60 * 60 * 1000);
-      return daysDiff <= 1 && new Date(meeting.date) > now;
-    });
-
-    recentMeetings.forEach(meeting => {
-      newNotifications.push({
-        id: `new_meeting_${meeting.id}`,
-        type: 'meeting_created',
-        title: 'New Meeting Scheduled',
-        message: `Meeting scheduled for ${new Date(meeting.date).toLocaleDateString()} at ${meeting.venue}`,
-        timestamp: new Date(meeting.date),
-        read: false,
-        meetingId: meeting.id
-      });
-    });
-
-    // Live attendance updates for Chairman
-    if (todaysMeeting && user?.role === 'chairman') {
-      const attendanceCount = attendanceRecords.filter(record => record.status === 'present').length;
-      const totalMembers = attendanceRecords.length;
-      
-      if (totalMembers > 0) {
-        newNotifications.push({
-          id: `live_update_${todaysMeeting.id}`,
-          type: 'attendance_update',
-          title: 'Live Attendance Update',
-          message: `${attendanceCount}/${totalMembers} members present at today's meeting`,
-          timestamp: now,
-          read: false,
-          meetingId: todaysMeeting.id
-        });
-      }
-    }
-
-    return newNotifications;
-  }, [meetings, todaysMeeting, attendanceRecords, user, meetingsLoading, todaysMeetingLoading, attendanceLoading]);
-
-  // Update notifications state only when generated notifications change
+  // Simple static notifications to prevent infinite loops
   useEffect(() => {
-    setNotifications(generatedNotifications);
-  }, [generatedNotifications]);
+    // Only set initial notifications once and don't regenerate on every render
+    if (notifications.length === 0 && !meetingsLoading && !todaysMeetingLoading && !attendanceLoading) {
+      const staticNotifications: Notification[] = [
+        {
+          id: 'welcome',
+          type: 'meeting_reminder',
+          title: 'Welcome to CEDOI Forum',
+          message: 'Check your meeting schedules and attendance status',
+          timestamp: new Date(),
+          read: false,
+          actionRequired: false
+        }
+      ];
+
+      // Add role-specific notifications
+      if (user?.role === 'sonai') {
+        staticNotifications.push({
+          id: 'sonai_reminder',
+          type: 'attendance_required',
+          title: 'Attendance Reminder',
+          message: 'Remember to mark attendance for meetings',
+          timestamp: new Date(),
+          read: false,
+          actionRequired: false
+        });
+      }
+
+      if (user?.role === 'chairman') {
+        staticNotifications.push({
+          id: 'chairman_reminder',
+          type: 'meeting_created',
+          title: 'Chairman Dashboard',
+          message: 'View live attendance and manage meetings',
+          timestamp: new Date(),
+          read: false,
+          actionRequired: false
+        });
+      }
+
+      setNotifications(staticNotifications);
+    }
+  }, [user, meetingsLoading, todaysMeetingLoading, attendanceLoading, notifications.length]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
