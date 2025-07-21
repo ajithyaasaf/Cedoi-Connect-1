@@ -502,7 +502,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
       {/* Enhanced Header */}
       <div className="bg-white shadow-lg sticky top-0 z-20 border-b border-gray-200">
         <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
@@ -513,8 +513,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                 <span className="material-icons text-gray-700">arrow_back</span>
               </Button>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 flex items-center">
-                  <span className="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                <h1 className="text-xl font-bold text-gray-900">
                   Live Attendance Monitor
                 </h1>
                 <p className="text-sm text-gray-600">
@@ -528,49 +527,10 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
               </div>
             </div>
             
-            {/* Controls */}
-            <div className="flex items-center space-x-2">
-              <Button
-                variant={autoRefresh ? "default" : "outline"}
-                size="sm"
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className="text-xs"
-              >
-                <span className="material-icons text-sm mr-1">
-                  {autoRefresh ? 'pause' : 'play_arrow'}
-                </span>
-                {autoRefresh ? 'Pause' : 'Resume'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isFetching}
-                className="text-xs"
-              >
-                <span className={`material-icons text-sm mr-1 ${isFetching ? 'animate-spin' : ''}`}>
-                  refresh
-                </span>
-                Refresh
-              </Button>
-            </div>
+
           </div>
 
-          {/* Live Status Indicator */}
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center space-x-4">
-              <span className="flex items-center text-green-600">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                {autoRefresh ? 'Auto-refresh: ON' : 'Auto-refresh: OFF'}
-              </span>
-              <span className="text-gray-500">
-                Last update: {lastUpdate.toLocaleTimeString()}
-              </span>
-            </div>
-            <Badge variant={isFetching ? "default" : "secondary"} className="text-xs">
-              {isFetching ? 'Syncing...' : 'Up to date'}
-            </Badge>
-          </div>
+
         </div>
       </div>
 
