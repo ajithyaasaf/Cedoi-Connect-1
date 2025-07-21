@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import type { Meeting, User, AttendanceRecord } from '@shared/schema';
+import logoImage from '@assets/Logo_1753077321270.png';
 
 interface LiveAttendanceMonitorProps {
   meetingId: string;
@@ -60,10 +61,17 @@ export default function LiveAttendanceMonitor({ meetingId, onBack }: LiveAttenda
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <img 
-            src="/attached_assets/Logo_1753077321270.png" 
+            src={logoImage} 
             alt="CEDOI Logo" 
             className="h-16 w-auto mx-auto mb-4 opacity-50"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
           />
+          <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 hidden opacity-50">
+            <span className="material-icons text-gray-600 text-lg">groups</span>
+          </div>
           <h2 className="text-xl font-semibold mb-2">Meeting not found</h2>
           <Button onClick={onBack} variant="outline">
             Back to Dashboard

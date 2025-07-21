@@ -11,6 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { safeName, safeCompany, safeText } from '@/lib/render-safety';
 import QRScanner from './QRScanner';
 import type { User, AttendanceRecord } from '@shared/schema';
+import logoImage from '@assets/Logo_1753077321270.png';
 
 interface AttendanceScreenProps {
   meetingId: string;
@@ -275,10 +276,17 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <img 
-              src="/attached_assets/Logo_1753077321270.png" 
+              src={logoImage} 
               alt="CEDOI Logo" 
               className="h-16 w-auto mx-auto mb-4"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
             />
+            <div className="w-12 h-12 bg-[#04004B] rounded-full flex items-center justify-center mx-auto mb-4 hidden">
+              <span className="material-icons text-white text-lg">groups</span>
+            </div>
             <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
             <p className="text-gray-500 text-sm">Loading members...</p>
           </div>
@@ -313,10 +321,17 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <img 
-              src="/attached_assets/Logo_1753077321270.png" 
+              src={logoImage} 
               alt="CEDOI Logo" 
               className="h-16 w-auto mx-auto mb-4 opacity-50"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
             />
+            <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 hidden opacity-50">
+              <span className="material-icons text-gray-600 text-lg">groups</span>
+            </div>
             <span className="material-icons text-red-500 text-6xl mb-4">error</span>
             <p className="text-gray-500 text-sm mb-2">Failed to load members</p>
             <p className="text-xs text-gray-400">{usersError?.message}</p>

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import type { Meeting, AttendanceRecord } from '@shared/schema';
+import logoImage from '@assets/Logo_1753077321270.png';
 
 interface Notification {
   id: string;
@@ -211,10 +212,17 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
             {isLoading ? (
               <div className="p-6 text-center text-gray-500">
                 <img 
-                  src="/attached_assets/Logo_1753077321270.png" 
+                  src={logoImage} 
                   alt="CEDOI Logo" 
                   className="h-12 w-auto mx-auto mb-3 opacity-60"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
                 />
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3 hidden opacity-60">
+                  <span className="material-icons text-gray-500 text-sm">groups</span>
+                </div>
                 <span className="material-icons text-4xl text-gray-300 mb-2 block animate-spin">hourglass_empty</span>
                 <p className="text-sm">Loading notifications...</p>
               </div>

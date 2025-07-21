@@ -14,6 +14,7 @@ import ReportsEnhanced from '@/components/ReportsEnhanced';
 import SettingsScreen from '@/components/SettingsScreen';
 import CreateMeetingScreen from '@/components/CreateMeetingScreen';
 import LiveAttendanceMonitorEnhanced from '@/components/LiveAttendanceMonitorEnhanced';
+import logoImage from '@assets/Logo_1753077321270.png';
 import BottomNavigation from '@/components/BottomNavigation';
 export default function Home() {
   const { user, loading } = useAuth();
@@ -27,10 +28,18 @@ export default function Home() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <img 
-            src="/attached_assets/Logo_1753077321270.png" 
+            src={logoImage} 
             alt="CEDOI Logo" 
             className="h-20 w-auto mx-auto mb-4"
+            onError={(e) => {
+              // Fallback to icon if image fails to load
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
           />
+          <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4 hidden">
+            <span className="material-icons text-white text-2xl">groups</span>
+          </div>
           <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
           <p className="text-foreground">Loading CEDOI Forum...</p>
         </div>
