@@ -48,17 +48,20 @@ self.addEventListener('fetch', (event) => {
             });
           
           return response;
-        }).catch(() => {
+        }).catch((error) => {
+          console.log('Fetch failed:', error);
           // Return a fallback response for failed fetches
           if (event.request.destination === 'document') {
             return new Response('App is offline. Please check your connection.', {
               status: 503,
               statusText: 'Service Unavailable',
               headers: new Headers({
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/html'
               })
             });
           }
+          // For non-document requests, return undefined to let the browser handle it
+          return undefined;
         });
       })
   );
