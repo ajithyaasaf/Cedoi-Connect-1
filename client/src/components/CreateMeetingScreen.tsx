@@ -52,9 +52,15 @@ export default function CreateMeetingScreen({
   const [selectedMinute, setSelectedMinute] = useState("");
   const [selectedSecond, setSelectedSecond] = useState("0");
   const [selectedPeriod, setSelectedPeriod] = useState("");
+  // End Time fields
+  const [endDate, setEndDate] = useState("");
+  const [endSelectedHour, setEndSelectedHour] = useState("");
+  const [endSelectedMinute, setEndSelectedMinute] = useState("");
+  const [endSelectedSecond, setEndSelectedSecond] = useState("0");
+  const [endSelectedPeriod, setEndSelectedPeriod] = useState("");
   const [venue, setVenue] = useState("Mariat Hotel, Madurai");
   const [customVenue, setCustomVenue] = useState("");
-  const [agenda, setAgenda] = useState("");
+  const [theme, setTheme] = useState(""); // Changed from agenda to theme
   const [repeatWeekly, setRepeatWeekly] = useState(false);
   const [notifyMembers, setNotifyMembers] = useState(true);
   const [sendReminder, setSendReminder] = useState(true);
@@ -82,7 +88,7 @@ export default function CreateMeetingScreen({
             {
               date: createdMeeting.date,
               venue: createdMeeting.venue,
-              agenda: createdMeeting.agenda || "",
+              agenda: createdMeeting.theme || "", // Using theme but mapping to agenda for notification service
             },
             userIds,
           );
@@ -102,7 +108,7 @@ export default function CreateMeetingScreen({
             {
               date: createdMeeting.date,
               venue: createdMeeting.venue,
-              agenda: createdMeeting.agenda || "",
+              agenda: createdMeeting.theme || "", // Using theme but mapping to agenda for notification service
             },
             userIds,
           );
@@ -172,10 +178,35 @@ export default function CreateMeetingScreen({
       return;
     }
 
+    // Process end time if provided
+    let endDateTime: Date | null = null;
+    if (endDate && endSelectedHour && endSelectedMinute && endSelectedPeriod) {
+      let endHour24 = parseInt(endSelectedHour);
+      if (endSelectedPeriod === "PM" && endHour24 !== 12) {
+        endHour24 += 12;
+      } else if (endSelectedPeriod === "AM" && endHour24 === 12) {
+        endHour24 = 0;
+      }
+      
+      const endTimeString = `${endHour24.toString().padStart(2, "0")}:${endSelectedMinute.padStart(2, "0")}:${endSelectedSecond.padStart(2, "0")}`;
+      endDateTime = new Date(`${endDate}T${endTimeString}`);
+      
+      // Validate end time is after start time
+      if (endDateTime <= meetingDateTime) {
+        toast({
+          title: "Invalid End Time",
+          description: "End time must be after the start time.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     const meetingData = {
       date: meetingDateTime,
+      endTime: endDateTime,
       venue: finalVenue,
-      agenda: agenda || "",
+      theme: theme || "",
       createdBy: user.id,
       repeatWeekly,
       isActive: true,
@@ -344,6 +375,101 @@ export default function CreateMeetingScreen({
                     </div>
                   )}
                 </div>
+
+                {/* End Time Section - Optional */}
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-sm font-medium text-blue-900">
+                      End Time (Optional)
+                    </Label>
+                    <span className="text-xs text-blue-600">Leave blank if not needed</span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="block text-xs text-blue-700 mb-1">End Date</Label>
+                      <Input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="w-full h-10 text-sm"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-4 gap-2">
+                      <div>
+                        <Label className="text-xs text-blue-700 mb-1 block">Hour</Label>
+                        <Select value={endSelectedHour} onValueChange={setEndSelectedHour}>
+                          <SelectTrigger className="w-full h-10 text-sm">
+                            <SelectValue placeholder="Hour" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => (
+                              <SelectItem key={hour} value={hour.toString()}>
+                                {hour}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-blue-700 mb-1 block">Min</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="59"
+                          value={endSelectedMinute}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === "" || (parseInt(value) >= 0 && parseInt(value) <= 59)) {
+                              setEndSelectedMinute(value);
+                            }
+                          }}
+                          placeholder="00"
+                          className="w-full h-10 text-sm text-center"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs text-blue-700 mb-1 block">Sec</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="59"
+                          value={endSelectedSecond}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === "" || (parseInt(value) >= 0 && parseInt(value) <= 59)) {
+                              setEndSelectedSecond(value);
+                            }
+                          }}
+                          placeholder="00"
+                          className="w-full h-10 text-sm text-center"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs text-blue-700 mb-1 block">Period</Label>
+                        <Select value={endSelectedPeriod} onValueChange={setEndSelectedPeriod}>
+                          <SelectTrigger className="w-full h-10 text-sm">
+                            <SelectValue placeholder="AM/PM" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="AM">AM</SelectItem>
+                            <SelectItem value="PM">PM</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    {endDate && endSelectedHour && endSelectedMinute && endSelectedPeriod && (
+                      <div className="p-2 bg-blue-100 rounded border border-blue-300 flex items-center">
+                        <span className="material-icons text-blue-600 text-sm mr-2">schedule</span>
+                        <span className="text-sm text-blue-800 font-medium">
+                          End: {endSelectedHour}:{endSelectedMinute.padStart(2, "0")}:{endSelectedSecond.padStart(2, "0")} {endSelectedPeriod}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="mt-4 flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
@@ -447,16 +573,16 @@ export default function CreateMeetingScreen({
                 <span className="material-icons mr-2 text-accent">
                   description
                 </span>
-                Purpose of Meeting
+                Theme of Meeting
               </h3>
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-2">
-                  Meeting Topics & Discussion Points
+                  Meeting Theme & Discussion Topics
                 </Label>
                 <Textarea
-                  value={agenda}
-                  onChange={(e) => setAgenda(e.target.value)}
-                  placeholder="Enter meeting Purpose and topics to discuss..."
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                  placeholder="Enter meeting theme and topics to discuss..."
                   rows={4}
                   className="w-full resize-none text-base min-h-[100px]"
                 />

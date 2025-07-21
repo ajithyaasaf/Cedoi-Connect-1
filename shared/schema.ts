@@ -14,8 +14,9 @@ export interface User {
 export interface Meeting {
   id: string;
   date: Date;
+  endTime: Date | null;
   venue: string;
-  agenda: string | null;
+  theme: string | null; // Changed from 'agenda' to 'theme'
   createdBy: string;
   repeatWeekly: boolean;
   isActive: boolean;
@@ -41,8 +42,9 @@ export const userValidationSchema = z.object({
 
 export const meetingValidationSchema = z.object({
   date: z.date(),
+  endTime: z.date().nullable().optional(),
   venue: z.string().min(1),
-  agenda: z.string().nullable().optional(),
+  theme: z.string().nullable().optional(), // Changed from 'agenda' to 'theme'
   createdBy: z.string(),
   repeatWeekly: z.boolean().default(false),
   isActive: z.boolean().default(true),
