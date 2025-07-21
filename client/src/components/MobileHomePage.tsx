@@ -74,7 +74,17 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
 
                 </div>
                 <div className="flex flex-col space-y-2 flex-shrink-0">
-
+                  {isChairmanOrSonai && (
+                    <Button
+                      size="sm"
+                      onClick={() => onViewLiveAttendance(todaysMeeting.id)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-xs rounded-full shadow-md transition-all duration-200 hover:shadow-lg"
+                      aria-label="View live attendance"
+                    >
+                      <span className="material-icons text-sm mr-1" aria-hidden="true">live_tv</span>
+                      Live
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     onClick={() => onMarkAttendance(todaysMeeting.id)}
