@@ -185,8 +185,8 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
     csvData.push(['Meeting Date:', meetingDateFormatted]);
     csvData.push(['Meeting Time:', meetingTimeFormatted]);
     csvData.push(['Venue:', meeting.venue]);
-    if (meeting.agenda) {
-      csvData.push(['Agenda:', meeting.agenda]);
+    if (meeting.theme) {
+      csvData.push(['Theme:', meeting.theme]);
     }
     csvData.push(['Generated:', new Date().toLocaleString()]);
     csvData.push([]); // Empty row for spacing
@@ -308,7 +308,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                 <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
                 <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
                 <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
-                ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
+                ${meeting.theme ? `<p class="subtitle"><strong>Theme:</strong> ${meeting.theme}</p>` : ''}
                 <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
               </div>
             </div>
@@ -370,10 +370,12 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
       </html>
     `;
     
-      printWindow.document.write(printContent);
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
+      if (printWindow) {
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+      }
     } catch (error) {
       console.error('Failed to load logo for print:', error);
       // Fallback: create a simple text-based print without logo
@@ -424,7 +426,7 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
                 <p class="subtitle"><strong>Date:</strong> ${meetingDate}</p>
                 <p class="subtitle"><strong>Time:</strong> ${meetingTime}</p>
                 <p class="subtitle"><strong>Venue:</strong> ${meeting.venue}</p>
-                ${meeting.agenda ? `<p class="subtitle"><strong>Agenda:</strong> ${meeting.agenda}</p>` : ''}
+                ${meeting.theme ? `<p class="subtitle"><strong>Theme:</strong> ${meeting.theme}</p>` : ''}
                 <p class="subtitle"><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
               </div>
             </div>
@@ -486,10 +488,12 @@ export default function LiveAttendanceMonitorEnhanced({ meetingId, onBack }: Liv
         </html>
       `;
       
-      printWindow?.document.write(fallbackContent);
-      printWindow?.document.close();
-      printWindow?.focus();
-      printWindow?.print();
+      if (printWindow) {
+        printWindow.document.write(fallbackContent);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+      }
     }
   };
 

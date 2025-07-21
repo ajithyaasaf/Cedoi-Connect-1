@@ -155,7 +155,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
       case 'attendance_required':
         return 'text-red-600';
       case 'meeting_created':
-        return 'text-blue-600';
+        return 'text-primary';
       case 'attendance_update':
         return 'text-green-600';
       default:
@@ -191,7 +191,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
       <PopoverContent className="w-80 p-0 border-0 shadow-lg rounded-2xl" align="end">
         <div className="bg-white rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-white">
+          <div className="bg-gradient-to-r from-primary to-primary/80 px-4 py-3 text-white">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Notifications</h3>
               {unreadCount > 0 && (

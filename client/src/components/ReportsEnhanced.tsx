@@ -151,9 +151,9 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
   const getHeaderColor = () => {
     switch (user?.role) {
       case 'sonai':
-        return 'bg-blue-50 border-blue-200';
+        return 'bg-primary/5 border-primary/20';
       case 'chairman':
-        return 'bg-purple-50 border-purple-200';
+        return 'bg-primary/10 border-primary/30';
       default:
         return 'bg-white border-gray-200';
     }
@@ -173,7 +173,7 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
             >
               <span className="material-icons">arrow_back</span>
             </Button>
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">analytics</span>
             </div>
             <div>
@@ -185,7 +185,7 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
           </div>
           <Button
             onClick={exportToCSV}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-4 py-2 transition-colors"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl px-4 py-2 transition-colors"
           >
             <span className="material-icons text-sm">download</span>
           </Button>

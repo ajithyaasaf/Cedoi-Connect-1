@@ -191,10 +191,10 @@ export default function LiveAttendanceMonitor({ meetingId, onBack }: LiveAttenda
                     <span className="material-icons mr-2 text-base">location_on</span>
                     {meeting.venue}
                   </div>
-                  {meeting.agenda && (
+                  {meeting.theme && (
                     <div className="flex items-start">
                       <span className="material-icons mr-2 text-base">description</span>
-                      <span>{meeting.agenda}</span>
+                      <span>{meeting.theme}</span>
                     </div>
                   )}
                 </div>
@@ -213,9 +213,9 @@ export default function LiveAttendanceMonitor({ meetingId, onBack }: LiveAttenda
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="border-l-4 border-l-blue-500">
+          <Card className="border-l-4 border-l-primary">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600 mb-1">{totalMembers}</div>
+              <div className="text-2xl font-bold text-primary mb-1">{totalMembers}</div>
               <div className="text-sm text-gray-600">Total Members</div>
             </CardContent>
           </Card>

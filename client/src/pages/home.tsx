@@ -40,7 +40,7 @@ export default function Home() {
           <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4 hidden">
             <span className="material-icons text-white text-2xl">groups</span>
           </div>
-          <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
           <p className="text-foreground">Loading CEDOI Forum...</p>
         </div>
       </div>

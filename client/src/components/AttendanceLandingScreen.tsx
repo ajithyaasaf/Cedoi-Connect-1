@@ -30,7 +30,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
   // Filter meetings based on search and filter
   const filteredMeetings = userMeetings.filter(meeting => {
     const matchesSearch = meeting.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (meeting.agenda && meeting.agenda.toLowerCase().includes(searchQuery.toLowerCase()));
+                         (meeting.theme && meeting.theme.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const meetingDate = new Date(meeting.date);
     const today = new Date();
@@ -52,7 +52,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
     const isUpcoming = meetingDate > today;
     
     if (isToday) return { label: 'Today', color: 'bg-green-100 text-green-800' };
-    if (isUpcoming) return { label: 'Upcoming', color: 'bg-blue-100 text-blue-800' };
+    if (isUpcoming) return { label: 'Upcoming', color: 'bg-primary/10 text-primary' };
     return { label: 'Completed', color: 'bg-gray-100 text-gray-800' };
   };
 
@@ -61,7 +61,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
       <div className="min-h-screen bg-gray-50 pb-20">
         <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">how_to_reg</span>
             </div>
             <div>
@@ -72,7 +72,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
         </div>
         <div className="p-4 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
             <p className="text-gray-500 text-sm">Loading meetings...</p>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200 px-4 py-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
             <span className="material-icons text-white text-lg">how_to_reg</span>
           </div>
           <div>
@@ -193,10 +193,10 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
                             <span>{meeting.venue}</span>
                           </div>
                           
-                          {meeting.agenda && (
+                          {meeting.theme && (
                             <div className="flex items-start space-x-2">
                               <span className="material-icons text-sm mt-0.5">description</span>
-                              <span className="break-words">{meeting.agenda}</span>
+                              <span className="break-words">{meeting.theme}</span>
                             </div>
                           )}
                         </div>
@@ -205,7 +205,7 @@ export default function AttendanceLandingScreen({ onSelectMeeting }: AttendanceL
                       <Button
                         onClick={() => onSelectMeeting(meeting.id)}
                         size="sm"
-                        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2"
+                        className="ml-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-4 py-2"
                       >
                         <span className="material-icons mr-1 text-sm">how_to_reg</span>
                         Mark

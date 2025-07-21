@@ -313,7 +313,7 @@ export default function AttendanceScreen({ meetingId, onBack }: AttendanceScreen
           {unmarkedCount > 0 && absentCount > 0 && (
             <Button
               variant="outline"
-              className="w-full py-3 px-4 rounded-lg font-semibold text-sm uppercase tracking-wide border-2 border-blue-200 text-blue-700 hover:bg-blue-50 transition-all duration-200"
+              className="w-full py-3 px-4 rounded-lg font-semibold text-sm uppercase tracking-wide border-2 border-primary/20 text-primary hover:bg-primary/5 transition-all duration-200"
               onClick={() => {
                 const unmarkedMembers = members.filter(member => !attendanceStatus[member.id]);
                 unmarkedMembers.forEach(member => {
