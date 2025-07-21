@@ -155,18 +155,18 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
 
       {/* Enhanced Quick Stats */}
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <Card className="bg-gradient-to-br from-[#085886] to-[#0a5e78] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                 <span className="material-icons text-white text-lg">event</span>
               </div>
-              <span className="text-xs text-blue-100 uppercase tracking-wide font-medium">THIS WEEK</span>
+              <span className="text-xs text-white/70 uppercase tracking-wide font-medium">THIS WEEK</span>
             </div>
             <div className="text-3xl font-bold mb-1">
               {upcomingMeetings.length}
             </div>
-            <div className="text-sm text-blue-100">Meetings</div>
+            <div className="text-sm text-white/70">Meetings</div>
           </CardContent>
         </Card>
         
@@ -213,7 +213,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 </div>
               </div>
               <div className="bg-white bg-opacity-10 rounded-lg p-3">
-                <p className="text-sm text-blue-100 mb-1">
+                <p className="text-sm text-white/70 mb-1">
                   {new Date(todaysMeeting.date).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -235,7 +235,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
           <CardContent className="p-6">
             {/* Location */}
             <div className="flex items-center mb-6 p-3 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-lg">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-full flex items-center justify-center mr-3">
                 <span className="material-icons text-white text-sm">location_on</span>
               </div>
               <div>
@@ -252,7 +252,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Agenda</p>
-                  <p className="text-sm text-foreground leading-relaxed">{safeAgenda(todaysMeeting.agenda)}</p>
+                  <p className="text-sm text-foreground leading-relaxed">{safeAgenda(todaysMeeting.theme)}</p>
                 </div>
               </div>
             </div>
@@ -349,15 +349,15 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-3">
                     {organizerUpcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800 hover:shadow-md transition-all duration-200">
+                      <div key={meeting.id} className="bg-gradient-to-r from-[#085886]/10 to-[#0a5e78]/10 dark:from-[#085886]/20 dark:to-[#0a5e78]/20 p-4 rounded-xl border border-[#085886]/20 dark:border-[#085886]/30 hover:shadow-md transition-all duration-200">
                         <div className="flex items-center justify-between">
                           <div className="flex items-start space-x-3 flex-1">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-full flex items-center justify-center">
                               <span className="material-icons text-white text-sm">event</span>
                             </div>
                             <div className="flex-1 min-w-0">
                               <h5 className="font-semibold text-foreground">Weekly Meeting</h5>
-                              <div className="flex items-center space-x-1 mt-1 text-xs text-blue-700 dark:text-blue-300">
+                              <div className="flex items-center space-x-1 mt-1 text-xs text-[#085886] dark:text-[#085886]/80">
                                 <span className="material-icons text-xs">schedule</span>
                                 <span>
                                   {new Date(meeting.date).toLocaleDateString('en-US', {
@@ -375,17 +375,17 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                                 <span className="material-icons text-xs">location_on</span>
                                 <span>{safeText(meeting.venue, 'Venue TBD')}</span>
                               </div>
-                              {meeting.agenda && (
+                              {meeting.theme && (
                                 <div className="flex items-start space-x-1 mt-2 text-xs text-gray-600 dark:text-gray-400">
                                   <span className="material-icons text-xs mt-0.5">description</span>
-                                  <span className="line-clamp-2">{safeAgenda(meeting.agenda)}</span>
+                                  <span className="line-clamp-2">{safeAgenda(meeting.theme)}</span>
                                 </div>
                               )}
                             </div>
                           </div>
                           <Button
                             onClick={() => onMarkAttendance(meeting.id)}
-                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all duration-200 ml-3"
+                            className="bg-gradient-to-r from-[#085886] to-[#0a5e78] hover:from-[#0a5e78] hover:to-[#0c6b8c] text-white shadow-md hover:shadow-lg transition-all duration-200 ml-3"
                             size="sm"
                           >
                             <span className="material-icons text-sm mr-1">how_to_reg</span>
@@ -427,10 +427,10 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                               })}
                             </p>
                             <p className="text-xs text-gray-500">{safeText(meeting.venue, 'Venue TBD')}</p>
-                            {meeting.agenda && (
+                            {meeting.theme && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {safeAgenda(meeting.agenda)}
+                                {safeAgenda(meeting.theme)}
                               </p>
                             )}
                           </div>
@@ -460,7 +460,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
               {/* All Upcoming Meetings */}
               <div className="p-4">
                 <h4 className="font-medium text-foreground mb-3 flex items-center">
-                  <span className="material-icons text-blue-500 mr-2">event_upcoming</span>
+                  <span className="material-icons text-[#085886] mr-2">event_upcoming</span>
                   All Upcoming Meetings ({chairmanUpcomingMeetings.length})
                 </h4>
                 
@@ -469,7 +469,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-2">
                     {chairmanUpcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-blue-50 p-3 rounded-lg">
+                      <div key={meeting.id} className="bg-[#085886]/10 p-3 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
                             <h5 className="font-medium text-foreground">Weekly Meeting</h5>
@@ -486,16 +486,16 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                               })}
                             </p>
                             <p className="text-xs text-gray-500">{safeText(meeting.venue, 'Venue TBD')}</p>
-                            {meeting.agenda && (
+                            {meeting.theme && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {safeAgenda(meeting.agenda)}
+                                {safeAgenda(meeting.theme)}
                               </p>
                             )}
                           </div>
                           <div className="text-right">
                             <div className="text-xs text-gray-500">Assigned to Organizer</div>
-                            <div className="text-xs bg-blue-100 px-2 py-1 rounded-full">Upcoming</div>
+                            <div className="text-xs bg-[#085886]/10 text-[#085886] px-2 py-1 rounded-full">Upcoming</div>
                           </div>
                         </div>
                       </div>
@@ -533,10 +533,10 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                               })}
                             </p>
                             <p className="text-xs text-gray-500">{meeting.venue}</p>
-                            {meeting.agenda && (
+                            {meeting.theme && (
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="material-icons text-xs mr-1">description</span>
-                                {meeting.agenda}
+                                {meeting.theme}
                               </p>
                             )}
                           </div>
@@ -571,7 +571,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                 ) : (
                   <div className="space-y-3">
                     {upcomingMeetings.map((meeting) => (
-                      <div key={meeting.id} className="bg-blue-50 p-3 rounded-lg">
+                      <div key={meeting.id} className="bg-[#085886]/10 p-3 rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-medium text-foreground">Weekly Meeting</h4>
@@ -593,7 +593,7 @@ export default function Dashboard({ onCreateMeeting, onMarkAttendance, onViewLiv
                             </p>
                           </div>
                           <div className="text-right">
-                            <div className="text-xs bg-blue-100 px-2 py-1 rounded-full">Upcoming</div>
+                            <div className="text-xs bg-[#085886]/10 text-[#085886] px-2 py-1 rounded-full">Upcoming</div>
                           </div>
                         </div>
                       </div>

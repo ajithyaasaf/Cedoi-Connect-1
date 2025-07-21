@@ -230,7 +230,7 @@ export default function CreateMeetingScreen({
             >
               <span className="material-icons">arrow_back</span>
             </Button>
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#085886] to-[#0a5e78] rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">event</span>
             </div>
             <div>

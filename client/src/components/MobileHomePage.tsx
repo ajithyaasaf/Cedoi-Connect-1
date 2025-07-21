@@ -47,7 +47,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Hero Status Card */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 px-4 py-6 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#085886] via-[#0a5e78] to-[#0c6b8c] px-4 py-6 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
@@ -56,7 +56,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-xl font-bold">Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}</h2>
-              <p className="text-blue-100 capitalize">{user?.name}</p>
+              <p className="text-white/80 capitalize">{user?.name}</p>
             </div>
 
           </div>
@@ -73,7 +73,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                   <h3 className="text-base font-medium text-white mb-2 truncate" title={todaysMeeting.venue}>
                     {todaysMeeting.venue}
                   </h3>
-                  <p className="text-sm text-blue-100 flex items-center">
+                  <p className="text-sm text-white/70 flex items-center">
                     <span className="material-icons text-sm mr-1" aria-hidden="true">schedule</span>
                     {new Date(todaysMeeting.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                   </p>
@@ -116,8 +116,8 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
         <div className="grid grid-cols-2 gap-4">
           <Card className="bg-white shadow-lg border-0 rounded-2xl">
             <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                <span className="material-icons text-blue-600 text-xl">groups</span>
+              <div className="w-12 h-12 bg-[#085886]/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                <span className="material-icons text-[#085886] text-xl">groups</span>
               </div>
               <div className="text-2xl font-bold text-gray-900">{stats?.totalMeetings || 0}</div>
               <div className="text-xs text-gray-500">Total Meetings</div>
@@ -142,7 +142,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
           <div className="flex justify-center">
             <Button
               onClick={onCreateMeeting}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl h-16 w-48 flex flex-col items-center justify-center space-y-1 shadow-lg"
+              className="bg-gradient-to-r from-[#085886] to-[#0a5e78] hover:from-[#0a5e78] hover:to-[#0c6b8c] text-white rounded-2xl h-16 w-48 flex flex-col items-center justify-center space-y-1 shadow-lg"
             >
               <span className="material-icons text-xl">add_circle</span>
               <span className="text-xs font-medium">New Meeting</span>
@@ -160,7 +160,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
               onClick={() => setActiveFilter(filter)}
               className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeFilter === filter
-                  ? 'bg-white shadow-sm text-blue-600'
+                  ? 'bg-white shadow-sm text-[#085886]'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -195,7 +195,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <div className={`w-3 h-3 rounded-full ${
-                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-blue-500'
+                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-[#085886]'
                           }`}></div>
                           <Badge variant={isToday ? "default" : isPast ? "secondary" : "outline"} className="text-xs">
                             {isToday ? 'Today' : isPast ? 'Completed' : 'Upcoming'}
@@ -219,7 +219,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                           <Button
                             size="sm"
                             onClick={() => onViewLiveAttendance(meeting.id)}
-                            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 text-xs rounded-full"
+                            className="bg-[#085886]/10 hover:bg-[#085886]/20 text-[#085886] px-3 py-1 text-xs rounded-full"
                           >
                             <span className="material-icons text-sm">visibility</span>
                           </Button>
