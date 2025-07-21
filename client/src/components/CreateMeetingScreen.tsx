@@ -531,9 +531,11 @@ export default function CreateMeetingScreen({
                 className="w-full bg-accent hover:bg-accent/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-4 px-6 rounded-lg font-medium text-base sm:text-sm uppercase tracking-wide ripple min-h-[56px] transition-all duration-200"
               >
                 {createMeetingMutation.isPending ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>CREATING...</span>
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>CREATING...</span>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center space-x-2">

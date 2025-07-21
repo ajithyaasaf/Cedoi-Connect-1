@@ -210,6 +210,11 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
           <div className="max-h-96 overflow-y-auto">
             {isLoading ? (
               <div className="p-6 text-center text-gray-500">
+                <img 
+                  src="/attached_assets/Logo_1753077321270.png" 
+                  alt="CEDOI Logo" 
+                  className="h-12 w-auto mx-auto mb-3 opacity-60"
+                />
                 <span className="material-icons text-4xl text-gray-300 mb-2 block animate-spin">hourglass_empty</span>
                 <p className="text-sm">Loading notifications...</p>
               </div>

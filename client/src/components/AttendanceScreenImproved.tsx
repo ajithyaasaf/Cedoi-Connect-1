@@ -274,6 +274,11 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
+            <img 
+              src="/attached_assets/Logo_1753077321270.png" 
+              alt="CEDOI Logo" 
+              className="h-16 w-auto mx-auto mb-4"
+            />
             <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
             <p className="text-gray-500 text-sm">Loading members...</p>
           </div>
@@ -307,6 +312,11 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
+            <img 
+              src="/attached_assets/Logo_1753077321270.png" 
+              alt="CEDOI Logo" 
+              className="h-16 w-auto mx-auto mb-4 opacity-50"
+            />
             <span className="material-icons text-red-500 text-6xl mb-4">error</span>
             <p className="text-gray-500 text-sm mb-2">Failed to load members</p>
             <p className="text-xs text-gray-400">{usersError?.message}</p>

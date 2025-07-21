@@ -129,6 +129,20 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### July 21, 2025 - Flexible Meeting Time Input & Enhanced Loading Experience
+- **Flexible Time Input System**:
+  - Replaced minute dropdown with flexible text input (0-59 minutes)
+  - Added seconds input field for precise meeting scheduling
+  - Enhanced time validation with real-time input checking
+  - Updated 4-column time layout (Hour/Minute/Second/Period)
+  - Live time preview shows complete HH:MM:SS format
+- **Enhanced Loading Experience**:
+  - Added CEDOI logo to all major loading screens
+  - Updated main application loading screen with professional branding
+  - Enhanced attendance loading states with logo display
+  - Improved notification center loading with logo integration
+  - Professional loading experience across all components
+
 ### July 21, 2025 - Time-Based Attendance Restrictions & Real-Time Notification System
 - **Time-Based Attendance Window Implementation**:
   - Added proper business logic for attendance marking time restrictions

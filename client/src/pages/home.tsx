@@ -26,10 +26,13 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-icons text-white text-2xl">groups</span>
-          </div>
-          <p className="text-foreground">Loading...</p>
+          <img 
+            src="/attached_assets/Logo_1753077321270.png" 
+            alt="CEDOI Logo" 
+            className="h-20 w-auto mx-auto mb-4"
+          />
+          <div className="w-8 h-8 border-2 border-[#04004B] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <p className="text-foreground">Loading CEDOI Forum...</p>
         </div>
       </div>
     );

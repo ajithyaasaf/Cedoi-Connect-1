@@ -59,6 +59,11 @@ export default function LiveAttendanceMonitor({ meetingId, onBack }: LiveAttenda
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
+          <img 
+            src="/attached_assets/Logo_1753077321270.png" 
+            alt="CEDOI Logo" 
+            className="h-16 w-auto mx-auto mb-4 opacity-50"
+          />
           <h2 className="text-xl font-semibold mb-2">Meeting not found</h2>
           <Button onClick={onBack} variant="outline">
             Back to Dashboard
