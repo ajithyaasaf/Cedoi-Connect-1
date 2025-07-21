@@ -37,7 +37,7 @@ export default function CreateMeetingScreen({
           <p className="text-gray-600 mb-4">Only Chairman users can create meetings.</p>
           <Button
             onClick={onBack}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2"
+            className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2"
           >
             <span className="material-icons text-sm mr-2">arrow_back</span>
             Go Back

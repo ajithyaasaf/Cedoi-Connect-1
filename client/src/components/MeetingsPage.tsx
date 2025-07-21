@@ -53,7 +53,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
               onClick={() => setActiveFilter(filter as any)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeFilter === filter
-                  ? 'bg-[#0c5b84] text-white'
+                  ? 'bg-primary text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -72,7 +72,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
         <div className="px-4 py-4">
           <Button
             onClick={onCreateMeeting}
-            className="w-full bg-[#0c5b84] hover:bg-[#0a5472] text-white rounded-2xl py-3"
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl py-3"
           >
             <span className="material-icons text-sm mr-2">add</span>
             Schedule New Meeting
@@ -101,7 +101,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
             {user?.role === 'chairman' && activeFilter !== 'past' && (
               <Button
                 onClick={onCreateMeeting}
-                className="bg-[#0c5b84] hover:bg-[#0a5472] text-white rounded-full px-6 py-2 mt-2"
+                className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2 mt-2"
               >
                 <span className="material-icons text-sm mr-2">add</span>
                 Create First Meeting
@@ -123,15 +123,15 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <div className={`w-3 h-3 rounded-full ${
-                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-blue-500'
+                            isToday ? 'bg-green-500' : isPast ? 'bg-gray-400' : 'bg-primary'
                           }`}></div>
                           <Badge variant={isToday ? "default" : isPast ? "secondary" : "outline"} className="text-xs">
                             {isToday ? 'Today' : isPast ? 'Past' : 'Upcoming'}
                           </Badge>
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-1">{meeting.venue}</h3>
-                        {meeting.agenda && (
-                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{meeting.agenda}</p>
+                        {meeting.theme && (
+                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{meeting.theme}</p>
                         )}
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center space-x-1">
@@ -153,7 +153,7 @@ export default function MeetingsPage({ onCreateMeeting, onMarkAttendance, onView
                           <Button
                             size="sm"
                             onClick={() => onViewLiveAttendance(meeting.id)}
-                            className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 text-xs rounded-full"
+                            className="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1 text-xs rounded-full"
                           >
                             <span className="material-icons text-sm">visibility</span>
                           </Button>

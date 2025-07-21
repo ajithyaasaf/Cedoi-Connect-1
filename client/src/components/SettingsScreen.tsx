@@ -80,7 +80,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
             >
               <span className="material-icons">arrow_back</span>
             </Button>
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
               <span className="material-icons text-white text-lg">settings</span>
             </div>
             <div>
@@ -96,7 +96,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
         <Card className="shadow-lg border-0 rounded-2xl">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <span className="material-icons mr-2 text-blue-600">person</span>
+              <span className="material-icons mr-2 text-primary">person</span>
               Profile Information
             </CardTitle>
           </CardHeader>

@@ -47,7 +47,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Hero Status Card */}
-      <div className="bg-gradient-to-br from-[#0c5b84] via-[#0a5472] to-[#084d60] px-4 py-6 text-white relative overflow-hidden">
+      <div className="bg-primary px-4 py-6 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
@@ -116,8 +116,8 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
         <div className="grid grid-cols-2 gap-4">
           <Card className="bg-white shadow-lg border-0 rounded-2xl">
             <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 bg-[#0c5b84]/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                <span className="material-icons text-[#0c5b84] text-xl">groups</span>
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                <span className="material-icons text-primary text-xl">groups</span>
               </div>
               <div className="text-2xl font-bold text-gray-900">{stats?.totalMeetings || 0}</div>
               <div className="text-xs text-gray-500">Total Meetings</div>
