@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: Mob
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -83,15 +85,15 @@ export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: Mob
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation('/profile')}>
                 <span className="material-icons text-sm mr-2">person</span>
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation('/settings')}>
                 <span className="material-icons text-sm mr-2">settings</span>
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation('/help-support')}>
                 <span className="material-icons text-sm mr-2">help</span>
                 Help & Support
               </DropdownMenuItem>
