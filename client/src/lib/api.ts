@@ -208,8 +208,9 @@ const mockMeetings: Meeting[] = [
   {
     id: "1",
     date: new Date(),
+    endTime: null,
     venue: "Mariat Hotel, Madurai",
-    agenda: "Monthly Forum Discussion",
+    theme: "Monthly Forum Discussion",
     createdBy: "1",
     repeatWeekly: false,
     isActive: true,

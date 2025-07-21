@@ -199,7 +199,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                           </Badge>
                         </div>
                         <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{meeting.venue}</h4>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">{meeting.agenda}</p>
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">{meeting.theme}</p>
                         <div className="flex items-center space-x-4 text-xs text-gray-500">
                           <div className="flex items-center space-x-1">
                             <span className="material-icons text-sm">schedule</span>

@@ -14,7 +14,8 @@ export interface FirebaseConfig {
 // Check if Firebase is properly configured
 const hasFirebaseConfig = import.meta.env.VITE_FIREBASE_API_KEY && 
                           import.meta.env.VITE_FIREBASE_PROJECT_ID &&
-                          import.meta.env.VITE_FIREBASE_API_KEY !== "demo-api-key";
+                          import.meta.env.VITE_FIREBASE_API_KEY !== "demo-api-key" &&
+                          import.meta.env.VITE_FIREBASE_API_KEY.length > 10;
 
 export const firebaseConfig: FirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
@@ -52,12 +53,20 @@ if (hasFirebaseConfig || import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') 
       }
     }
     
-    console.log('Firebase initialized successfully');
+    console.log('Firebase initialized successfully with project:', firebaseConfig.projectId);
   } catch (error) {
     console.log('Firebase initialization failed:', error);
+    // Set to null to ensure mock data fallback
+    db = null;
+    auth = null;
   }
 } else {
   console.log('Firebase not configured - using mock data mode');
+  console.log('Config check:', {
+    hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
+    hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    apiKeyLength: import.meta.env.VITE_FIREBASE_API_KEY?.length
+  });
 }
 
 export { db, auth };
