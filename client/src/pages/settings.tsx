@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,14 +16,43 @@ export default function Settings() {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   
-  // Notification settings
-  const [meetingReminders, setMeetingReminders] = useState(true);
-  const [attendanceAlerts, setAttendanceAlerts] = useState(true);
-  const [reportNotifications, setReportNotifications] = useState(false);
-  
-  // App settings
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  // Load settings from localStorage with defaults
+  const [meetingReminders, setMeetingReminders] = useState(() => {
+    return localStorage.getItem('meetingReminders') !== 'false';
+  });
+  const [attendanceAlerts, setAttendanceAlerts] = useState(() => {
+    return localStorage.getItem('attendanceAlerts') !== 'false';
+  });
+  const [reportNotifications, setReportNotifications] = useState(() => {
+    return localStorage.getItem('reportNotifications') === 'true';
+  });
+  const [autoRefresh, setAutoRefresh] = useState(() => {
+    return localStorage.getItem('autoRefresh') !== 'false';
+  });
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    return localStorage.getItem('soundEnabled') !== 'false';
+  });
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('meetingReminders', meetingReminders.toString());
+  }, [meetingReminders]);
+
+  useEffect(() => {
+    localStorage.setItem('attendanceAlerts', attendanceAlerts.toString());
+  }, [attendanceAlerts]);
+
+  useEffect(() => {
+    localStorage.setItem('reportNotifications', reportNotifications.toString());
+  }, [reportNotifications]);
+
+  useEffect(() => {
+    localStorage.setItem('autoRefresh', autoRefresh.toString());
+  }, [autoRefresh]);
+
+  useEffect(() => {
+    localStorage.setItem('soundEnabled', soundEnabled.toString());
+  }, [soundEnabled]);
 
   const handleLogout = async () => {
     try {
@@ -43,15 +72,69 @@ export default function Settings() {
   };
 
   const clearCache = () => {
-    // Clear localStorage
+    // Clear localStorage except for settings
+    const settingsKeys = ['meetingReminders', 'attendanceAlerts', 'reportNotifications', 'autoRefresh', 'soundEnabled'];
+    const settings: Record<string, string> = {};
+    
+    // Preserve current settings
+    settingsKeys.forEach(key => {
+      const value = localStorage.getItem(key);
+      if (value) settings[key] = value;
+    });
+    
+    // Clear everything
     localStorage.clear();
-    // Clear sessionStorage
     sessionStorage.clear();
+    
+    // Restore settings
+    Object.entries(settings).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
+    });
     
     toast({
       title: "Cache cleared",
-      description: "App data has been cleared successfully.",
+      description: "App data cleared while preserving your settings.",
     });
+  };
+
+  const handleNotificationTest = () => {
+    if ('Notification' in window) {
+      if (Notification.permission === 'granted') {
+        new Notification('CEDOI Madurai Forum', {
+          body: 'Test notification sent successfully!',
+          icon: '/favicon.ico'
+        });
+        toast({
+          title: "Test notification sent",
+          description: "Check your device notifications.",
+        });
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification('CEDOI Madurai Forum', {
+              body: 'Notifications enabled successfully!',
+              icon: '/favicon.ico'
+            });
+            toast({
+              title: "Notifications enabled",
+              description: "You'll now receive meeting alerts.",
+            });
+          }
+        });
+      } else {
+        toast({
+          title: "Notifications blocked",
+          description: "Please enable notifications in browser settings.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Not supported",
+        description: "Notifications not supported on this device.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -143,6 +226,18 @@ export default function Settings() {
                 onCheckedChange={setReportNotifications}
               />
             </div>
+            <Separator />
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNotificationTest}
+                className="w-full"
+              >
+                <Bell className="h-4 w-4 mr-2" />
+                Test Notifications
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -181,6 +276,107 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Data & Privacy */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Shield className="h-5 w-5 mr-2" />
+              Data & Privacy
+            </CardTitle>
+            <CardDescription>
+              Manage your data and privacy settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                onClick={clearCache}
+                className="w-full justify-start"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Clear App Cache
+              </Button>
+              <p className="text-xs text-gray-500">
+                Clears temporary data while keeping your settings
+              </p>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-3">
+              <Button
+                variant="destructive"
+                onClick={handleLogout}
+                className="w-full justify-start"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+              <p className="text-xs text-gray-500">
+                Sign out of your account securely
+              </p>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  // Reset all settings to defaults
+                  setMeetingReminders(true);
+                  setAttendanceAlerts(true);
+                  setReportNotifications(false);
+                  setAutoRefresh(true);
+                  setSoundEnabled(true);
+                  setTheme('light');
+                  
+                  toast({
+                    title: "Settings reset",
+                    description: "All settings have been reset to defaults.",
+                  });
+                }}
+                className="w-full justify-start"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Reset All Settings
+              </Button>
+              <p className="text-xs text-gray-500">
+                Reset all preferences to default values
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* User Info */}
+        {user && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Globe className="h-5 w-5 mr-2" />
+                Account Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="text-sm">
+                <span className="font-medium">Name:</span> {user.name}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Email:</span> {user.email}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Role:</span> {user.role}
+              </div>
+              {user.company && (
+                <div className="text-sm">
+                  <span className="font-medium">Company:</span> {user.company}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Account & Security */}
         <Card>

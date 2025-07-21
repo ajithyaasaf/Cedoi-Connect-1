@@ -44,11 +44,17 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
     enabled: meetings.length > 0
   });
 
-  // Filter data based on selected period
+  // Filter data based on selected period and meeting
   const filteredMeetings = userMeetings.filter(meeting => {
     const meetingDate = new Date(meeting.date);
     const now = new Date();
     
+    // Filter by specific meeting if selected
+    if (selectedMeeting !== 'all' && meeting.id !== selectedMeeting) {
+      return false;
+    }
+    
+    // Filter by time period
     switch (selectedPeriod) {
       case 'week':
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -59,6 +65,9 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
       case 'quarter':
         const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
         return meetingDate >= quarterAgo;
+      case 'year':
+        const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+        return meetingDate >= yearAgo;
       default:
         return true;
     }
@@ -208,9 +217,10 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Time</SelectItem>
-                    <SelectItem value="week">Last Week</SelectItem>
-                    <SelectItem value="month">Last Month</SelectItem>
-                    <SelectItem value="quarter">Last Quarter</SelectItem>
+                    <SelectItem value="week">Last 7 Days</SelectItem>
+                    <SelectItem value="month">Last 30 Days</SelectItem>
+                    <SelectItem value="quarter">Last 90 Days</SelectItem>
+                    <SelectItem value="year">Last Year</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -224,9 +234,9 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Meetings</SelectItem>
-                    {meetings.map(meeting => (
+                    {userMeetings.map(meeting => (
                       <SelectItem key={meeting.id} value={meeting.id}>
-                        {new Date(meeting.date).toLocaleDateString()}
+                        {new Date(meeting.date).toLocaleDateString()} - {meeting.venue}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -355,59 +365,76 @@ export default function ReportsScreen({ onBack }: ReportsScreenProps) {
           </Card>
         )}
 
-        {/* Member Attendance Details */}
-        <Card className="shadow-material">
+        {/* Enhanced Member Attendance Overview */}
+        <Card className="shadow-lg border-0 rounded-2xl">
           <CardContent className="p-0">
-            <div className="p-4 border-b border-gray-100">
-              <h3 className="text-lg font-medium text-foreground">
+            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-primary/5 to-primary/10 rounded-t-2xl">
+              <h3 className="text-lg font-semibold text-primary flex items-center">
+                <span className="material-icons mr-2">people</span>
                 {user?.role === 'sonai' ? 'Your Meeting Attendees' : 'Member Attendance Overview'}
               </h3>
+              <p className="text-sm text-gray-600 mt-1">
+                {filteredMeetings.length > 0 ? `Based on ${filteredMeetings.length} meeting${filteredMeetings.length > 1 ? 's' : ''}` : 'No meetings in selected period'}
+              </p>
             </div>
             
-            <div className="divide-y divide-gray-100">
-              {memberStats.map((member) => (
-                <div key={member.id} className="p-4 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                        member.attendanceRate >= 80 ? 'bg-success' :
-                        member.attendanceRate >= 60 ? 'bg-yellow-500' : 'bg-destructive'
-                      }`}>
-                        <span className="material-icons text-white">person</span>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-foreground">{member.name}</h4>
-                        <p className="text-sm text-gray-600">{member.company}</p>
-                        <p className="text-xs text-gray-500 capitalize">{member.role}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className={`text-lg font-semibold ${
-                        member.attendanceRate >= 80 ? 'text-success' :
-                        member.attendanceRate >= 60 ? 'text-yellow-600' : 'text-destructive'
-                      }`}>
-                        {member.attendanceRate}%
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {member.presentCount}/{member.totalMeetings} meetings
+            {memberStats.length > 0 ? (
+              <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                {memberStats.map((member, index) => (
+                  <div key={member.id} className="p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="relative">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
+                            member.attendanceRate >= 80 ? 'bg-green-500' :
+                            member.attendanceRate >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}>
+                            {member.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full text-xs flex items-center justify-center text-white font-bold ${
+                            index < 3 ? 'bg-yellow-500' : 'bg-gray-400'
+                          }`}>
+                            {index + 1}
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{member.name}</h4>
+                          <p className="text-sm text-gray-600">{member.company}</p>
+                        </div>
                       </div>
                       
-                      {/* Progress bar */}
-                      <div className="w-24 bg-gray-200 rounded-full h-2 mt-2">
-                        <div
-                          className={`h-2 rounded-full ${
-                            member.attendanceRate >= 80 ? 'bg-success' :
-                            member.attendanceRate >= 60 ? 'bg-yellow-500' : 'bg-destructive'
-                          }`}
-                          style={{ width: `${member.attendanceRate}%` }}
-                        />
+                      <div className="text-right">
+                        <div className={`text-xl font-bold ${
+                          member.attendanceRate >= 80 ? 'text-green-600' :
+                          member.attendanceRate >= 60 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {member.attendanceRate}%
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {member.presentCount} of {member.totalMeetings}
+                        </div>
+                        
+                        {/* Simplified progress bar */}
+                        <div className="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                          <div
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              member.attendanceRate >= 80 ? 'bg-green-500' :
+                              member.attendanceRate >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${member.attendanceRate}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-gray-500">
+                <span className="material-icons text-4xl mb-2 opacity-50">people_outline</span>
+                <p>No member data available for selected filters</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>
