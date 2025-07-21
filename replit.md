@@ -129,6 +129,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### July 21, 2025 - Mobile Responsive Live Attendance & Auto-Cache Updates ✅ COMPLETED
+- **Mobile-First Live Attendance Monitor**:
+  - Completely redesigned LiveAttendanceMonitorEnhanced for mobile responsiveness
+  - 2-column stats grid on mobile, 4-column on desktop with proper touch targets
+  - Compact header with truncated text and optimized spacing
+  - Horizontal scrolling filter buttons for mobile screens
+  - Responsive member cards with proper text truncation and mobile badges
+  - Mobile-friendly export buttons with condensed labels
+- **Automatic Cache Update System**:
+  - Enhanced service worker to force immediate cache updates (v2 → v3)
+  - Added automatic page refresh when new deployments are detected
+  - Users no longer need to manually clear cache or refresh
+  - Service worker sends messages to trigger automatic refreshes
+  - Improved deployment workflow with immediate user experience updates
+
 ### July 21, 2025 - Firestore Database Update with Real CEDOI Members ✅ COMPLETED
 - **Complete Firestore Database Replacement**:
   - Successfully deleted 13 existing users from Firestore database

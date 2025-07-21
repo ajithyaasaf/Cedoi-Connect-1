@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cedoi-forum-v2';
+const CACHE_NAME = 'cedoi-forum-v3';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -81,6 +81,18 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Take control immediately
-  event.waitUntil(self.clients.claim());
+  // Take control immediately and reload all clients
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      // Force refresh all open tabs/windows
+      return self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'CACHE_UPDATED',
+            message: 'App has been updated. Refreshing...'
+          });
+        });
+      });
+    })
+  );
 });
