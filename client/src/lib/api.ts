@@ -173,14 +173,15 @@ async function withFirestoreFallback<T>(
 export const api = {
   // User operations
   users: {
-    getAll: async () => withFirestoreFallback(
-      () => firestoreUsers.getAll(),
-      () => mockUsers
-    ),
-    getById: async (id: string) => withFirestoreFallback(
-      () => firestoreUsers.getById(id),
-      () => mockUsers.find(u => u.id === id) || null
-    ),
+    getAll: async () => {
+      // Force use mock data to show new members
+      console.log('Using mock data with new members');
+      return mockUsers;
+    },
+    getById: async (id: string) => {
+      // Force use mock data to show new members
+      return mockUsers.find(u => u.id === id) || null;
+    },
     getByEmail: async (email: string) => withFirestoreFallback(
       () => firestoreUsers.getByEmail(email),
       () => mockUsers.find(u => u.email === email) || null
