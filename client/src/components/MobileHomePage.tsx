@@ -76,10 +76,7 @@ export default function MobileHomePage({ onCreateMeeting, onMarkAttendance, onVi
                     <span className="font-semibold text-white">Today's Meeting</span>
                   </div>
 
-                  <p className="text-sm text-blue-100 flex items-center">
-                    <span className="material-icons text-sm mr-1" aria-hidden="true">schedule</span>
-                    {new Date(todaysMeeting.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
+
                 </div>
                 <div className="flex flex-col space-y-2 flex-shrink-0">
                   {isChairmanOrSonai && (
