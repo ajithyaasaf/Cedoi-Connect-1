@@ -182,10 +182,10 @@ export const api = {
       // Force use mock data to show new members
       return mockUsers.find(u => u.id === id) || null;
     },
-    getByEmail: async (email: string) => withFirestoreFallback(
-      () => firestoreUsers.getByEmail(email),
-      () => mockUsers.find(u => u.email === email) || null
-    ),
+    getByEmail: async (email: string) => {
+      // Force use mock data to show new members
+      return mockUsers.find(u => u.email === email) || null;
+    },
     create: async (userData: Omit<User, 'id' | 'createdAt'>) => withFirestoreFallback(
       () => firestoreUsers.create(userData),
       () => {
