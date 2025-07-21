@@ -39,6 +39,13 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
     refetchOnWindowFocus: true,
   });
 
+  // Fetch meeting details to check attendance window
+  const { data: meeting, isLoading: meetingLoading } = useQuery({
+    queryKey: ['meeting', meetingId],
+    queryFn: () => api.meetings.getById(meetingId),
+    refetchOnWindowFocus: true,
+  });
+
   const { data: attendanceRecords = [], isLoading: attendanceLoading } = useQuery<AttendanceRecord[]>({
     queryKey: ['attendance', meetingId],
     queryFn: () => api.attendance.getForMeeting(meetingId),
@@ -80,12 +87,67 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
     setAttendanceStatus(statusMap);
   }, [attendanceRecords]);
 
+  // Check if attendance marking is allowed based on meeting time
+  const isAttendanceAllowed = () => {
+    if (!meeting) return false;
+    
+    const now = new Date();
+    const meetingTime = new Date(meeting.date);
+    
+    // Allow attendance marking from 30 minutes before meeting until 2 hours after
+    const startWindow = new Date(meetingTime.getTime() - (30 * 60 * 1000)); // 30 minutes before
+    const endWindow = new Date(meetingTime.getTime() + (2 * 60 * 60 * 1000)); // 2 hours after
+    
+    return now >= startWindow && now <= endWindow;
+  };
+
+  const getAttendanceWindowMessage = () => {
+    if (!meeting) return '';
+    
+    const now = new Date();
+    const meetingTime = new Date(meeting.date);
+    const startWindow = new Date(meetingTime.getTime() - (30 * 60 * 1000));
+    const endWindow = new Date(meetingTime.getTime() + (2 * 60 * 60 * 1000));
+    
+    if (now < startWindow) {
+      const minutesUntil = Math.round((startWindow.getTime() - now.getTime()) / (60 * 1000));
+      return `Attendance marking opens in ${minutesUntil} minutes (30 min before meeting)`;
+    } else if (now > endWindow) {
+      return 'Attendance marking window has closed (2 hours after meeting)';
+    } else if (now < meetingTime) {
+      const minutesUntil = Math.round((meetingTime.getTime() - now.getTime()) / (60 * 1000));
+      return `Meeting starts in ${minutesUntil} minutes`;
+    } else {
+      const minutesSince = Math.round((now.getTime() - meetingTime.getTime()) / (60 * 1000));
+      return `Meeting started ${minutesSince} minutes ago`;
+    }
+  };
+
   const handleStatusChange = (userId: string, status: 'present' | 'absent') => {
+    if (!isAttendanceAllowed()) {
+      toast({
+        title: "Attendance marking not allowed",
+        description: getAttendanceWindowMessage(),
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setAttendanceStatus(prev => ({ ...prev, [userId]: status }));
     updateAttendanceMutation.mutate({ userId, status });
   };
 
   const handleQRScan = (qrData: string) => {
+    if (!isAttendanceAllowed()) {
+      toast({
+        title: "Attendance marking not allowed",
+        description: getAttendanceWindowMessage(),
+        variant: "destructive",
+      });
+      setShowQRScanner(false);
+      return;
+    }
+
     const user = users.find(u => u.qrCode === qrData);
     if (user) {
       handleStatusChange(user.id, 'present');
@@ -104,9 +166,19 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
   };
 
   const handleMarkAllPending = () => {
+    if (!isAttendanceAllowed()) {
+      toast({
+        title: "Attendance marking not allowed",
+        description: getAttendanceWindowMessage(),
+        variant: "destructive",
+      });
+      return;
+    }
+
     const pendingMembers = members.filter(member => !attendanceStatus[member.id]);
     pendingMembers.forEach(member => {
-      handleStatusChange(member.id, 'present');
+      setAttendanceStatus(prev => ({ ...prev, [member.id]: 'present' }));
+      updateAttendanceMutation.mutate({ userId: member.id, status: 'present' });
     });
     if (pendingMembers.length > 0) {
       toast({
@@ -265,6 +337,19 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
                 <span>{Math.round(progressPercentage)}%</span>
                 {isComplete && <span className="text-green-600">✓ Complete</span>}
               </div>
+              {/* Attendance window status */}
+              {meeting && (
+                <div className={`text-xs px-2 py-1 rounded-full inline-flex items-center space-x-1 mt-1 ${
+                  isAttendanceAllowed() 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-red-100 text-red-700'
+                }`}>
+                  <span className="material-icons text-xs">
+                    {isAttendanceAllowed() ? 'check_circle' : 'schedule'}
+                  </span>
+                  <span>{getAttendanceWindowMessage()}</span>
+                </div>
+              )}
             </div>
           </div>
           
@@ -274,7 +359,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
                 onClick={handleMarkAllPending}
                 size="sm"
                 className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-xs rounded-full"
-                disabled={updateAttendanceMutation.isPending}
+                disabled={updateAttendanceMutation.isPending || !isAttendanceAllowed()}
               >
                 Mark All ({pendingCount})
               </Button>
@@ -283,6 +368,7 @@ export default function AttendanceScreenImproved({ meetingId, onBack }: Attendan
               size="icon"
               onClick={() => setShowQRScanner(true)}
               className="h-8 w-8 bg-[#EB8A2F] hover:bg-[#EB8A2F]/90 text-white rounded-full touch-target"
+              disabled={!isAttendanceAllowed()}
             >
               <span className="material-icons text-lg">qr_code_scanner</span>
             </Button>

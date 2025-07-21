@@ -129,6 +129,22 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### July 21, 2025 - Time-Based Attendance Restrictions & Real-Time Notification System
+- **Time-Based Attendance Window Implementation**:
+  - Added proper business logic for attendance marking time restrictions
+  - Attendance marking only allowed from 30 minutes before meeting until 2 hours after
+  - Visual indicators showing current attendance window status (green/red badges)
+  - Time-sensitive error messages with countdown timers
+  - QR scanning and bulk operations respect time restrictions
+  - Prevents attendance marking outside proper meeting windows
+  - Meeting details fetched to validate attendance timing
+- **User Experience Enhancements**:
+  - Clear messaging about when attendance marking opens/closes
+  - Visual status indicators in attendance screen header
+  - Disabled buttons when attendance marking not allowed
+  - Real-time countdown showing minutes until meeting starts
+  - Professional time window management for meeting logistics
+
 ### July 21, 2025 - Real-Time Notification System Implementation
 - **Real-Time Notification System**:
   - Fixed infinite loop error in NotificationCenter component using stable dependency patterns
