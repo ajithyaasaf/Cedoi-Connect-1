@@ -35,34 +35,70 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Get meetings data
-  const { data: meetings = [] } = useQuery<Meeting[]>({
+  // Get meetings data with proper error handling
+  const { data: meetings = [], error: meetingsError, isLoading: meetingsLoading } = useQuery({
     queryKey: ['meetings'],
-    queryFn: () => api.meetings.getAll(),
+    queryFn: async () => {
+      try {
+        return await api.meetings.getAll();
+      } catch (error) {
+        console.log('Meetings query error:', error);
+        return [];
+      }
+    },
     refetchInterval: 60000, // Refresh every minute
+    retry: 1,
   });
 
-  // Get today's meeting
-  const { data: todaysMeeting } = useQuery<Meeting | null>({
+  // Get today's meeting with proper error handling
+  const { data: todaysMeeting, error: todaysMeetingError, isLoading: todaysMeetingLoading } = useQuery({
     queryKey: ['meetings', 'today'],
-    queryFn: () => api.meetings.getTodaysMeeting(),
+    queryFn: async () => {
+      try {
+        return await api.meetings.getTodaysMeeting();
+      } catch (error) {
+        console.log('Today\'s meeting query error:', error);
+        return null;
+      }
+    },
     refetchInterval: 30000,
+    retry: 1,
   });
 
-  // Get attendance records for today's meeting
-  const { data: attendanceRecords = [] } = useQuery<AttendanceRecord[]>({
+  // Get attendance records for today's meeting with proper error handling
+  const { data: attendanceRecords = [], error: attendanceError, isLoading: attendanceLoading } = useQuery({
     queryKey: ['attendance', todaysMeeting?.id],
-    queryFn: () => todaysMeeting ? api.attendance.getForMeeting(todaysMeeting.id) : Promise.resolve([]),
-    enabled: !!todaysMeeting,
+    queryFn: async () => {
+      if (!todaysMeeting?.id) return [];
+      try {
+        return await api.attendance.getForMeeting(todaysMeeting.id);
+      } catch (error) {
+        console.log('Attendance query error:', error);
+        return [];
+      }
+    },
+    enabled: !!todaysMeeting?.id,
     refetchInterval: 30000,
+    retry: 1,
   });
 
   // Generate notifications based on data
   useEffect(() => {
     const generateNotifications = () => {
+      // Don't generate notifications if data is still loading
+      if (meetingsLoading || todaysMeetingLoading || attendanceLoading) {
+        return;
+      }
+
       const newNotifications: Notification[] = [];
       const now = new Date();
       const oneHour = 60 * 60 * 1000;
+
+      // Only proceed if we have valid data
+      if (!meetings || !Array.isArray(meetings)) {
+        console.log('Meetings data not available yet');
+        return;
+      }
 
       // Add demo notifications to show functionality
       if (meetings.length > 0) {
@@ -166,7 +202,7 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
     };
 
     generateNotifications();
-  }, [meetings, todaysMeeting, attendanceRecords, user]);
+  }, [meetings, todaysMeeting, attendanceRecords, user, meetingsLoading, todaysMeetingLoading, attendanceLoading]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -224,6 +260,9 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
     }
   };
 
+  // Show loading state if any queries are loading
+  const isLoading = meetingsLoading || todaysMeetingLoading || attendanceLoading;
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -231,9 +270,12 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
           variant="ghost"
           size="icon"
           className="w-10 h-10 rounded-2xl relative hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+          disabled={isLoading}
         >
-          <span className="material-icons text-xl">notifications</span>
-          {unreadCount > 0 && (
+          <span className="material-icons text-xl">
+            {isLoading ? 'hourglass_empty' : 'notifications'}
+          </span>
+          {!isLoading && unreadCount > 0 && (
             <Badge 
               variant="destructive" 
               className="absolute -top-1 -right-1 w-5 h-5 p-0 text-xs flex items-center justify-center"
@@ -264,7 +306,26 @@ export default function NotificationCenter({ onMarkAttendance, onViewMeeting }: 
 
           {/* Notifications List */}
           <div className="max-h-96 overflow-y-auto">
-            {notifications.length === 0 ? (
+            {isLoading ? (
+              <div className="p-6 text-center text-gray-500">
+                <span className="material-icons text-4xl text-gray-300 mb-2 block animate-spin">hourglass_empty</span>
+                <p className="text-sm">Loading notifications...</p>
+              </div>
+            ) : (meetingsError || todaysMeetingError || attendanceError) ? (
+              <div className="p-6 text-center text-gray-500">
+                <span className="material-icons text-4xl text-red-300 mb-2 block">error_outline</span>
+                <p className="text-sm">Unable to load notifications</p>
+                <button 
+                  onClick={() => {
+                    queryClient.invalidateQueries({ queryKey: ['meetings'] });
+                    queryClient.invalidateQueries({ queryKey: ['attendance'] });
+                  }}
+                  className="text-xs text-blue-600 mt-2 hover:underline"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="p-6 text-center text-gray-500">
                 <span className="material-icons text-4xl text-gray-300 mb-2 block">notifications_none</span>
                 <p className="text-sm">No notifications</p>
