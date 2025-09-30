@@ -25,7 +25,7 @@ export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeader
             <img 
               src={cedoiLogo} 
               alt="CEDOI Logo" 
-              className="h-8 sm:h-10 w-auto object-contain flex-shrink-0 rounded-lg shadow-md bg-white/10 p-1"
+              className="h-12 sm:h-16 w-auto object-contain flex-shrink-0 rounded-lg shadow-md bg-white/10 p-1"
               onError={(e) => {
                 // Fallback to icon if image fails to load
                 e.currentTarget.style.display = 'none';
@@ -35,7 +35,6 @@ export default function AppHeader({ onMarkAttendance, onViewMeeting }: AppHeader
             <span className="material-icons text-white text-lg sm:text-xl hidden bg-white/10 rounded-lg p-2">groups</span>
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-semibold truncate">CEDOI Madurai</h1>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               <p className="text-xs sm:text-sm text-white/80 capitalize truncate font-medium">
