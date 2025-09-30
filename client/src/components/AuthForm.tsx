@@ -38,11 +38,11 @@ export default function AuthForm() {
   return (
     <div className="min-h-screen bg-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
+        <div className="text-center mb-3">
           <img 
             src={cedoiLogo} 
             alt="CEDOI Logo" 
-            className="w-32 h-32 object-contain mx-auto mb-4"
+            className="w-32 h-32 object-contain mx-auto mb-2"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
               e.currentTarget.nextElementSibling?.classList.remove('hidden');
