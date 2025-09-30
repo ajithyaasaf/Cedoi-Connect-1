@@ -46,19 +46,15 @@ export default function MobileAppHeader({ onMarkAttendance, onViewMeeting }: Mob
             <img 
               src={cedoiLogo} 
               alt="CEDOI Logo" 
-              className="h-8 w-auto object-contain"
+              className="h-12 w-auto object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
               }}
             />
-            <div className="h-8 w-8 bg-[#0c5b84] rounded-lg flex items-center justify-center hidden">
+            <div className="h-12 w-12 bg-[#0c5b84] rounded-lg flex items-center justify-center hidden">
               <span className="material-icons text-white text-sm">groups</span>
             </div>
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-gray-900">CEDOI Forum</h1>
-            <p className="text-sm text-gray-500">Meeting Management</p>
           </div>
         </div>
 
