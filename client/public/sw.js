@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cedoi-forum-v3';
+const CACHE_NAME = 'cedoi-forum-v4';
 const urlsToCache = [
   '/',
   '/manifest.json',
